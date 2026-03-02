@@ -191,7 +191,7 @@ export function AppProvider({ children }) {
                     { id: Date.now() + 84, label: 'SMTP PORT', valueType: 'Number', placeholder: '465' },
                     { id: Date.now() + 85, label: 'SMTP USER', valueType: 'Text', placeholder: 'user@gmail.com' },
                     { id: Date.now() + 86, label: 'SMTP PASSWORD', valueType: 'Password', placeholder: '••••••••' },
-                    { id: Date.now() + 87, label: 'FROM EMAIL ADDRESS', valueType: 'Text', infinity: true, placeholder: 'noreply@company.com' },
+                    { id: Date.now() + 87, label: 'FROM EMAIL ADDRESS', valueType: 'Text', placeholder: 'noreply@company.com' },
                   ],
                 },
                 {
@@ -402,7 +402,7 @@ export function AppProvider({ children }) {
                   { id: Date.now() + 84, label: 'SMTP PORT', valueType: 'Number', placeholder: '465' },
                   { id: Date.now() + 85, label: 'SMTP USER', valueType: 'Text', placeholder: 'user@gmail.com' },
                   { id: Date.now() + 86, label: 'SMTP PASSWORD', valueType: 'Password', placeholder: '••••••••' },
-                  { id: Date.now() + 87, label: 'FROM EMAIL ADDRESS', valueType: 'Text', infinity: true, placeholder: 'noreply@company.com' },
+                  { id: Date.now() + 87, label: 'FROM EMAIL ADDRESS', valueType: 'Text', placeholder: 'noreply@company.com' },
                 ],
               },
               {
