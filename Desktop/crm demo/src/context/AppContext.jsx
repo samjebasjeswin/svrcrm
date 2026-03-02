@@ -55,7 +55,7 @@ export function AppProvider({ children }) {
     localStorage.setItem(`${STORAGE_KEY}_inquiries`, JSON.stringify(inquiries));
   }, [companies, currentCompanyId, pages, savedEntries, pageLinks, fieldMappings, user, inquiries]);
 
-  const addCompany = (company) => {
+  const addCompany = (company, includeDefaultPages = false) => {
     const newId = Date.now();
     const initials = company.companyName
       .split(' ')
@@ -66,7 +66,119 @@ export function AppProvider({ children }) {
     const newCompany = { id: newId, name: company.companyName, role: 'Company Admin', initials, details: company };
     setCompanies((prev) => [...prev, newCompany]);
     setCurrentCompanyId(newId);
-    setPages((prev) => ({ ...prev, [newId]: [] }));
+
+    // Create default pages if requested
+    let initialPages = [];
+    if (includeDefaultPages) {
+      initialPages = [
+        {
+          id: Date.now() + 10,
+          name: 'home page',
+          headings: [
+            {
+              id: Date.now() + 11,
+              title: 'Welcome Section',
+              subHeadings: [
+                { id: Date.now() + 12, title: '', fields: [] },
+              ],
+            },
+          ],
+        },
+        {
+          id: Date.now() + 20,
+          name: 'Contact Us',
+          headings: [
+            {
+              id: Date.now() + 21,
+              title: 'Contact Details',
+              subHeadings: [
+                { id: Date.now() + 22, title: '', fields: [] },
+              ],
+            },
+          ],
+        },
+        {
+          id: Date.now() + 30,
+          name: 'Product Inquiry',
+          headings: [
+            {
+              id: Date.now() + 31,
+              title: 'Product Info',
+              subHeadings: [
+                { id: Date.now() + 32, title: '', fields: [] },
+              ],
+            },
+          ],
+        },
+        {
+          id: Date.now() + 40,
+          name: 'Static SEO',
+          headings: [
+            {
+              id: Date.now() + 41,
+              title: 'SEO Meta Data',
+              subHeadings: [
+                {
+                  id: Date.now() + 42,
+                  title: 'Standard Meta Tags',
+                  fields: [
+                    { id: Date.now() + 43, label: 'Web Page Title (<title>)', valueType: 'Text', placeholder: 'Title of the web page' },
+                    { id: Date.now() + 44, label: 'Meta Description (<meta name="description">)', valueType: 'Text', placeholder: 'Enter a concise description of the page (150-160 chars)' },
+                    { id: Date.now() + 45, label: 'Meta Keywords (<meta name="keywords">)', valueType: 'Text', placeholder: 'keyword1, keyword2, keyword3' },
+                    { id: Date.now() + 46, label: 'Robots (<meta name="robots">)', valueType: 'Text', placeholder: 'index, follow' },
+                    { id: Date.now() + 47, label: 'Website Name (<meta name="author">)', valueType: 'Text', placeholder: 'e.g. Valves Only - USA' },
+                    { id: Date.now() + 48, label: 'Refresh (<meta name="refresh">)', valueType: 'Text', placeholder: '30' },
+                    { id: Date.now() + 49, label: 'Canonical URL (<link rel="canonical">)', valueType: 'Text', placeholder: 'https://www.yourwebsite.com/' },
+                  ],
+                },
+                {
+                  id: Date.now() + 50,
+                  title: 'Open Graph Data',
+                  fields: [
+                    { id: Date.now() + 51, label: 'OG Title (<meta property="og:title">)', valueType: 'Text', placeholder: 'Social media title' },
+                    { id: Date.now() + 52, label: 'OG Type (<meta property="og:type">)', valueType: 'Text', placeholder: 'website, article' },
+                    { id: Date.now() + 53, label: 'OG URL (<meta property="og:url">)', valueType: 'Text', placeholder: 'https://www.yourwebsite.com/page-url' },
+                    { id: Date.now() + 54, label: 'OG Image (<meta property="og:image">)', valueType: 'Image', placeholder: '' },
+                    { id: Date.now() + 55, label: 'OG Description (<meta property="og:description">)', valueType: 'Text', placeholder: 'Social media description' },
+                    { id: Date.now() + 56, label: 'OG Locale (<meta property="og:locale">)', valueType: 'Text', placeholder: 'en_US' },
+                    { id: Date.now() + 57, label: 'OG Site Name (<meta property="og:site_name">)', valueType: 'Text', placeholder: 'Your Website Name' },
+                    { id: Date.now() + 58, label: 'Article Published Time (<meta property="article:published_time">)', valueType: 'Text', placeholder: 'YYYY-MM-DDTHH:mm:ss+00:00' },
+                    { id: Date.now() + 59, label: 'Article Modified Time (<meta property="article:modified_time">)', valueType: 'Text', placeholder: 'YYYY-MM-DDTHH:mm:ss+00:00' },
+                    { id: Date.now() + 60, label: 'Article Author (<meta property="article:author">)', valueType: 'Text', placeholder: 'Author URL' },
+                  ],
+                },
+                {
+                  id: Date.now() + 61,
+                  title: 'Twitter Card Data',
+                  fields: [
+                    { id: Date.now() + 62, label: 'Twitter Card (<meta name="twitter:card">)', valueType: 'Text', placeholder: 'summary_large_image' },
+                    { id: Date.now() + 63, label: 'Twitter Site (<meta name="twitter:site">)', valueType: 'Text', placeholder: '@yourwebsite' },
+                    { id: Date.now() + 64, label: 'Twitter Title (<meta name="twitter:title">)', valueType: 'Text', placeholder: 'Social Title' },
+                    { id: Date.now() + 65, label: 'Twitter Description (<meta name="twitter:description">)', valueType: 'Text', placeholder: 'Social Description' },
+                    { id: Date.now() + 66, label: 'Twitter Creator (<meta name="twitter:creator">)', valueType: 'Text', placeholder: '@yourtwitter' },
+                    { id: Date.now() + 67, label: 'Twitter Image (<meta name="twitter:image">)', valueType: 'Image', placeholder: '' },
+                  ],
+                },
+                {
+                  id: Date.now() + 68,
+                  title: 'Dublin Core Metadata',
+                  fields: [
+                    { id: Date.now() + 69, label: 'DC Title (<meta name="dc.title">)', valueType: 'Text', placeholder: 'Dublin Core Title' },
+                    { id: Date.now() + 70, label: 'DC Description (<meta name="dc.description">)', valueType: 'Text', placeholder: 'Dublin Core Description' },
+                    { id: Date.now() + 71, label: 'DC Subject (<meta name="dc.subject">)', valueType: 'Text', placeholder: 'Keywords, Subject' },
+                    { id: Date.now() + 72, label: 'DC Created (<meta name="dc.created">)', valueType: 'Text', placeholder: 'YYYY-MM-DD' },
+                    { id: Date.now() + 73, label: 'DC Modified (<meta name="dc.modified">)', valueType: 'Text', placeholder: 'YYYY-MM-DD' },
+                    { id: Date.now() + 74, label: 'DC Language (<meta name="dc.language">)', valueType: 'Text', placeholder: 'en' },
+                  ],
+                },
+              ],
+            },
+          ],
+        }
+      ];
+    }
+
+    setPages((prev) => ({ ...prev, [newId]: initialPages }));
     return newId;
   };
 
@@ -132,19 +244,111 @@ export function AppProvider({ children }) {
     return (pages[currentCompanyId] || []).find((p) => p.id === Number(pageId));
   };
 
-  // Ensure a "Category" page exists; create it if missing (case-insensitive check)
-  const ensureCategoryPage = () => {
+  // Ensure a "form" page exists; create it if missing (case-insensitive check)
+  const ensureFormPage = () => {
     if (!currentCompanyId) return;
     const currentPages = pages[currentCompanyId] || [];
-    const existing = currentPages.find((p) => p.name.toLowerCase().trim() === 'category');
+    const existing = currentPages.find((p) => p.name.toLowerCase().trim() === 'form');
     if (!existing) {
-      addPage('Category');
+      addPage('form');
+    }
+  };
+
+  const ensureSeoPage = () => {
+    if (!currentCompanyId) return;
+    const currentPages = pages[currentCompanyId] || [];
+    const existingIndex = currentPages.findIndex((p) => p.name.toLowerCase().trim() === 'static seo');
+
+    // Schema definition for comparison/creation
+    const seoSchema = {
+      name: 'Static SEO',
+      headings: [
+        {
+          id: Date.now() + 41,
+          title: 'SEO Meta Data',
+          subHeadings: [
+            {
+              id: Date.now() + 42,
+              title: 'Standard Meta Tags',
+              fields: [
+                { id: Date.now() + 43, label: 'Web Page Title (<title>)', valueType: 'Text', placeholder: 'Title of the web page' },
+                { id: Date.now() + 44, label: 'Meta Description (<meta name="description">)', valueType: 'Text', placeholder: 'Enter a concise description of the page (150-160 chars)' },
+                { id: Date.now() + 45, label: 'Meta Keywords (<meta name="keywords">)', valueType: 'Text', placeholder: 'keyword1, keyword2, keyword3' },
+                { id: Date.now() + 46, label: 'Robots (<meta name="robots">)', valueType: 'Text', placeholder: 'index, follow' },
+                { id: Date.now() + 47, label: 'Website Name (<meta name="author">)', valueType: 'Text', placeholder: 'e.g. Valves Only - USA' },
+                { id: Date.now() + 48, label: 'Refresh (<meta name="refresh">)', valueType: 'Text', placeholder: '30' },
+                { id: Date.now() + 49, label: 'Canonical URL (<link rel="canonical">)', valueType: 'Text', placeholder: 'https://www.yourwebsite.com/' },
+              ],
+            },
+            {
+              id: Date.now() + 50,
+              title: 'Open Graph Data',
+              fields: [
+                { id: Date.now() + 51, label: 'OG Title (<meta property="og:title">)', valueType: 'Text', placeholder: 'Social media title' },
+                { id: Date.now() + 52, label: 'OG Type (<meta property="og:type">)', valueType: 'Text', placeholder: 'website, article' },
+                { id: Date.now() + 53, label: 'OG URL (<meta property="og:url">)', valueType: 'Text', placeholder: 'https://www.yourwebsite.com/page-url' },
+                { id: Date.now() + 54, label: 'OG Image (<meta property="og:image">)', valueType: 'Image', placeholder: '' },
+                { id: Date.now() + 55, label: 'OG Description (<meta property="og:description">)', valueType: 'Text', placeholder: 'Social media description' },
+                { id: Date.now() + 56, label: 'OG Locale (<meta property="og:locale">)', valueType: 'Text', placeholder: 'en_US' },
+                { id: Date.now() + 57, label: 'OG Site Name (<meta property="og:site_name">)', valueType: 'Text', placeholder: 'Your Website Name' },
+                { id: Date.now() + 58, label: 'Article Published Time (<meta property="article:published_time">)', valueType: 'Text', placeholder: 'YYYY-MM-DDTHH:mm:ss+00:00' },
+                { id: Date.now() + 59, label: 'Article Modified Time (<meta property="article:modified_time">)', valueType: 'Text', placeholder: 'YYYY-MM-DDTHH:mm:ss+00:00' },
+                { id: Date.now() + 60, label: 'Article Author (<meta property="article:author">)', valueType: 'Text', placeholder: 'Author URL' },
+              ],
+            },
+            {
+              id: Date.now() + 61,
+              title: 'Twitter Card Data',
+              fields: [
+                { id: Date.now() + 62, label: 'Twitter Card (<meta name="twitter:card">)', valueType: 'Text', placeholder: 'summary_large_image' },
+                { id: Date.now() + 63, label: 'Twitter Site (<meta name="twitter:site">)', valueType: 'Text', placeholder: '@yourwebsite' },
+                { id: Date.now() + 64, label: 'Twitter Title (<meta name="twitter:title">)', valueType: 'Text', placeholder: 'Social Title' },
+                { id: Date.now() + 65, label: 'Twitter Description (<meta name="twitter:description">)', valueType: 'Text', placeholder: 'Social Description' },
+                { id: Date.now() + 66, label: 'Twitter Creator (<meta name="twitter:creator">)', valueType: 'Text', placeholder: '@yourtwitter' },
+                { id: Date.now() + 67, label: 'Twitter Image (<meta name="twitter:image">)', valueType: 'Image', placeholder: '' },
+              ],
+            },
+            {
+              id: Date.now() + 68,
+              title: 'Dublin Core Metadata',
+              fields: [
+                { id: Date.now() + 69, label: 'DC Title (<meta name="dc.title">)', valueType: 'Text', placeholder: 'Dublin Core Title' },
+                { id: Date.now() + 70, label: 'DC Description (<meta name="dc.description">)', valueType: 'Text', placeholder: 'Dublin Core Description' },
+                { id: Date.now() + 71, label: 'DC Subject (<meta name="dc.subject">)', valueType: 'Text', placeholder: 'Keywords, Subject' },
+                { id: Date.now() + 72, label: 'DC Created (<meta name="dc.created">)', valueType: 'Text', placeholder: 'YYYY-MM-DD' },
+                { id: Date.now() + 73, label: 'DC Modified (<meta name="dc.modified">)', valueType: 'Text', placeholder: 'YYYY-MM-DD' },
+                { id: Date.now() + 74, label: 'DC Language (<meta name="dc.language">)', valueType: 'Text', placeholder: 'en' },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    if (existingIndex === -1) {
+      setPages((prev) => ({
+        ...prev,
+        [currentCompanyId]: [...(prev[currentCompanyId] || []), { ...seoSchema, id: Date.now() + 400 }],
+      }));
+    } else {
+      // Repair logic: check if labels match. If they are the old ones (don't contain '<'), update the page structure.
+      const existingPage = currentPages[existingIndex];
+      const needsUpdate = !existingPage.headings?.[0]?.subHeadings?.[0]?.fields?.[0]?.label?.includes('<');
+
+      if (needsUpdate) {
+        setPages((prev) => {
+          const updatedPages = [...(prev[currentCompanyId] || [])];
+          updatedPages[existingIndex] = { ...existingPage, headings: seoSchema.headings };
+          return { ...prev, [currentCompanyId]: updatedPages };
+        });
+      }
     }
   };
 
   // Call once on mount or when currentCompanyId changes
   useEffect(() => {
-    ensureCategoryPage();
+    ensureFormPage();
+    ensureSeoPage();
   }, [currentCompanyId, pages]);
 
   // ---- Saved Entries (shared across pages for linking) ----
@@ -303,7 +507,7 @@ export function AppProvider({ children }) {
         pageLinks,
         addPageLinks,
         deletePageLink,
-        ensureCategoryPage,
+        ensureFormPage,
         fieldMappings,
         addFieldMapping: (m) => setFieldMappings(prev => [...prev, { ...m, id: Date.now() }]),
         updateFieldMapping: (id, m) => setFieldMappings(prev => prev.map(item => item.id === id ? { ...item, ...m } : item)),
