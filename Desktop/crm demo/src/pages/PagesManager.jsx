@@ -546,32 +546,40 @@ export default function PagesManager() {
                                 </div>
                             </div>
 
-                            {/* Inquiry Form Link Section */}
-                            <div className="card" style={{ padding: '24px', background: 'rgba(79, 70, 229, 0.05)', border: '1px dashed var(--primary)', marginBottom: '40px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <div>
-                                        <h4 style={{ margin: 0, color: 'var(--primary)', fontSize: '16px', fontWeight: '700' }}>Your Public Inquiry Form</h4>
-                                        <p style={{ margin: '4px 0 0', fontSize: '13px', color: 'var(--text-secondary)' }}>Share this link with your customers to receive inquiries</p>
+                            {/* Public Profile & Inquiry Links */}
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '40px' }}>
+                                <div className="card" style={{ padding: '24px', background: 'rgba(16, 185, 129, 0.05)', border: '1px dashed var(--success)' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <div>
+                                            <h4 style={{ margin: 0, color: 'var(--success)', fontSize: '16px', fontWeight: '700' }}>Your Public Profile</h4>
+                                            <p style={{ margin: '4px 0 0', fontSize: '13px', color: 'var(--text-secondary)' }}>Showcases your company and all catalogs</p>
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '8px' }}>
+                                            <button
+                                                className="btn btn-primary btn-sm"
+                                                style={{ background: 'var(--success)', borderColor: 'var(--success)' }}
+                                                onClick={() => window.open(`${window.location.origin}/c/${currentCompanyId}`, '_blank')}
+                                            >
+                                                Open Profile
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                                        <code style={{ background: 'white', padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--border)', fontSize: '13px' }}>
-                                            {window.location.origin}/form/{currentCompanyId}
-                                        </code>
-                                        <button
-                                            className="btn btn-primary btn-sm"
-                                            onClick={() => {
-                                                navigator.clipboard.writeText(`${window.location.origin}/form/${currentCompanyId}`);
-                                                alert('Link copied to clipboard!');
-                                            }}
-                                        >
-                                            Copy Link
-                                        </button>
-                                        <button
-                                            className="btn btn-outline btn-sm"
-                                            onClick={() => window.open(`${window.location.origin}/form/${currentCompanyId}`, '_blank')}
-                                        >
-                                            Open Form
-                                        </button>
+                                </div>
+
+                                <div className="card" style={{ padding: '24px', background: 'rgba(79, 70, 229, 0.05)', border: '1px dashed var(--primary)' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <div>
+                                            <h4 style={{ margin: 0, color: 'var(--primary)', fontSize: '16px', fontWeight: '700' }}>Standalone Inquiry Form</h4>
+                                            <p style={{ margin: '4px 0 0', fontSize: '13px', color: 'var(--text-secondary)' }}>Direct link to your contact form</p>
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '8px' }}>
+                                            <button
+                                                className="btn btn-outline btn-sm"
+                                                onClick={() => window.open(`${window.location.origin}/form/${currentCompanyId}`, '_blank')}
+                                            >
+                                                Open Form
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

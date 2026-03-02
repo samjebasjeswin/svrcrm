@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
-export default function InquiryForm() {
-    const navigate = useNavigate();
-    const { companyId } = useParams();
-    const { addInquiry } = useApp();
+export default function InquiryForm({ isEmbedded = false, targetCompanyId = null }) {
+    const { companyId: urlCompanyId } = useParams();
+    const effectiveCompanyId = targetCompanyId || urlCompanyId;
+    const { addInquiry, companies } = useApp();
+
+    const targetCompany = companies.find(c => c.id === Number(effectiveCompanyId));
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -28,7 +30,7 @@ export default function InquiryForm() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        addInquiry(formData, companyId);
+        addInquiry(formData, effectiveCompanyId);
         console.log('Form submitted:', formData);
         setSubmitted(true);
     };
@@ -40,7 +42,11 @@ export default function InquiryForm() {
                     <div className="success-icon">✓</div>
                     <h2>Thank You!</h2>
                     <p>Your inquiry has been sent successfully. We typically respond within 24 hours.</p>
-                    <button className="btn btn-primary" onClick={() => navigate('/')}>Back to Home</button>
+                    {!isEmbedded ? (
+                        <button className="btn btn-primary" onClick={() => navigate('/')}>Back to Home</button>
+                    ) : (
+                        <button className="btn btn-primary" onClick={() => setSubmitted(false)}>Send Another Message</button>
+                    )}
                 </div>
             </div>
         );
@@ -50,7 +56,7 @@ export default function InquiryForm() {
         <div className="inquiry-form-wrapper animate-fade-in">
             <div className="inquiry-form-container">
                 <div className="inquiry-header">
-                    <h1>Send Us a Message</h1>
+                    <h1>{targetCompany ? `Inquire with ${targetCompany.name}` : 'Send Us a Message'}</h1>
                     <p>Fill out the form below and we'll get back to you shortly</p>
                 </div>
 

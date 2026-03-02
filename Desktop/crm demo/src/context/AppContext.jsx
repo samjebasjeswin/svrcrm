@@ -176,8 +176,8 @@ export function AppProvider({ children }) {
     }));
   };
 
-  const getPageEntries = (pageId) => {
-    const key = `${currentCompanyId}_${pageId}`;
+  const getPageEntries = (pageId, companyId) => {
+    const key = `${companyId || currentCompanyId}_${pageId}`;
     return savedEntries[key] || [];
   };
 
