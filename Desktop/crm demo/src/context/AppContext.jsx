@@ -614,6 +614,28 @@ export function AppProvider({ children }) {
           setInquiries(prev => prev.map(i => i.id === id ? { ...i, status } : i));
         },
         deleteInquiry: (id) => setInquiries(prev => prev.filter(i => i.id !== id)),
+        submitExternalForm: (companyId, type, data) => {
+          // Flatten data keys if they come as objects
+          const cleanData = { ...data };
+          if (typeof cleanData === 'string') {
+            try {
+              return JSON.parse(cleanData);
+            } catch (e) {
+              return {};
+            }
+          }
+
+          const newInquiry = {
+            id: Date.now(),
+            ...cleanData,
+            type, // 'contact' or 'product'
+            status: 'New',
+            seen: false,
+            companyId: Number(companyId),
+            submittedAt: new Date().toLocaleString()
+          };
+          setInquiries((prev) => [newInquiry, ...prev]);
+        },
         inquiries,
 
         user,

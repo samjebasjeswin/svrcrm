@@ -561,36 +561,52 @@ export default function PagesManager() {
                                 </div>
 
                                 <div className="card" style={{ padding: '24px', background: 'rgba(79, 70, 229, 0.05)', border: '1px dashed var(--primary)' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <div>
-                                            <h4 style={{ margin: 0, color: 'var(--primary)', fontSize: '16px', fontWeight: '700' }}>Standalone Contact Form</h4>
-                                            <p style={{ margin: '4px 0 0', fontSize: '13px', color: 'var(--text-secondary)' }}>Direct link to your contact form</p>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <div>
+                                                <h4 style={{ margin: 0, color: 'var(--primary)', fontSize: '16px', fontWeight: '700' }}>Standalone Contact Form</h4>
+                                                <p style={{ margin: '4px 0 0', fontSize: '13px', color: 'var(--text-secondary)' }}>Direct link to your contact form</p>
+                                            </div>
+                                            <div style={{ display: 'flex', gap: '8px' }}>
+                                                <button
+                                                    className="btn btn-outline btn-sm"
+                                                    onClick={() => window.open(`${window.location.origin}/form/${currentCompanyId}`, '_blank')}
+                                                >
+                                                    Open Form
+                                                </button>
+                                            </div>
                                         </div>
-                                        <div style={{ display: 'flex', gap: '8px' }}>
-                                            <button
-                                                className="btn btn-outline btn-sm"
-                                                onClick={() => window.open(`${window.location.origin}/form/${currentCompanyId}`, '_blank')}
-                                            >
-                                                Open Form
-                                            </button>
+                                        <div style={{ background: '#f1f5f9', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                                            <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase', marginBottom: '4px' }}>Submission Webhook API Path</div>
+                                            <code style={{ fontSize: '12px', color: 'var(--primary)', wordBreak: 'break-all' }}>
+                                                {window.location.origin}/webhook/submit?companyId={currentCompanyId}&type=contact
+                                            </code>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="card" style={{ padding: '24px', background: 'rgba(236, 72, 153, 0.05)', border: '1px dashed #ec4899' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <div>
-                                            <h4 style={{ margin: 0, color: '#ec4899', fontSize: '16px', fontWeight: '700' }}>Product Inquiry Form</h4>
-                                            <p style={{ margin: '4px 0 0', fontSize: '13px', color: 'var(--text-secondary)' }}>Direct link to your product inquiry form</p>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <div>
+                                                <h4 style={{ margin: 0, color: '#ec4899', fontSize: '16px', fontWeight: '700' }}>Product Inquiry Form</h4>
+                                                <p style={{ margin: '4px 0 0', fontSize: '13px', color: 'var(--text-secondary)' }}>Direct link to your product inquiry form</p>
+                                            </div>
+                                            <div style={{ display: 'flex', gap: '8px' }}>
+                                                <button
+                                                    className="btn btn-outline btn-sm"
+                                                    style={{ color: '#ec4899', borderColor: '#ec4899' }}
+                                                    onClick={() => window.open(`${window.location.origin}/p-form/${currentCompanyId}`, '_blank')}
+                                                >
+                                                    Open Form
+                                                </button>
+                                            </div>
                                         </div>
-                                        <div style={{ display: 'flex', gap: '8px' }}>
-                                            <button
-                                                className="btn btn-outline btn-sm"
-                                                style={{ color: '#ec4899', borderColor: '#ec4899' }}
-                                                onClick={() => window.open(`${window.location.origin}/p-form/${currentCompanyId}`, '_blank')}
-                                            >
-                                                Open Form
-                                            </button>
+                                        <div style={{ background: '#f1f5f9', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                                            <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase', marginBottom: '4px' }}>Submission Webhook API Path</div>
+                                            <code style={{ fontSize: '12px', color: '#ec4899', wordBreak: 'break-all' }}>
+                                                {window.location.origin}/webhook/submit?companyId={currentCompanyId}&type=product
+                                            </code>
                                         </div>
                                     </div>
                                 </div>
