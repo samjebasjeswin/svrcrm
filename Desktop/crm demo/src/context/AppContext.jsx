@@ -310,10 +310,11 @@ export function AppProvider({ children }) {
         deleteFieldMapping: (id) => setFieldMappings(prev => prev.filter(m => m.id !== id)),
 
         // ---- Inquiries ----
-        addInquiry: (inquiryData, companyId) => {
+        addInquiry: (inquiryData, companyId, type = 'contact') => {
           const newInquiry = {
             id: Date.now(),
             ...inquiryData,
+            type, // 'contact' or 'product'
             companyId: companyId ? Number(companyId) : null,
             submittedAt: new Date().toLocaleString()
           };

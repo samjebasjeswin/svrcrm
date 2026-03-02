@@ -56,7 +56,7 @@ export default function InquiryForm({ isEmbedded = false, targetCompanyId = null
         <div className="inquiry-form-wrapper animate-fade-in">
             <div className="inquiry-form-container">
                 <div className="inquiry-header">
-                    <h1>{targetCompany ? `Inquire with ${targetCompany.name}` : 'Send Us a Message'}</h1>
+                    <h1>{targetCompany ? `contactus form of ${targetCompany.name}` : 'Send Us a Message'}</h1>
                     <p>Fill out the form below and we'll get back to you shortly</p>
                 </div>
 

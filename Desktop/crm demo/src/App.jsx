@@ -11,6 +11,7 @@ import EditMappingHierarchy from './pages/EditMappingHierarchy';
 import InquiryForm from './pages/InquiryForm';
 import Login from './pages/Login';
 import PublicCompanyProfile from './pages/PublicCompanyProfile';
+import ProductForm from './pages/ProductForm';
 import { useApp } from './context/AppContext';
 import { Navigate } from 'react-router-dom';
 
@@ -37,6 +38,7 @@ function App() {
       <Route path="/edit-hierarchy/:mappingId" element={<ProtectedRoute><EditMappingHierarchy /></ProtectedRoute>} />
       <Route path="/c/:companyId" element={<PublicCompanyProfile />} />
       <Route path="/form/:companyId" element={<InquiryForm />} />
+      <Route path="/p-form/:companyId" element={<ProductForm />} />
       <Route path="/form" element={<Navigate to="/form/2" replace />} />
       <Route path="/forms" element={<Navigate to="/form" replace />} />
       <Route path="*" element={<Navigate to="/" replace />} />
