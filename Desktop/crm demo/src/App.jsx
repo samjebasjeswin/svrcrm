@@ -34,7 +34,8 @@ function App() {
       <Route path="/data-entry/:pageId/:entryId" element={<ProtectedRoute><DataEntry /></ProtectedRoute>} />
       <Route path="/view-mapping/:mappingId" element={<ProtectedRoute><MappedDataView /></ProtectedRoute>} />
       <Route path="/edit-hierarchy/:mappingId" element={<ProtectedRoute><EditMappingHierarchy /></ProtectedRoute>} />
-      <Route path="/form" element={<InquiryForm />} />
+      <Route path="/form/:companyId" element={<InquiryForm />} />
+      <Route path="/form" element={<Navigate to="/form/2" replace />} />
       <Route path="/forms" element={<Navigate to="/form" replace />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

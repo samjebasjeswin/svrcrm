@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
@@ -30,6 +30,10 @@ export default function PagesManager() {
     } = useApp();
 
     const currentCompany = companies.find(c => c.id === currentCompanyId);
+
+    const filteredInquiries = useMemo(() => {
+        return inquiries.filter(i => i.companyId === currentCompanyId);
+    }, [inquiries, currentCompanyId]);
 
     const pages = getCompanyPages();
 
@@ -167,21 +171,11 @@ export default function PagesManager() {
                     >
                         <span className="nav-icon">🏢</span>
                         <span className="nav-label">{currentCompany?.name || 'Company'} Admin</span>
-                    </button>
-                    <button
-                        className={`nav-item ${activeTab === 'inquiries' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('inquiries')}
-                        style={{ borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: '8px', paddingTop: '16px' }}
-                    >
-                        <span className="nav-icon">📩</span>
-                        <span className="nav-label" style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            Inquiries
-                            {inquiries && inquiries.length > 0 && (
-                                <span style={{ background: 'var(--danger)', color: 'white', padding: '2px 8px', borderRadius: '12px', fontSize: '11px', fontWeight: 700 }}>
-                                    {inquiries.length}
-                                </span>
-                            )}
-                        </span>
+                        {filteredInquiries && filteredInquiries.length > 0 && (
+                            <span style={{ background: 'var(--danger)', color: 'white', padding: '2px 6px', borderRadius: '10px', fontSize: '10px', marginLeft: 'auto', fontWeight: 700 }}>
+                                {filteredInquiries.length}
+                            </span>
+                        )}
                     </button>
                 </div>
 
@@ -544,6 +538,42 @@ export default function PagesManager() {
                                         {pages.reduce((acc, p) => acc + getPageEntries(p.id).length, 0)}
                                     </div>
                                 </div>
+                                <div className="card" style={{ padding: '24px', background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)', border: 'none' }}>
+                                    <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontWeight: '600', textTransform: 'uppercase', marginBottom: '10px', display: 'flex', justifyContent: 'space-between' }}>
+                                        Customer Inquiries
+                                    </div>
+                                    <div style={{ fontSize: '32px', fontWeight: '800', color: 'var(--danger)' }}>{filteredInquiries.length}</div>
+                                </div>
+                            </div>
+
+                            {/* Inquiry Form Link Section */}
+                            <div className="card" style={{ padding: '24px', background: 'rgba(79, 70, 229, 0.05)', border: '1px dashed var(--primary)', marginBottom: '40px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <div>
+                                        <h4 style={{ margin: 0, color: 'var(--primary)', fontSize: '16px', fontWeight: '700' }}>Your Public Inquiry Form</h4>
+                                        <p style={{ margin: '4px 0 0', fontSize: '13px', color: 'var(--text-secondary)' }}>Share this link with your customers to receive inquiries</p>
+                                    </div>
+                                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                                        <code style={{ background: 'white', padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--border)', fontSize: '13px' }}>
+                                            {window.location.origin}/form/{currentCompanyId}
+                                        </code>
+                                        <button
+                                            className="btn btn-primary btn-sm"
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(`${window.location.origin}/form/${currentCompanyId}`);
+                                                alert('Link copied to clipboard!');
+                                            }}
+                                        >
+                                            Copy Link
+                                        </button>
+                                        <button
+                                            className="btn btn-outline btn-sm"
+                                            onClick={() => window.open(`${window.location.origin}/form/${currentCompanyId}`, '_blank')}
+                                        >
+                                            Open Form
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
 
                             {/* Pages Grid */}
@@ -589,21 +619,15 @@ export default function PagesManager() {
                                     <button className="btn btn-primary" onClick={() => setActiveTab('pages')}>Go to Pages</button>
                                 </div>
                             )}
-                        </div>
-                    </div>
-                )}
-
-                {activeTab === 'inquiries' && (
-                    <div className="tab-content animate-fade-in dashboard-tab-content">
-                        <div>
-                            <div className="linking-header" style={{ borderLeftColor: 'var(--primary)', marginBottom: '32px' }}>
+                            {/* Inquiries Section Moved Inline */}
+                            <div className="linking-header" style={{ borderLeftColor: 'var(--primary)', marginTop: '64px', marginBottom: '32px' }}>
                                 <h2>Customer Inquiries</h2>
-                                <p>View and manage messages submitted through the contact form</p>
+                                <p>Manage messages submitted through the contact form for {currentCompany?.name}</p>
                             </div>
 
-                            {inquiries && inquiries.length > 0 ? (
+                            {filteredInquiries && filteredInquiries.length > 0 ? (
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                                    {inquiries.map(inquiry => (
+                                    {filteredInquiries.map(inquiry => (
                                         <div key={inquiry.id} style={{ background: 'var(--bg-card)', border: '1.5px solid var(--border)', borderRadius: '12px', padding: '24px' }}>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
                                                 <div>
@@ -614,7 +638,7 @@ export default function PagesManager() {
                                                 </div>
                                                 <button
                                                     className="btn btn-outline"
-                                                    style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }}
+                                                    style={{ color: 'var(--danger)', borderColor: 'var(--danger)', padding: '6px 12px' }}
                                                     onClick={() => deleteInquiry(inquiry.id)}
                                                 >
                                                     Delete
@@ -641,10 +665,10 @@ export default function PagesManager() {
                                     ))}
                                 </div>
                             ) : (
-                                <div style={{ textAlign: 'center', padding: '80px', background: '#f8fafc', borderRadius: '24px', border: '2px dashed var(--border)' }}>
-                                    <div style={{ fontSize: '48px', marginBottom: '20px' }}>📭</div>
-                                    <h3>No Inquiries Yet</h3>
-                                    <p style={{ color: 'var(--text-muted)' }}>When customers submit the contact form, their messages will appear here.</p>
+                                <div style={{ textAlign: 'center', padding: '60px', background: '#f8fafc', borderRadius: '24px', border: '2px dashed var(--border)' }}>
+                                    <div style={{ fontSize: '40px', marginBottom: '16px' }}>📭</div>
+                                    <h3>No Inquiries for {currentCompany?.name}</h3>
+                                    <p style={{ color: 'var(--text-muted)' }}>Customer messages submitted via the public form will appear here.</p>
                                 </div>
                             )}
                         </div>

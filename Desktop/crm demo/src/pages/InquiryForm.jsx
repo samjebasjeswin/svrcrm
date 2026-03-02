@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
 export default function InquiryForm() {
     const navigate = useNavigate();
+    const { companyId } = useParams();
     const { addInquiry } = useApp();
     const [formData, setFormData] = useState({
         fullName: '',
@@ -27,7 +28,7 @@ export default function InquiryForm() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        addInquiry(formData);
+        addInquiry(formData, companyId);
         console.log('Form submitted:', formData);
         setSubmitted(true);
     };
