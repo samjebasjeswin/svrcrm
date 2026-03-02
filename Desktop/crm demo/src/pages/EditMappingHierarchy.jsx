@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
@@ -8,13 +8,27 @@ export default function EditMappingHierarchy() {
     const { fieldMappings, getPageEntries, getPage, updateFieldMapping, getLinkedEntryDisplayValue } = useApp();
 
     const mapping = fieldMappings.find(m => m.id === Number(mappingId));
-    const [hierarchy, setHierarchy] = useState({}); // { [entryId]: { parentId, role } }
+    const [hierarchy, setHierarchy] = useState({});
+    const [orderedEntries, setOrderedEntries] = useState([]);
+
+    // Drag state
+    const dragItem = useRef(null);       // entry.id being dragged
+    const [dragOverId, setDragOverId] = useState(null); // entry.id being hovered over
+
+    const rawEntries = mapping ? getPageEntries(mapping.targetPageId) : [];
 
     useEffect(() => {
         if (mapping && mapping.hierarchy) {
             setHierarchy(mapping.hierarchy);
         }
     }, [mapping]);
+
+    // Initialize orderedEntries once when entries are loaded
+    useEffect(() => {
+        if (rawEntries.length > 0 && orderedEntries.length === 0) {
+            setOrderedEntries(rawEntries);
+        }
+    }, [rawEntries.length]);
 
     if (!mapping) {
         return (
@@ -26,7 +40,8 @@ export default function EditMappingHierarchy() {
     }
 
     const targetPage = getPage(mapping.targetPageId);
-    const entries = getPageEntries(mapping.targetPageId);
+    // Use orderedEntries for rendering (falls back to rawEntries while loading)
+    const entries = orderedEntries.length > 0 ? orderedEntries : rawEntries;
 
     const handleUpdateEntry = (entryId, field, value) => {
         setHierarchy(prev => ({
@@ -45,25 +60,76 @@ export default function EditMappingHierarchy() {
     };
 
     const getEntryName = (entry) => {
-        // Use the display logic from AppContext
         return getLinkedEntryDisplayValue(mapping.targetPageId, entry.id, mapping.targetFieldName) || `Entry #${entry.id}`;
     };
 
-    // Recursive function to build tree
+    // ─── Drag-and-drop handlers ───────────────────────────────────────────
+    const handleDragStart = (e, entryId) => {
+        dragItem.current = entryId;
+        e.dataTransfer.effectAllowed = 'move';
+    };
+
+    const handleDragOver = (e, entryId) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        if (entryId !== dragItem.current) {
+            setDragOverId(entryId);
+        }
+    };
+
+    const handleDrop = (e, dropEntryId) => {
+        e.preventDefault();
+        const fromId = dragItem.current;
+        if (!fromId || fromId === dropEntryId) {
+            dragItem.current = null;
+            setDragOverId(null);
+            return;
+        }
+        setOrderedEntries(prev => {
+            const arr = [...prev];
+            const fromIdx = arr.findIndex(en => en.id === fromId);
+            const toIdx = arr.findIndex(en => en.id === dropEntryId);
+            if (fromIdx === -1 || toIdx === -1) return prev;
+            const [moved] = arr.splice(fromIdx, 1);
+            arr.splice(toIdx, 0, moved);
+            return arr;
+        });
+        dragItem.current = null;
+        setDragOverId(null);
+    };
+
+    const handleDragEnd = () => {
+        dragItem.current = null;
+        setDragOverId(null);
+    };
+    // ─────────────────────────────────────────────────────────────────────
+
+    // Recursive tree builder using orderedEntries
     const buildTree = (parentId = null) => {
         return entries
             .filter(entry => {
                 const h = hierarchy[entry.id];
                 const pId = h?.parentId || null;
-                // Treat undefined or empty string as null for comparison
                 const normalizeId = (id) => (id === '' || id === undefined ? null : Number(id));
                 return normalizeId(pId) === normalizeId(parentId);
             })
             .map(entry => {
                 const h = hierarchy[entry.id] || {};
+                const isOver = dragOverId === entry.id;
                 return (
-                    <div key={entry.id} className="tree-node">
-                        <div className="tree-node-content">
+                    <div
+                        key={entry.id}
+                        className="tree-node"
+                        onDragOver={(e) => handleDragOver(e, entry.id)}
+                        onDrop={(e) => handleDrop(e, entry.id)}
+                    >
+                        <div
+                            className={`tree-node-content ${isOver ? 'drag-over' : ''}`}
+                            draggable
+                            onDragStart={(e) => handleDragStart(e, entry.id)}
+                            onDragEnd={handleDragEnd}
+                        >
+                            <span className="drag-handle" title="Drag to reorder">⠿</span>
                             <span className="node-icon">📄</span>
                             <span className={`node-name ${h.role === 'primary' ? 'role-primary' : ''} ${h.role === 'leaf' ? 'role-leaf' : ''}`}>
                                 {getEntryName(entry)}
@@ -94,6 +160,7 @@ export default function EditMappingHierarchy() {
             </div>
 
             <div className="hierarchy-grid">
+                {/* ── LEFT: Configure Entries (follows orderedEntries order) ── */}
                 <div className="hierarchy-form-section">
                     <div className="card">
                         <h3>Configure Entries</h3>
@@ -139,9 +206,10 @@ export default function EditMappingHierarchy() {
                     </div>
                 </div>
 
+                {/* ── RIGHT: Hierarchy Preview (draggable) ── */}
                 <div className="hierarchy-preview-section">
                     <div className="card">
-                        <h3>Hierarchy Preview</h3>
+                        <h3>Hierarchy Preview <span className="drag-hint">← Drag items to reorder</span></h3>
                         <div className="tree-viz">
                             {entries.length === 0 ? (
                                 <p style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>No entries found.</p>
@@ -171,6 +239,7 @@ export default function EditMappingHierarchy() {
                     display: flex;
                     flex-direction: column;
                     gap: 12px;
+                    transition: background 0.2s;
                 }
                 .entry-config-row:last-child {
                     border-bottom: none;
@@ -213,6 +282,23 @@ export default function EditMappingHierarchy() {
                     gap: 8px;
                     width: fit-content;
                     position: relative;
+                    cursor: grab;
+                    user-select: none;
+                    transition: box-shadow 0.15s, border-color 0.15s, transform 0.15s;
+                }
+                .tree-node-content:active {
+                    cursor: grabbing;
+                }
+                .tree-node-content:hover {
+                    border-color: #6366f1;
+                    box-shadow: 0 2px 8px rgba(99,102,241,0.15);
+                }
+                .tree-node-content.drag-over {
+                    border-color: #6366f1;
+                    border-style: dashed;
+                    background: #eef2ff;
+                    box-shadow: 0 0 0 3px rgba(99,102,241,0.2);
+                    transform: scale(1.02);
                 }
                 .tree-node-content::after {
                     content: '';
@@ -222,6 +308,19 @@ export default function EditMappingHierarchy() {
                     width: 10px;
                     height: 1.5px;
                     background: #cbd5e1;
+                }
+                .drag-handle {
+                    font-size: 16px;
+                    color: #94a3b8;
+                    cursor: grab;
+                    line-height: 1;
+                    letter-spacing: -1px;
+                }
+                .drag-hint {
+                    font-size: 12px;
+                    font-weight: 400;
+                    color: #94a3b8;
+                    margin-left: 8px;
                 }
                 .node-name {
                     font-weight: 500;
