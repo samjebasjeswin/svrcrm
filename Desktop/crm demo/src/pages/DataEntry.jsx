@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import CategoryDropdown from '../components/CategoryDropdown';
@@ -16,7 +16,7 @@ export default function DataEntry() {
     const [repeaterRows, setRepeaterRows] = useState({}); // { [fieldKey]: [rowId1, rowId2, ...] }
 
     // Load entry for editing
-    useState(() => {
+    useEffect(() => {
         if (entryId && page) {
             const entries = getPageEntries(pageId);
             const entry = entries.find(e => e.id === Number(entryId));
@@ -175,6 +175,12 @@ export default function DataEntry() {
                 return (
                     <div className="data-entry-field-input-wrapper">
                         <input {...inputProps} type="text" />
+                    </div>
+                );
+            case 'Password':
+                return (
+                    <div className="data-entry-field-input-wrapper">
+                        <input {...inputProps} type="password" />
                     </div>
                 );
             case 'Number & Text':

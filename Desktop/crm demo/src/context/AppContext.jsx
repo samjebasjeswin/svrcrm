@@ -174,6 +174,42 @@ export function AppProvider({ children }) {
               ],
             },
           ],
+        },
+        {
+          id: Date.now() + 80,
+          name: 'Mailer Settings',
+          headings: [
+            {
+              id: Date.now() + 81,
+              title: 'MAILER SETTINGS',
+              subHeadings: [
+                {
+                  id: Date.now() + 82,
+                  title: 'Configure SMTP settings for sending OTP and notification emails.',
+                  fields: [
+                    { id: Date.now() + 83, label: 'SMTP HOST', valueType: 'Text', placeholder: 'smtp.gmail.com' },
+                    { id: Date.now() + 84, label: 'SMTP PORT', valueType: 'Number', placeholder: '465' },
+                    { id: Date.now() + 85, label: 'SMTP USER', valueType: 'Text', placeholder: 'user@gmail.com' },
+                    { id: Date.now() + 86, label: 'SMTP PASSWORD', valueType: 'Password', placeholder: '••••••••' },
+                    { id: Date.now() + 87, label: 'FROM EMAIL ADDRESS', valueType: 'Text', infinity: true, placeholder: 'noreply@company.com' },
+                  ],
+                },
+                {
+                  id: Date.now() + 88,
+                  title: 'ADMIN NOTIFICATION EMAILS',
+                  fields: [
+                    {
+                      id: Date.now() + 89,
+                      label: 'Email Recipients',
+                      valueType: 'Grid',
+                      infinity: true,
+                      gridCols: [{ label: 'Email Address', type: 'Text' }]
+                    }
+                  ],
+                },
+              ],
+            },
+          ],
         }
       ];
     }
@@ -345,11 +381,60 @@ export function AppProvider({ children }) {
     }
   };
 
+  const ensureMailerSettingsPage = () => {
+    if (!currentCompanyId) return;
+    const currentPages = pages[currentCompanyId] || [];
+    const existing = currentPages.find((p) => p.name.toLowerCase().trim() === 'mailer settings');
+    if (!existing) {
+      const newPage = {
+        id: Date.now() + 80,
+        name: 'Mailer Settings',
+        headings: [
+          {
+            id: Date.now() + 81,
+            title: 'MAILER SETTINGS',
+            subHeadings: [
+              {
+                id: Date.now() + 82,
+                title: 'Configure SMTP settings for sending OTP and notification emails.',
+                fields: [
+                  { id: Date.now() + 83, label: 'SMTP HOST', valueType: 'Text', placeholder: 'smtp.gmail.com' },
+                  { id: Date.now() + 84, label: 'SMTP PORT', valueType: 'Number', placeholder: '465' },
+                  { id: Date.now() + 85, label: 'SMTP USER', valueType: 'Text', placeholder: 'user@gmail.com' },
+                  { id: Date.now() + 86, label: 'SMTP PASSWORD', valueType: 'Password', placeholder: '••••••••' },
+                  { id: Date.now() + 87, label: 'FROM EMAIL ADDRESS', valueType: 'Text', infinity: true, placeholder: 'noreply@company.com' },
+                ],
+              },
+              {
+                id: Date.now() + 88,
+                title: 'ADMIN NOTIFICATION EMAILS',
+                fields: [
+                  {
+                    id: Date.now() + 89,
+                    label: 'Email Recipients',
+                    valueType: 'Grid',
+                    infinity: true,
+                    gridCols: [{ label: 'Email Address', type: 'Text' }]
+                  }
+                ],
+              },
+            ],
+          },
+        ],
+      };
+      setPages((prev) => ({
+        ...prev,
+        [currentCompanyId]: [...(prev[currentCompanyId] || []), newPage],
+      }));
+    }
+  };
+
   // Call once on mount or when currentCompanyId changes
   useEffect(() => {
     ensureFormPage();
     ensureSeoPage();
-  }, [currentCompanyId, pages]);
+    ensureMailerSettingsPage();
+  }, [currentCompanyId]);
 
   // ---- Saved Entries (shared across pages for linking) ----
   const addEntry = (pageId, entryData) => {
