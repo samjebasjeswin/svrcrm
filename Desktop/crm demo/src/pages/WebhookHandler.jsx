@@ -1,17 +1,23 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
 export default function WebhookHandler() {
     const { search } = useLocation();
+    const pathParams = useParams();
     const { submitExternalForm } = useApp();
     const [status, setStatus] = useState('processing'); // 'processing', 'success', 'error'
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (status !== 'processing') return;
+
         const params = new URLSearchParams(search);
-        const companyId = params.get('companyId');
-        const type = params.get('type') || 'contact';
+
+        // Path params take priority (new /api/:companyId/:type route)
+        // Fall back to query params (old /webhook/submit?companyId=X&type=Y route)
+        const companyId = pathParams.companyId || params.get('companyId');
+        const type = pathParams.type || params.get('type') || 'contact';
 
         if (!companyId) {
             setStatus('error');
@@ -26,14 +32,9 @@ export default function WebhookHandler() {
             }
         });
 
-        // Simulating processing delay
-        const timer = setTimeout(() => {
-            submitExternalForm(companyId, type, data);
-            setStatus('success');
-        }, 1000);
-
-        return () => clearTimeout(timer);
-    }, [search, submitExternalForm]);
+        submitExternalForm(companyId, type, data);
+        setStatus('success');
+    }, []);
 
     if (status === 'error') {
         return (

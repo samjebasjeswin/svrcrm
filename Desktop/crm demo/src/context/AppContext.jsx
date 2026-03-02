@@ -280,13 +280,69 @@ export function AppProvider({ children }) {
     return (pages[currentCompanyId] || []).find((p) => p.id === Number(pageId));
   };
 
-  // Ensure a "form" page exists; create it if missing (case-insensitive check)
+  // Ensure a "form" page exists with submission fields; create/repair if needed
   const ensureFormPage = () => {
     if (!currentCompanyId) return;
     const currentPages = pages[currentCompanyId] || [];
     const existing = currentPages.find((p) => p.name.toLowerCase().trim() === 'form');
+
+    const formFields = [
+      { id: Date.now() + 3, label: 'Full Name', valueType: 'Text', placeholder: 'Submitted name' },
+      { id: Date.now() + 4, label: 'Email Address', valueType: 'Text', placeholder: 'Submitted email' },
+      { id: Date.now() + 5, label: 'Message', valueType: 'Text', placeholder: 'Submitted message' },
+      { id: Date.now() + 6, label: 'Product Name', valueType: 'Text', placeholder: 'Product name (for product inquiries)' },
+      { id: Date.now() + 7, label: 'Quantity', valueType: 'Text', placeholder: 'Quantity' },
+      { id: Date.now() + 8, label: 'Type', valueType: 'Text', placeholder: 'contact / product' },
+      { id: Date.now() + 9, label: 'Submitted At', valueType: 'Text', placeholder: 'Submission timestamp' },
+    ];
+
     if (!existing) {
-      addPage('form');
+      const formPage = {
+        id: Date.now(),
+        name: 'form',
+        headings: [
+          {
+            id: Date.now() + 1,
+            title: 'Form Submissions',
+            subHeadings: [
+              { id: Date.now() + 2, title: '', fields: formFields },
+            ],
+          },
+        ],
+      };
+      setPages((prev) => ({
+        ...prev,
+        [currentCompanyId]: [...(prev[currentCompanyId] || []), formPage],
+      }));
+    } else {
+      // Repair: if form page exists but has no fields, add them
+      const hasFields = existing.headings?.some(h =>
+        h.subHeadings?.some(sh => sh.fields?.length > 0)
+      );
+      if (!hasFields) {
+        const updatedPage = {
+          ...existing,
+          headings: [
+            {
+              id: existing.headings[0]?.id || Date.now() + 1,
+              title: 'Form Submissions',
+              subHeadings: [
+                {
+                  id: existing.headings[0]?.subHeadings?.[0]?.id || Date.now() + 2,
+                  title: '',
+                  fields: formFields,
+                },
+              ],
+            },
+          ],
+        };
+        setPages((prev) => ({
+          ...prev,
+          [currentCompanyId]: (prev[currentCompanyId] || []).map(p =>
+            p.id === existing.id ? updatedPage : p
+          ),
+        }));
+      }
     }
   };
 
@@ -625,6 +681,7 @@ export function AppProvider({ children }) {
             }
           }
 
+          // --- Store in inquiries (backward compatible) ---
           const newInquiry = {
             id: Date.now(),
             ...cleanData,
@@ -635,6 +692,105 @@ export function AppProvider({ children }) {
             submittedAt: new Date().toLocaleString()
           };
           setInquiries((prev) => [newInquiry, ...prev]);
+
+          // --- Store as entry in the company's form page ---
+          const cid = Number(companyId);
+          let companyPages = pages[cid] || [];
+          let formPage = companyPages.find(p => p.name.toLowerCase().trim() === 'form');
+
+          // Define standard form fields
+          const standardFormFields = [
+            { id: Date.now() + 103, label: 'Full Name', valueType: 'Text', placeholder: 'Submitted name' },
+            { id: Date.now() + 104, label: 'Email Address', valueType: 'Text', placeholder: 'Submitted email' },
+            { id: Date.now() + 105, label: 'Message', valueType: 'Text', placeholder: 'Submitted message' },
+            { id: Date.now() + 106, label: 'Product Name', valueType: 'Text', placeholder: 'Product name' },
+            { id: Date.now() + 107, label: 'Quantity', valueType: 'Text', placeholder: 'Quantity' },
+            { id: Date.now() + 108, label: 'Type', valueType: 'Text', placeholder: 'contact / product' },
+            { id: Date.now() + 109, label: 'Submitted At', valueType: 'Text', placeholder: 'Submission timestamp' },
+          ];
+
+          // Auto-create form page if it doesn't exist
+          if (!formPage) {
+            formPage = {
+              id: Date.now() + 100,
+              name: 'form',
+              headings: [{
+                id: Date.now() + 101,
+                title: 'Form Submissions',
+                subHeadings: [{ id: Date.now() + 102, title: '', fields: standardFormFields }],
+              }],
+            };
+            setPages((prev) => ({
+              ...prev,
+              [cid]: [...(prev[cid] || []), formPage],
+            }));
+          } else {
+            // Auto-repair: if form page has no fields, add them
+            const hasFields = formPage.headings?.some(h =>
+              h.subHeadings?.some(sh => sh.fields?.length > 0)
+            );
+            if (!hasFields) {
+              const repairedPage = {
+                ...formPage,
+                headings: [{
+                  id: formPage.headings[0]?.id || Date.now() + 101,
+                  title: 'Form Submissions',
+                  subHeadings: [{
+                    id: formPage.headings[0]?.subHeadings?.[0]?.id || Date.now() + 102,
+                    title: '',
+                    fields: standardFormFields,
+                  }],
+                }],
+              };
+              formPage = repairedPage;
+              setPages((prev) => ({
+                ...prev,
+                [cid]: (prev[cid] || []).map(p => p.id === repairedPage.id ? repairedPage : p),
+              }));
+            }
+          }
+
+          // Map incoming data field names to form page field labels
+          const fieldLabelMap = {
+            'name': 'Full Name',
+            'email': 'Email Address',
+            'message': 'Message',
+            'product': 'Product Name',
+            'quantity': 'Quantity',
+            'contact_email': 'Email Address',
+          };
+
+          const entryData = {};
+          for (const heading of formPage.headings || []) {
+            for (const sub of heading.subHeadings || []) {
+              for (const field of sub.fields || []) {
+                const fieldKey = `${heading.id}_${sub.id}_${field.id}`;
+
+                // Match incoming data keys to field labels
+                for (const [dataKey, labelName] of Object.entries(fieldLabelMap)) {
+                  if (field.label === labelName && cleanData[dataKey]) {
+                    entryData[fieldKey] = cleanData[dataKey];
+                  }
+                }
+
+                // Auto-fill Type field
+                if (field.label === 'Type') {
+                  entryData[fieldKey] = type;
+                }
+                // Auto-fill Submitted At field
+                if (field.label === 'Submitted At') {
+                  entryData[fieldKey] = new Date().toLocaleString();
+                }
+              }
+            }
+          }
+
+          const entryKey = `${cid}_${formPage.id}`;
+          const entry = { id: Date.now() + 1, data: entryData, savedAt: new Date().toLocaleString() };
+          setSavedEntries((prev) => ({
+            ...prev,
+            [entryKey]: [...(prev[entryKey] || []), entry],
+          }));
         },
         inquiries,
 

@@ -577,9 +577,9 @@ export default function PagesManager() {
                                             </div>
                                         </div>
                                         <div style={{ background: '#f1f5f9', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                                            <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase', marginBottom: '4px' }}>Submission Webhook API Path</div>
+                                            <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase', marginBottom: '4px' }}>Company API Endpoint</div>
                                             <code style={{ fontSize: '12px', color: 'var(--primary)', wordBreak: 'break-all' }}>
-                                                {window.location.origin}/webhook/submit?companyId={currentCompanyId}&type=contact
+                                                {window.location.origin}/api/{currentCompanyId}/contact
                                             </code>
                                         </div>
                                     </div>
@@ -603,9 +603,9 @@ export default function PagesManager() {
                                             </div>
                                         </div>
                                         <div style={{ background: '#f1f5f9', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                                            <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase', marginBottom: '4px' }}>Submission Webhook API Path</div>
+                                            <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase', marginBottom: '4px' }}>Company API Endpoint</div>
                                             <code style={{ fontSize: '12px', color: '#ec4899', wordBreak: 'break-all' }}>
-                                                {window.location.origin}/webhook/submit?companyId={currentCompanyId}&type=product
+                                                {window.location.origin}/api/{currentCompanyId}/product
                                             </code>
                                         </div>
                                     </div>

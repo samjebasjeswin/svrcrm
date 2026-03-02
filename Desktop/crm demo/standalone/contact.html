@@ -99,11 +99,8 @@
         <h1>Contact Support</h1>
         <p>This is a standalone form hosted on a different server/folder.</p>
 
-        <!-- THE ACTION URL IS YOUR CRM WEBHOOK URL -->
-        <form action="http://localhost:5173/webhook/submit" method="GET">
-            <!-- HIDDEN FIELDS FOR CRM ROUTING -->
-            <input type="hidden" name="companyId" value="1772170062198">
-            <input type="hidden" name="type" value="contact">
+        <!-- THE ACTION URL IS YOUR CRM COMPANY-SPECIFIC API -->
+        <form action="http://localhost:5173/api/1/contact" method="GET">
 
             <div class="form-group">
                 <label>Full Name</label>
@@ -124,7 +121,8 @@
         </form>
 
         <div class="info-box">
-            <strong>Note:</strong> This form uses the <code>GET</code> method to submit data to the CRM Webhook handler.
+            <strong>Note:</strong> This form uses the <code>GET</code> method to submit data to the CRM's
+            company-specific API endpoint.
             In a production environment, you would use <code>POST</code> via fetch/AJAX.
         </div>
     </div>

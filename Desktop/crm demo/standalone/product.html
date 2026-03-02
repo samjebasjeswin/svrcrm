@@ -99,9 +99,8 @@
         <h1>Product Inquiry</h1>
         <p>Inquire about our premium products directly from any external source.</p>
 
-        <form action="http://localhost:5173/webhook/submit" method="GET">
-            <input type="hidden" name="companyId" value="2">
-            <input type="hidden" name="type" value="product">
+        <!-- THE ACTION URL IS YOUR CRM COMPANY-SPECIFIC API -->
+        <form action="http://localhost:5173/api/1/product" method="GET">
 
             <div class="form-group">
                 <label>Interested Product</label>
@@ -122,7 +121,7 @@
         </form>
 
         <div class="info-box">
-            <strong>API Endpoint Used:</strong> <code>/webhook/submit</code>
+            <strong>API Endpoint Used:</strong> <code>/api/{companyId}/product</code>
         </div>
     </div>
 </body>

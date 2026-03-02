@@ -41,6 +41,7 @@ function App() {
       <Route path="/c/:companyId" element={<PublicCompanyProfile />} />
       <Route path="/form/:companyId" element={<InquiryForm />} />
       <Route path="/p-form/:companyId" element={<ProductForm />} />
+      <Route path="/api/:companyId/:type" element={<WebhookHandler />} />
       <Route path="/webhook/submit" element={<WebhookHandler />} />
       <Route path="/inquiry/:id" element={<ProtectedRoute><InquiryDetail /></ProtectedRoute>} />
       <Route path="/form" element={<Navigate to="/form/2" replace />} />
