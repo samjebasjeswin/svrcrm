@@ -315,10 +315,14 @@ export function AppProvider({ children }) {
             id: Date.now(),
             ...inquiryData,
             type, // 'contact' or 'product'
+            status: 'New', // Default status
             companyId: companyId ? Number(companyId) : null,
             submittedAt: new Date().toLocaleString()
           };
           setInquiries((prev) => [newInquiry, ...prev]);
+        },
+        updateInquiryStatus: (id, status) => {
+          setInquiries(prev => prev.map(i => i.id === id ? { ...i, status } : i));
         },
         deleteInquiry: (id) => setInquiries(prev => prev.filter(i => i.id !== id)),
         inquiries,

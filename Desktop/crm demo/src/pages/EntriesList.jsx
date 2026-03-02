@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
@@ -6,6 +6,7 @@ export default function EntriesList() {
     const { pageId } = useParams();
     const navigate = useNavigate();
     const { getPage, getPageEntries, currentCompanyId, deleteEntry, inquiries, deleteInquiry, companies } = useApp();
+    const [expandedInquiryId, setExpandedInquiryId] = useState(null);
 
     const page = getPage(pageId);
     const entries = getPageEntries(pageId);
@@ -124,7 +125,7 @@ export default function EntriesList() {
                 </div>
             )}
 
-            {/* Inquiries Section Added Below Table - Only shown for "form" page */}
+            {/* Inquiries Section - Redesigned as Table */}
             {isFormPage && (
                 <div style={{ marginTop: '0' }}>
                     <div className="linking-header" style={{ borderLeftColor: 'var(--primary)', marginBottom: '32px' }}>
@@ -133,58 +134,88 @@ export default function EntriesList() {
                     </div>
 
                     {filteredInquiries && filteredInquiries.length > 0 ? (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                            {filteredInquiries.map(inquiry => (
-                                <div key={inquiry.id} style={{ background: 'var(--bg-card)', border: '1.5:// var(--border)', borderRadius: '12px', padding: '24px' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-                                        <div style={{ flex: 1 }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                                                <h3 style={{ fontSize: '18px', fontWeight: '700', color: 'var(--text-primary)', margin: 0 }}>{inquiry.subject || 'No Subject'}</h3>
-                                                <span style={{
-                                                    padding: '2px 8px',
-                                                    borderRadius: '4px',
-                                                    fontSize: '11px',
-                                                    fontWeight: '700',
-                                                    textTransform: 'uppercase',
-                                                    background: inquiry.type === 'product' ? 'rgba(236, 72, 153, 0.1)' : 'rgba(79, 70, 229, 0.1)',
-                                                    color: inquiry.type === 'product' ? '#ec4899' : 'var(--primary)'
-                                                }}>
-                                                    {inquiry.type === 'product' ? 'Product Inquiry' : 'Contact Us'}
-                                                </span>
-                                            </div>
-                                            <div style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
-                                                <strong>{inquiry.fullName}</strong> ({inquiry.email}) • {inquiry.submittedAt}
-                                            </div>
-                                        </div>
-                                        <button
-                                            className="btn btn-outline"
-                                            style={{ color: 'var(--danger)', borderColor: 'var(--danger)', padding: '6px 12px' }}
-                                            onClick={() => deleteInquiry(inquiry.id)}
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
-
-                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '20px', fontSize: '14px', background: '#f8fafc', padding: '16px', borderRadius: '8px' }}>
-                                        {inquiry.phone && <div><span style={{ color: 'var(--text-muted)' }}>Phone:</span> {inquiry.phone}</div>}
-                                        {inquiry.company && <div><span style={{ color: 'var(--text-muted)' }}>Company:</span> {inquiry.company}</div>}
-                                        {inquiry.productName && <div><span style={{ color: 'var(--text-muted)' }}>Product:</span> {inquiry.productName}</div>}
-                                        {inquiry.quantity && <div><span style={{ color: 'var(--text-muted)' }}>Quantity:</span> {inquiry.quantity}</div>}
-                                    </div>
-
-                                    <div style={{ marginBottom: '20px' }}>
-                                        <h4 style={{ fontSize: '13px', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '8px', fontWeight: 700 }}>Message</h4>
-                                        <p style={{ fontSize: '15px', color: 'var(--text-primary)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{inquiry.message}</p>
-                                    </div>
-
-                                    {inquiry.specifications && (
-                                        <div>
-                                            <h4 style={{ fontSize: '13px', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '8px', fontWeight: 700 }}>Technical Specifications</h4>
-                                            <p style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.5, background: '#f1f5f9', padding: '16px', borderRadius: '8px', whiteSpace: 'pre-wrap' }}>{inquiry.specifications}</p>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
+                        <div className="table-container animate-fade-in-up">
+                            <table className="premium-table">
+                                <thead>
+                                    <tr>
+                                        <th style={{ width: '60px' }}>SL NO</th>
+                                        <th>SENDER</th>
+                                        <th>SUBJECT / TYPE</th>
+                                        <th>SUBMITTED AT</th>
+                                        <th>STATUS</th>
+                                        <th style={{ textAlign: 'right', width: '120px' }}>ACTIONS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filteredInquiries.map((inquiry, idx) => {
+                                        const status = inquiry.status || 'New';
+                                        return (
+                                            <tr key={inquiry.id}>
+                                                <td>{idx + 1}</td>
+                                                <td>
+                                                    <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{inquiry.fullName}</div>
+                                                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{inquiry.email}</div>
+                                                </td>
+                                                <td>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                        <span style={{
+                                                            padding: '2px 8px',
+                                                            borderRadius: '4px',
+                                                            fontSize: '10px',
+                                                            fontWeight: '700',
+                                                            textTransform: 'uppercase',
+                                                            background: inquiry.type === 'product' ? 'rgba(236, 72, 153, 0.1)' : 'rgba(79, 70, 229, 0.1)',
+                                                            color: inquiry.type === 'product' ? '#ec4899' : 'var(--primary)'
+                                                        }}>
+                                                            {inquiry.type === 'product' ? 'Product' : 'Contact'}
+                                                        </span>
+                                                        <span style={{ fontWeight: '600', fontSize: '13px' }}>{inquiry.subject?.replace('Product Inquiry: ', '') || 'No Subject'}</span>
+                                                    </div>
+                                                </td>
+                                                <td style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{inquiry.submittedAt}</td>
+                                                <td>
+                                                    <select
+                                                        style={{
+                                                            padding: '4px 8px',
+                                                            borderRadius: '6px',
+                                                            fontSize: '12px',
+                                                            fontWeight: '700',
+                                                            border: '1px solid var(--border)',
+                                                            background: status === 'New' ? 'rgba(239, 68, 68, 0.05)' : status === 'Seen' ? 'rgba(245, 158, 11, 0.05)' : 'rgba(16, 185, 129, 0.05)',
+                                                            color: status === 'New' ? '#ef4444' : status === 'Seen' ? '#f59e0b' : '#10b981'
+                                                        }}
+                                                        value={status}
+                                                        onChange={(e) => updateInquiryStatus(inquiry.id, e.target.value)}
+                                                    >
+                                                        <option value="New">New</option>
+                                                        <option value="Seen">Seen</option>
+                                                        <option value="Closed">Closed</option>
+                                                    </select>
+                                                </td>
+                                                <td style={{ textAlign: 'right' }}>
+                                                    <div className="table-actions" style={{ justifyContent: 'flex-end', display: 'flex', gap: '8px' }}>
+                                                        <button
+                                                            className="action-icon-btn"
+                                                            title="View Details"
+                                                            onClick={() => navigate(`/inquiry/${inquiry.id}`)}
+                                                            style={{ fontSize: '14px' }}
+                                                        >
+                                                            👁️ View
+                                                        </button>
+                                                        <button
+                                                            className="action-icon-btn delete"
+                                                            title="Delete"
+                                                            onClick={() => { if (confirm('Delete inquiry?')) deleteInquiry(inquiry.id); }}
+                                                        >
+                                                            🗑️
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
                         </div>
                     ) : (
                         <div style={{ textAlign: 'center', padding: '60px', background: '#f8fafc', borderRadius: '24px', border: '2px dashed var(--border)' }}>
