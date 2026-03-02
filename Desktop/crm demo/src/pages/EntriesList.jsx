@@ -153,8 +153,12 @@ export default function EntriesList() {
                                             <tr key={inquiry.id}>
                                                 <td>{idx + 1}</td>
                                                 <td>
-                                                    <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{inquiry.fullName}</div>
-                                                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{inquiry.email}</div>
+                                                    <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>
+                                                        {inquiry.type === 'product' ? (inquiry.product || '—') : (inquiry.name || inquiry.fullName || '—')}
+                                                    </div>
+                                                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                                                        {inquiry.email || inquiry.contact_email || '—'}
+                                                    </div>
                                                 </td>
                                                 <td>
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -169,7 +173,11 @@ export default function EntriesList() {
                                                         }}>
                                                             {inquiry.type === 'product' ? 'Product' : 'Contact'}
                                                         </span>
-                                                        <span style={{ fontWeight: '600', fontSize: '13px' }}>{inquiry.subject?.replace('Product Inquiry: ', '') || 'No Subject'}</span>
+                                                        <span style={{ fontWeight: '600', fontSize: '13px' }}>
+                                                            {inquiry.type === 'product'
+                                                                ? `Qty: ${inquiry.quantity || '—'}`
+                                                                : (inquiry.message || 'No Message')}
+                                                        </span>
                                                     </div>
                                                 </td>
                                                 <td style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{inquiry.submittedAt}</td>
