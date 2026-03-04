@@ -109,6 +109,16 @@ export default function ApiIde() {
         }
     };
 
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+                handleRunQuery();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [handleRunQuery]);
+
     return (
         <div className="api-ide-v2" style={{
             height: '100%',
@@ -127,11 +137,40 @@ export default function ApiIde() {
                 padding: '0 20px',
                 justifyContent: 'space-between'
             }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
                     <div style={{ fontWeight: 700, color: '#1e293b', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span style={{ color: '#ec4899', fontSize: '20px' }}>⚡</span>
                         API IDE
                     </div>
+
+                    {/* Run Button in Toolbar */}
+                    <button
+                        onClick={handleRunQuery}
+                        disabled={isLoading || !selectedPageId}
+                        style={{
+                            background: '#ec4899',
+                            color: 'white',
+                            border: 'none',
+                            padding: '6px 16px',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            fontSize: '13px',
+                            fontWeight: 600,
+                            boxShadow: '0 2px 4px rgba(236,72,153,0.2)',
+                            transition: 'all 0.2s',
+                            opacity: (isLoading || !selectedPageId) ? 0.6 : 1
+                        }}
+                    >
+                        {isLoading ? '...' : (
+                            <>
+                                <span style={{ fontSize: '14px' }}>▶️</span> Execute
+                            </>
+                        )}
+                    </button>
+
                     <div style={{ fontSize: '12px', color: '#64748b', background: '#f1f5f9', padding: '2px 8px', borderRadius: '4px' }}>
                         {currentCompany?.name}
                     </div>
@@ -139,6 +178,9 @@ export default function ApiIde() {
                 <div style={{ display: 'flex', gap: '12px' }}>
                     <button className="tool-btn" style={{ color: '#64748b' }}>Prettify</button>
                     <button className="tool-btn" style={{ color: '#64748b' }}>History</button>
+                    <div style={{ marginLeft: '12px', paddingLeft: '12px', borderLeft: '1px solid #e2e8f0', fontSize: '11px', color: '#94a3b8' }}>
+                        Ctrl+Enter to Run
+                    </div>
                 </div>
             </div>
 
@@ -198,33 +240,6 @@ export default function ApiIde() {
 
                 {/* Editor & Response Area */}
                 <div style={{ flex: 1, display: 'flex', position: 'relative' }}>
-
-                    {/* Run Button Overlay */}
-                    <button
-                        onClick={handleRunQuery}
-                        disabled={isLoading || !selectedPageId}
-                        style={{
-                            position: 'absolute',
-                            left: '50%',
-                            top: '20px',
-                            transform: 'translateX(-50%)',
-                            zIndex: 10,
-                            width: '40px',
-                            height: '40px',
-                            borderRadius: '50%',
-                            background: '#ec4899',
-                            color: 'white',
-                            border: 'none',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            boxShadow: '0 4px 12px rgba(236,72,153,0.3)',
-                            fontSize: '18px'
-                        }}
-                    >
-                        {isLoading ? '...' : '▶️'}
-                    </button>
 
                     {/* Query Editor Pane */}
                     <div style={{ flex: 1, background: 'white', display: 'flex', flexDirection: 'column' }}>
