@@ -61,7 +61,7 @@ export default function ApiIde() {
         try {
             // Simulate API delay
             await new Promise(resolve => setTimeout(resolve, 800));
-            
+
             // Actually call the context method to store the data
             submitExternalForm(currentCompanyId, selectedPageId, testData);
 
@@ -166,8 +166,8 @@ export default function ApiIde() {
                                         Request Body
                                         <span className="badge" style={{ background: '#eef2ff', color: 'var(--accent)', fontSize: '11px', padding: '2px 8px', borderRadius: '4px' }}>JSON</span>
                                     </h3>
-                                    <button 
-                                        className="btn btn-primary btn-sm" 
+                                    <button
+                                        className="btn btn-primary btn-sm"
                                         style={{ background: '#ec4899' }}
                                         onClick={handleSendRequest}
                                         disabled={isLoading}
@@ -190,8 +190,8 @@ export default function ApiIde() {
                                                             {field.label}
                                                             <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 400, marginLeft: '6px' }}>({field.valueType})</span>
                                                         </label>
-                                                        <input 
-                                                            className="form-input" 
+                                                        <input
+                                                            className="form-input"
                                                             placeholder={field.placeholder || 'Enter value...'}
                                                             value={testData[field.label] || ''}
                                                             onChange={(e) => handleInputChange(field.label, e.target.value)}
@@ -205,12 +205,12 @@ export default function ApiIde() {
                                     {/* Raw JSON Preview */}
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                         <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Raw Payload</div>
-                                        <div style={{ 
-                                            background: '#1e293b', 
-                                            color: '#e2e8f0', 
-                                            padding: '16px', 
-                                            borderRadius: '8px', 
-                                            fontSize: '13px', 
+                                        <div style={{
+                                            background: '#1e293b',
+                                            color: '#e2e8f0',
+                                            padding: '16px',
+                                            borderRadius: '8px',
+                                            fontSize: '13px',
                                             fontFamily: 'monospace',
                                             height: '400px',
                                             overflow: 'auto'
@@ -227,9 +227,9 @@ export default function ApiIde() {
                                     <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                         Response
                                         {response && (
-                                            <span style={{ 
-                                                fontSize: '11px', 
-                                                background: response.status === 200 ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', 
+                                            <span style={{
+                                                fontSize: '11px',
+                                                background: response.status === 200 ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
                                                 color: response.status === 200 ? 'var(--success)' : 'var(--danger)',
                                                 padding: '2px 8px',
                                                 borderRadius: '4px'
@@ -243,10 +243,10 @@ export default function ApiIde() {
                                     )}
                                 </div>
 
-                                <div style={{ 
-                                    minHeight: '200px', 
-                                    background: '#0f172a', 
-                                    borderRadius: '12px', 
+                                <div style={{
+                                    minHeight: '200px',
+                                    background: '#0f172a',
+                                    borderRadius: '12px',
                                     padding: '20px',
                                     color: '#94a3b8',
                                     fontSize: '13px',
@@ -263,9 +263,24 @@ export default function ApiIde() {
                                             No request sent yet. Enter data above and click Send Request.
                                         </div>
                                     ) : (
-                                        <pre style={{ margin: 0, color: response.status === 200 ? '#86efac' : '#fca5a5' }}>
-                                            {JSON.stringify(response.body, null, 2)}
-                                        </pre>
+                                        <div className="response-table-wrapper">
+                                            <table className="response-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Key</th>
+                                                        <th>Value</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {Object.entries(response.body).map(([key, value]) => (
+                                                        <tr key={key}>
+                                                            <td>{key}</td>
+                                                            <td>{typeof value === 'object' ? JSON.stringify(value) : String(value)}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     )}
                                 </div>
                             </div>
@@ -275,17 +290,32 @@ export default function ApiIde() {
             </div>
 
             <style>{`
-                .loader {
-                    width: 24px;
-                    height: 24px;
-                    border: 3px solid rgba(236,72,153,0.1);
-                    border-left-color: #ec4899;
-                    border-radius: 50%;
-                    animation: spin 1s linear infinite;
-                }
-                @keyframes spin {
-                    to { transform: rotate(360deg); }
-                }
+                 .loader {
+                     width: 24px;
+                     height: 24px;
+                     border: 3px solid rgba(236,72,153,0.1);
+                     border-left-color: #ec4899;
+                     border-radius: 50%;
+                     animation: spin 1s linear infinite;
+                 }
+                 @keyframes spin {
+                     to { transform: rotate(360deg); }
+                 }
+                 .response-table {
+                     width: 100%;
+                     border-collapse: collapse;
+                     margin-top: 8px;
+                 }
+                 .response-table th, .response-table td {
+                     border: 1px solid var(--border);
+                     padding: 6px 10px;
+                     text-align: left;
+                     color: #e2e8f0;
+                 }
+                 .response-table th {
+                     background: var(--bg-card);
+                     color: var(--text-primary);
+                 }
             `}</style>
         </div>
     );
