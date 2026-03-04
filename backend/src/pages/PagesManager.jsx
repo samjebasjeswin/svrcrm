@@ -716,23 +716,59 @@ export default function PagesManager() {
                                     <p style={{ margin: '4px 0 0', color: 'var(--text-secondary)', fontSize: '13px' }}>Endpoint identification for Next.js frontend</p>
                                 </div>
 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                                    <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.5px' }}>API POST ENDPOINT</div>
-                                        <code style={{ fontSize: '12px', color: '#ec4899', display: 'block', wordBreak: 'break-all', fontWeight: '600' }}>
-                                            {window.location.origin}/api/{currentCompanyId}/{page.id}
-                                        </code>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '20px' }}>
+                                    {/* POST Section */}
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                                        <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                                            <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.5px' }}>POST: SUBMIT DATA</div>
+                                            <code style={{ fontSize: '11px', color: '#ec4899', display: 'block', wordBreak: 'break-all', fontWeight: '600', marginBottom: '8px' }}>
+                                                {window.location.origin}/api/{currentCompanyId}/{page.id}
+                                            </code>
+                                            <div style={{ fontSize: '10px', color: '#64748b' }}>Use this endpoint to send form submissions.</div>
+                                        </div>
+
+                                        <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                                            <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.5px' }}>REQUIRED FIELDS</div>
+                                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                                                {getAvailableFields(page.id).map(f => (
+                                                    <span key={f.id} style={{ fontSize: '11px', background: 'white', padding: '3px 8px', borderRadius: '6px', border: '1px solid #e2e8f0', color: 'var(--text-secondary)' }}>
+                                                        {f.label}
+                                                    </span>
+                                                ))}
+                                                {getAvailableFields(page.id).length === 0 && <span style={{ fontSize: '11px', fontStyle: 'italic', color: 'var(--text-muted)' }}>No fields defined</span>}
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.5px' }}>AVAILABLE FIELDS</div>
-                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                                            {getAvailableFields(page.id).map(f => (
-                                                <span key={f.id} style={{ fontSize: '11px', background: 'white', padding: '3px 8px', borderRadius: '6px', border: '1px solid #e2e8f0', color: 'var(--text-secondary)' }}>
-                                                    {f.label} ({f.valueType})
-                                                </span>
-                                            ))}
-                                            {getAvailableFields(page.id).length === 0 && <span style={{ fontSize: '11px', fontStyle: 'italic', color: 'var(--text-muted)' }}>No fields defined</span>}
+                                    {/* GET Section (The new query documentation) */}
+                                    <div style={{ background: '#1e293b', padding: '20px', borderRadius: '12px', color: '#e2e8f0', position: 'relative' }}>
+                                        <div style={{ fontSize: '11px', color: '#94a3b8', fontWeight: '700', textTransform: 'uppercase', marginBottom: '12px', letterSpacing: '0.5px', display: 'flex', justifyContent: 'space-between' }}>
+                                            <span>GET: RETRIEVE DATA (QUERY)</span>
+                                            <span style={{ color: '#ec4899' }}>GraphQL Style</span>
+                                        </div>
+
+                                        <div style={{ background: '#0f172a', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', marginBottom: '12px' }}>
+                                            <pre style={{ margin: 0, fontSize: '12px', fontFamily: '"Fira Code", monospace', color: '#ec4899', lineHeight: '1.5' }}>
+                                                {`query Get${page.name.replace(/\s+/g, '')} {
+  nodes {
+    id
+${getAvailableFields(page.id).slice(0, 3).map(f => `    ${f.label.toLowerCase().replace(/\s+/g, '_')}`).join('\n')}
+  }
+}`}
+                                            </pre>
+                                        </div>
+
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <div style={{ fontSize: '11px', color: '#64748b' }}>
+                                                Use this query in the <b>API IDE</b> to fetch entries.
+                                            </div>
+                                            <button
+                                                className="btn btn-primary btn-sm"
+                                                style={{ height: '30px', padding: '0 12px', fontSize: '11px' }}
+                                                onClick={() => navigate('/api-ide')}
+                                            >
+                                                Open in IDE →
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -740,26 +776,39 @@ export default function PagesManager() {
                                 <div style={{ marginTop: '20px', paddingTop: '15px', borderTop: '1px solid #f1f5f9' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                                            Query Params: <code>companyId={currentCompanyId}</code>, <code>type={page.id}</code>
+                                            Internal Page ID: <code>{page.id}</code> | Dynamic Retrieval Supported
                                         </div>
-                                        <button
-                                            className="btn btn-ghost btn-sm"
-                                            onClick={() => {
-                                                const pageReport = {
-                                                    pageName: page.name,
-                                                    endpoint: `${window.location.origin}/api/${currentCompanyId}/${page.id}`,
-                                                    schema: getAvailableFields(page.id).map(f => ({
-                                                        field: f.label,
-                                                        type: f.valueType,
-                                                        placeholder: f.placeholder || ''
-                                                    }))
-                                                };
-                                                navigator.clipboard.writeText(JSON.stringify(pageReport, null, 2));
-                                                alert(`${page.name} API Schema copied!`);
-                                            }}
-                                        >
-                                            Copy Schema
-                                        </button>
+                                        <div style={{ display: 'flex', gap: '10px' }}>
+                                            <button
+                                                className="btn btn-ghost btn-sm"
+                                                onClick={() => {
+                                                    const fields = getAvailableFields(page.id);
+                                                    const queryStr = `query Get${page.name.replace(/\s+/g, '')} {\n  nodes {\n    id\n${fields.map(f => `    ${f.label.toLowerCase().replace(/\s+/g, '_')}`).join('\n')}\n  }\n}`;
+                                                    navigator.clipboard.writeText(queryStr);
+                                                    alert('GraphQL Query copied!');
+                                                }}
+                                            >
+                                                Copy Query
+                                            </button>
+                                            <button
+                                                className="btn btn-ghost btn-sm"
+                                                onClick={() => {
+                                                    const pageReport = {
+                                                        pageName: page.name,
+                                                        endpoint: `${window.location.origin}/api/${currentCompanyId}/${page.id}`,
+                                                        schema: getAvailableFields(page.id).map(f => ({
+                                                            field: f.label,
+                                                            type: f.valueType,
+                                                            placeholder: f.placeholder || ''
+                                                        }))
+                                                    };
+                                                    navigator.clipboard.writeText(JSON.stringify(pageReport, null, 2));
+                                                    alert(`${page.name} API Schema copied!`);
+                                                }}
+                                            >
+                                                Copy Schema
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
