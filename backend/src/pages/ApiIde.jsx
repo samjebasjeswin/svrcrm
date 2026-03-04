@@ -1,13 +1,13 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 
 export default function ApiIde() {
-    const { getCompanyPages, currentCompanyId, submitExternalForm, companies } = useApp();
+    const { getPageEntries, currentCompanyId, companies, getCompanyPages } = useApp();
     const currentCompany = companies.find(c => c.id === currentCompanyId);
     const pages = getCompanyPages();
 
     const [selectedPageId, setSelectedPageId] = useState('');
-    const [testData, setTestData] = useState({});
+    const [query, setQuery] = useState('');
     const [response, setResponse] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -21,301 +21,299 @@ export default function ApiIde() {
         (selectedPage.headings || []).forEach(h => {
             (h.subHeadings || []).forEach(sh => {
                 (sh.fields || []).forEach(f => {
-                    fields.push(f);
+                    fields.push({
+                        ...f,
+                        headingId: h.id,
+                        subHeadingId: sh.id
+                    });
                 });
             });
         });
         return fields;
     }, [selectedPage]);
 
-    const handlePageChange = (id) => {
-        setSelectedPageId(id);
-        const initialData = {};
-        // Find fields for the selected page
-        const page = pages.find(p => String(p.id) === id);
-        if (page) {
-            (page.headings || []).forEach(h => {
-                (h.subHeadings || []).forEach(sh => {
-                    (sh.fields || []).forEach(f => {
-                        initialData[f.label] = '';
-                    });
-                });
-            });
+    useEffect(() => {
+        if (selectedPage) {
+            // Default query showing first few fields
+            const fieldNames = availableFields.slice(0, 3).map(f => f.label).join('\n  ');
+            setQuery(`query Get${selectedPage.name.replace(/\s+/g, '')} {\n  nodes {\n    ${fieldNames || 'id'}\n  }\n}`);
         }
-        setTestData(initialData);
-        setResponse(null);
-    };
+    }, [selectedPage, availableFields]);
 
-    const handleInputChange = (fieldLabel, value) => {
-        setTestData(prev => ({
-            ...prev,
-            [fieldLabel]: value
-        }));
-    };
-
-    const handleSendRequest = async () => {
+    const handleRunQuery = async () => {
         if (!selectedPageId) return;
         setIsLoading(true);
         setResponse(null);
 
         try {
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 800));
+            await new Promise(resolve => setTimeout(resolve, 600));
 
-            // Actually call the context method to store the data
-            submitExternalForm(currentCompanyId, selectedPageId, testData);
+            const entries = getPageEntries(selectedPageId);
+
+            // Extract field names from the query
+            // Try to find blocks inside { } first
+            const fieldMatches = query.match(/{\s*([\s\S]*?)\s*}/g);
+            let requestedFields = [];
+
+            if (fieldMatches && fieldMatches.length > 0) {
+                // Get the innermost block if nested
+                const innerBlock = fieldMatches[fieldMatches.length - 1];
+                requestedFields = innerBlock.replace(/[{}]/g, '').split(/[,\n]/)
+                    .map(f => f.trim())
+                    .filter(f => f && f !== 'nodes' && f !== 'id' && !f.includes('{'));
+            } else if (query.trim()) {
+                // If no braces, just split by newlines/commas and treat as labels
+                requestedFields = query.split(/[,\n]/)
+                    .map(f => f.trim())
+                    .filter(f => f && !f.startsWith('#'));
+            }
+
+            // If still no requested fields, default to all available fields
+            if (requestedFields.length === 0) {
+                requestedFields = availableFields.map(f => f.label);
+            }
+
+            const formattedNodes = entries.map(entry => {
+                const node = { id: entry.id };
+                requestedFields.forEach(requestedLabel => {
+                    const lowerRequested = requestedLabel.toLowerCase().trim();
+
+                    const field = availableFields.find(f => {
+                        const lowerLabel = f.label.toLowerCase();
+                        return lowerLabel === lowerRequested ||
+                            lowerLabel.includes(`(${lowerRequested})`) ||
+                            lowerLabel.includes(`<${lowerRequested}>`) ||
+                            lowerLabel.includes(lowerRequested);
+                    });
+
+                    if (field) {
+                        const compositeKey = `${field.headingId}_${field.subHeadingId}_${field.id}`;
+                        const key = requestedLabel.trim().toLowerCase().replace(/\s+/g, '_');
+                        node[key] = entry.data[compositeKey] !== undefined ? entry.data[compositeKey] : null;
+                    }
+                });
+                return node;
+            });
 
             setResponse({
-                status: 200,
-                statusText: 'OK',
-                body: {
-                    success: true,
-                    message: `Data successfully submitted to ${selectedPage.name}`,
-                    receivedData: testData,
-                    timestamp: new Date().toISOString()
+                data: {
+                    [selectedPage.name.toLowerCase().replace(/\s+/g, '_')]: {
+                        nodes: formattedNodes
+                    }
                 }
             });
         } catch (err) {
-            setResponse({
-                status: 500,
-                statusText: 'Internal Server Error',
-                body: {
-                    success: false,
-                    error: err.message
-                }
-            });
+            setResponse({ errors: [{ message: err.message }] });
         } finally {
             setIsLoading(false);
         }
     };
 
-    const generateJsonSchema = () => {
-        const schema = {
-            endpoint: `${window.location.origin}/api/${currentCompanyId}/${selectedPageId}`,
-            method: 'POST',
-            payload: testData
-        };
-        return JSON.stringify(schema, null, 2);
-    };
-
     return (
-        <div className="api-ide animate-fade-in" style={{ padding: '32px', display: 'flex', flexDirection: 'column', gap: '24px', height: '100%' }}>
-            <div className="view-header">
-                <div>
-                    <h1 style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <span style={{ background: '#ec4899', color: 'white', padding: '6px', borderRadius: '8px', fontSize: '20px' }}>🧪</span>
-                        API IDE Playground
-                    </h1>
-                    <p style={{ color: 'var(--text-secondary)', marginTop: '4px' }}>
-                        Test and debug your dynamic API endpoints for <strong>{currentCompany?.name}</strong>
-                    </p>
+        <div className="api-ide-v2" style={{
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            background: '#f8fafc',
+            overflow: 'hidden'
+        }}>
+            {/* Top Toolbar */}
+            <div style={{
+                height: '48px',
+                borderBottom: '1px solid #e2e8f0',
+                background: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0 20px',
+                justifyContent: 'space-between'
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div style={{ fontWeight: 700, color: '#1e293b', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ color: '#ec4899', fontSize: '20px' }}>⚡</span>
+                        API IDE
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#64748b', background: '#f1f5f9', padding: '2px 8px', borderRadius: '4px' }}>
+                        {currentCompany?.name}
+                    </div>
+                </div>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                    <button className="tool-btn" style={{ color: '#64748b' }}>Prettify</button>
+                    <button className="tool-btn" style={{ color: '#64748b' }}>History</button>
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '24px', flex: 1, minHeight: 0 }}>
-                {/* Sidebar: Page Selection */}
-                <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '16px', overflowY: 'auto' }}>
-                    <h3 style={{ fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)' }}>Select API Endpoint</h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+                {/* Sidebar */}
+                <div style={{
+                    width: '60px',
+                    background: '#1e293b',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    padding: '16px 0',
+                    gap: '20px'
+                }}>
+                    <div className="sidebar-icon active">▶️</div>
+                    <div className="sidebar-icon">👤</div>
+                    <div className="sidebar-icon">🛠️</div>
+                </div>
+
+                {/* Explorer/Sidebar Content */}
+                <div style={{
+                    width: '260px',
+                    background: 'white',
+                    borderRight: '1px solid #e2e8f0',
+                    display: 'flex',
+                    flexDirection: 'column'
+                }}>
+                    <div style={{ padding: '16px', fontWeight: 600, fontSize: '13px', color: '#475569', borderBottom: '1px solid #f1f5f9' }}>
+                        RESOURCES
+                    </div>
+                    <div style={{ flex: 1, overflowY: 'auto', padding: '12px' }}>
                         {pages.map(page => (
-                            <button
+                            <div
                                 key={page.id}
-                                onClick={() => handlePageChange(String(page.id))}
+                                onClick={() => setSelectedPageId(String(page.id))}
                                 style={{
-                                    textAlign: 'left',
-                                    padding: '12px 16px',
-                                    borderRadius: '10px',
-                                    border: '1.5px solid',
-                                    borderColor: selectedPageId === String(page.id) ? '#ec4899' : 'var(--border)',
-                                    background: selectedPageId === String(page.id) ? 'rgba(236,72,153,0.05)' : 'white',
+                                    padding: '10px 12px',
+                                    borderRadius: '6px',
                                     cursor: 'pointer',
+                                    fontSize: '13px',
+                                    marginBottom: '4px',
                                     transition: 'all 0.2s',
+                                    background: selectedPageId === String(page.id) ? '#fdf2f8' : 'transparent',
+                                    color: selectedPageId === String(page.id) ? '#ec4899' : '#475569',
+                                    fontWeight: selectedPageId === String(page.id) ? 600 : 400,
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: '10px'
                                 }}
                             >
-                                <span style={{ opacity: selectedPageId === String(page.id) ? 1 : 0.5 }}>📄</span>
-                                <div style={{ flex: 1, overflow: 'hidden' }}>
-                                    <div style={{ fontWeight: 600, fontSize: '13px', color: selectedPageId === String(page.id) ? '#ec4899' : 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                        {page.name}
-                                    </div>
-                                    <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>ID: {page.id}</div>
-                                </div>
-                            </button>
+                                <span style={{ opacity: 0.6 }}>📄</span>
+                                {page.name}
+                            </div>
                         ))}
                     </div>
                 </div>
 
-                {/* Main Content: Form and Response */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', minHeight: 0, overflowY: 'auto' }}>
-                    {!selectedPageId ? (
-                        <div className="card" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '16px', borderStyle: 'dashed' }}>
-                            <div style={{ fontSize: '48px' }}>📡</div>
-                            <div style={{ textAlign: 'center' }}>
-                                <h3>No Endpoint Selected</h3>
-                                <p style={{ color: 'var(--text-secondary)' }}>Select a page from the left to start testing its API endpoint.</p>
-                            </div>
+                {/* Editor & Response Area */}
+                <div style={{ flex: 1, display: 'flex', position: 'relative' }}>
+
+                    {/* Run Button Overlay */}
+                    <button
+                        onClick={handleRunQuery}
+                        disabled={isLoading || !selectedPageId}
+                        style={{
+                            position: 'absolute',
+                            left: '50%',
+                            top: '20px',
+                            transform: 'translateX(-50%)',
+                            zIndex: 10,
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '50%',
+                            background: '#ec4899',
+                            color: 'white',
+                            border: 'none',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            boxShadow: '0 4px 12px rgba(236,72,153,0.3)',
+                            fontSize: '18px'
+                        }}
+                    >
+                        {isLoading ? '...' : '▶️'}
+                    </button>
+
+                    {/* Query Editor Pane */}
+                    <div style={{ flex: 1, background: 'white', display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ padding: '8px 16px', background: '#f8fafc', fontSize: '11px', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>
+                            Query Editor
                         </div>
-                    ) : (
-                        <>
-                            {/* Editor Area */}
-                            <div className="card animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        Request Body
-                                        <span className="badge" style={{ background: '#eef2ff', color: 'var(--accent)', fontSize: '11px', padding: '2px 8px', borderRadius: '4px' }}>JSON</span>
-                                    </h3>
-                                    <button
-                                        className="btn btn-primary btn-sm"
-                                        style={{ background: '#ec4899' }}
-                                        onClick={handleSendRequest}
-                                        disabled={isLoading}
-                                    >
-                                        {isLoading ? 'Sending...' : '⚡ Send Request'}
-                                    </button>
-                                </div>
+                        <textarea
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                            spellCheck="false"
+                            style={{
+                                flex: 1,
+                                border: 'none',
+                                outline: 'none',
+                                padding: '20px',
+                                fontFamily: '"Fira Code", monospace',
+                                fontSize: '14px',
+                                color: '#1e293b',
+                                resize: 'none',
+                                lineHeight: '1.6'
+                            }}
+                            placeholder="# Enter your query here..."
+                        />
+                    </div>
 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-                                    {/* Interactive Form */}
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                        <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Interactive Form</div>
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxHeight: '400px', overflowY: 'auto', paddingRight: '8px' }}>
-                                            {availableFields.length === 0 ? (
-                                                <p style={{ fontSize: '13px', fontStyle: 'italic', color: 'var(--text-muted)' }}>No fields defined for this page.</p>
-                                            ) : (
-                                                availableFields.map(field => (
-                                                    <div key={field.id} className="form-group">
-                                                        <label className="form-label">
-                                                            {field.label}
-                                                            <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 400, marginLeft: '6px' }}>({field.valueType})</span>
-                                                        </label>
-                                                        <input
-                                                            className="form-input"
-                                                            placeholder={field.placeholder || 'Enter value...'}
-                                                            value={testData[field.label] || ''}
-                                                            onChange={(e) => handleInputChange(field.label, e.target.value)}
-                                                        />
-                                                    </div>
-                                                ))
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Raw JSON Preview */}
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                        <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Raw Payload</div>
-                                        <div style={{
-                                            background: '#1e293b',
-                                            color: '#e2e8f0',
-                                            padding: '16px',
-                                            borderRadius: '8px',
-                                            fontSize: '13px',
-                                            fontFamily: 'monospace',
-                                            height: '400px',
-                                            overflow: 'auto'
-                                        }}>
-                                            <pre style={{ margin: 0 }}>{generateJsonSchema()}</pre>
-                                        </div>
-                                    </div>
+                    {/* Response Pane */}
+                    <div style={{ flex: 1, background: '#fafafa', borderLeft: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ padding: '8px 16px', background: '#f8fafc', fontSize: '11px', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', display: 'flex', justifyContent: 'space-between' }}>
+                            Response
+                            <span style={{ color: '#10b981' }}>{response ? '200 OK' : ''}</span>
+                        </div>
+                        <div style={{
+                            flex: 1,
+                            padding: '20px',
+                            overflowY: 'auto',
+                            fontFamily: '"Fira Code", monospace',
+                            fontSize: '13px',
+                            color: '#475569'
+                        }}>
+                            {isLoading ? (
+                                <div style={{ color: '#94a3b8', fontStyle: 'italic' }}>Executing query...</div>
+                            ) : response ? (
+                                <pre style={{ margin: 0 }}>{JSON.stringify(response, null, 2)}</pre>
+                            ) : (
+                                <div style={{ color: '#cbd5e1', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+                                    {selectedPageId ? 'Click the run button to see results' : 'Select a resource to begin'}
                                 </div>
-                            </div>
-
-                            {/* Response Area */}
-                            <div className="card animate-fade-in-up stagger-1" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        Response
-                                        {response && (
-                                            <span style={{
-                                                fontSize: '11px',
-                                                background: response.status === 200 ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
-                                                color: response.status === 200 ? 'var(--success)' : 'var(--danger)',
-                                                padding: '2px 8px',
-                                                borderRadius: '4px'
-                                            }}>
-                                                {response.status} {response.statusText}
-                                            </span>
-                                        )}
-                                    </h3>
-                                    {response && (
-                                        <button className="btn btn-ghost btn-sm" onClick={() => setResponse(null)}>Clear</button>
-                                    )}
-                                </div>
-
-                                <div style={{
-                                    minHeight: '200px',
-                                    background: '#0f172a',
-                                    borderRadius: '12px',
-                                    padding: '20px',
-                                    color: '#94a3b8',
-                                    fontSize: '13px',
-                                    fontFamily: 'monospace',
-                                    position: 'relative',
-                                    border: '1.5px solid #1e293b'
-                                }}>
-                                    {isLoading ? (
-                                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(15,23,42,0.8)', borderRadius: '12px' }}>
-                                            <div className="loader"></div>
-                                        </div>
-                                    ) : !response ? (
-                                        <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#475569' }}>
-                                            No request sent yet. Enter data above and click Send Request.
-                                        </div>
-                                    ) : (
-                                        <div className="response-table-wrapper">
-                                            <table className="response-table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Key</th>
-                                                        <th>Value</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {Object.entries(response.body).map(([key, value]) => (
-                                                        <tr key={key}>
-                                                            <td>{key}</td>
-                                                            <td>{typeof value === 'object' ? JSON.stringify(value) : String(value)}</td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </>
-                    )}
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <style>{`
-                 .loader {
-                     width: 24px;
-                     height: 24px;
-                     border: 3px solid rgba(236,72,153,0.1);
-                     border-left-color: #ec4899;
-                     border-radius: 50%;
-                     animation: spin 1s linear infinite;
-                 }
-                 @keyframes spin {
-                     to { transform: rotate(360deg); }
-                 }
-                 .response-table {
-                     width: 100%;
-                     border-collapse: collapse;
-                     margin-top: 8px;
-                 }
-                 .response-table th, .response-table td {
-                     border: 1px solid var(--border);
-                     padding: 6px 10px;
-                     text-align: left;
-                     color: #e2e8f0;
-                 }
-                 .response-table th {
-                     background: var(--bg-card);
-                     color: var(--text-primary);
-                 }
+                .tool-btn {
+                    background: transparent;
+                    border: none;
+                    font-size: 13px;
+                    cursor: pointer;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                }
+                .tool-btn:hover {
+                    background: #f1f5f9;
+                }
+                .sidebar-icon {
+                    width: 32px;
+                    height: 32px;
+                    display: flex;
+                    alignItems: center;
+                    justify-content: center;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    color: rgba(255,255,255,0.4);
+                    transition: all 0.2s;
+                    font-size: 18px;
+                }
+                .sidebar-icon:hover {
+                    background: rgba(255,255,255,0.1);
+                    color: white;
+                }
+                .sidebar-icon.active {
+                    background: rgba(236,72,153,0.1);
+                    color: #ec4899;
+                }
+                @font-face {
+                    font-family: 'Fira Code';
+                    src: url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap');
+                }
             `}</style>
         </div>
     );
