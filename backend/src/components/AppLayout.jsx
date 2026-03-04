@@ -1,17 +1,19 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+"use client";
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useApp } from '../context/AppContext';
 
 export default function AppLayout({ children }) {
-    const navigate = useNavigate();
-    const location = useLocation();
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
     const { companies, currentCompanyId, getCompanyPages, getPageEntries, inquiries, user, logout } = useApp();
 
     const currentCompany = companies.find(c => c.id === currentCompanyId);
     const pages = getCompanyPages();
     const newInquiries = inquiries.filter(i => i.companyId === currentCompanyId && i.status === 'New').length;
 
-    const isActive = (path) => location.pathname === path;
-    const isTabActive = (tab) => location.search === `?tab=${tab}`;
+    const isActive = (path) => pathname === path;
+    const isTabActive = (tab) => searchParams.get('tab') === tab;
 
     const sidebarSections = [
         {
@@ -62,7 +64,7 @@ export default function AppLayout({ children }) {
     ];
 
     const handleNav = (path) => {
-        navigate(path);
+        router.push(path);
     };
 
     return (
@@ -76,7 +78,7 @@ export default function AppLayout({ children }) {
                 <div style={{
                     padding: '20px 18px 16px', borderBottom: '1px solid rgba(255,255,255,0.08)',
                     cursor: 'pointer'
-                }} onClick={() => navigate('/')}>
+                }} onClick={() => router.push('/')}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <div style={{
                             width: '32px', height: '32px', borderRadius: '8px',
@@ -96,7 +98,7 @@ export default function AppLayout({ children }) {
                 {/* Create button */}
                 <div style={{ padding: '12px 14px 8px' }}>
                     <button
-                        onClick={() => navigate('/pages')}
+                        onClick={() => router.push('/pages')}
                         style={{
                             width: '100%', padding: '9px 14px', background: '#1e293b',
                             border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px',
@@ -123,10 +125,8 @@ export default function AppLayout({ children }) {
                                 </div>
                             )}
                             {section.items.map(item => {
-                                const active = location.pathname + location.search === item.path ||
-                                    location.pathname === item.path.split('?')[0] && !item.path.includes('?') && isActive(item.path);
-                                const exactActive = (location.pathname + location.search) === item.path ||
-                                    (location.pathname === item.path && !item.path.includes('?'));
+                                const currentFull = pathname + (searchParams.toString() ? '?' + searchParams.toString() : '');
+                                const exactActive = currentFull === item.path || (pathname === item.path && !item.path.includes('?'));
 
                                 return (
                                     <button
@@ -201,7 +201,7 @@ export default function AppLayout({ children }) {
                         </div>
                         <button
                             title="Logout"
-                            onClick={() => { logout(); navigate('/login'); }}
+                            onClick={() => { logout(); router.push('/login'); }}
                             style={{
                                 background: 'none', border: 'none', cursor: 'pointer',
                                 color: 'rgba(255,255,255,0.4)', fontSize: '16px', padding: '4px',

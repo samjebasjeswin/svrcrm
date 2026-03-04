@@ -1,3 +1,4 @@
+"use client";
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 const AppContext = createContext();
@@ -10,40 +11,41 @@ const INITIAL_COMPANIES = [
 const STORAGE_KEY = 'crm_demo_data';
 
 export function AppProvider({ children }) {
-  const [companies, setCompanies] = useState(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_companies`);
-    return saved ? JSON.parse(saved) : INITIAL_COMPANIES;
-  });
-  const [currentCompanyId, setCurrentCompanyId] = useState(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_currentCompanyId`);
-    return saved ? JSON.parse(saved) : null;
-  });
-  const [pages, setPages] = useState(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_pages`);
-    return saved ? JSON.parse(saved) : {};
-  });
-  const [savedEntries, setSavedEntries] = useState(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_entries`);
-    return saved ? JSON.parse(saved) : {};
-  });
-  const [pageLinks, setPageLinks] = useState(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_links`);
-    return saved ? JSON.parse(saved) : [];
-  });
-  const [fieldMappings, setFieldMappings] = useState(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_mappings`);
-    return saved ? JSON.parse(saved) : [];
-  });
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_user`);
-    return saved ? JSON.parse(saved) : null;
-  });
-  const [inquiries, setInquiries] = useState(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_inquiries`);
-    return saved ? JSON.parse(saved) : [];
-  });
-
+  const [companies, setCompanies] = useState(INITIAL_COMPANIES);
+  const [currentCompanyId, setCurrentCompanyId] = useState(null);
+  const [pages, setPages] = useState({});
+  const [savedEntries, setSavedEntries] = useState({});
+  const [pageLinks, setPageLinks] = useState([]);
+  const [fieldMappings, setFieldMappings] = useState([]);
+  const [user, setUser] = useState(null);
+  const [inquiries, setInquiries] = useState([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [hasMounted, setHasMounted] = useState(false);
+
+  // Hydrate from localStorage on mount (client only)
+  useEffect(() => {
+    try {
+      const c = localStorage.getItem(`${STORAGE_KEY}_companies`);
+      if (c) setCompanies(JSON.parse(c));
+      const cc = localStorage.getItem(`${STORAGE_KEY}_currentCompanyId`);
+      if (cc) setCurrentCompanyId(JSON.parse(cc));
+      const p = localStorage.getItem(`${STORAGE_KEY}_pages`);
+      if (p) setPages(JSON.parse(p));
+      const e = localStorage.getItem(`${STORAGE_KEY}_entries`);
+      if (e) setSavedEntries(JSON.parse(e));
+      const l = localStorage.getItem(`${STORAGE_KEY}_links`);
+      if (l) setPageLinks(JSON.parse(l));
+      const m = localStorage.getItem(`${STORAGE_KEY}_mappings`);
+      if (m) setFieldMappings(JSON.parse(m));
+      const u = localStorage.getItem(`${STORAGE_KEY}_user`);
+      if (u) setUser(JSON.parse(u));
+      const i = localStorage.getItem(`${STORAGE_KEY}_inquiries`);
+      if (i) setInquiries(JSON.parse(i));
+    } catch (err) {
+      console.warn('Failed to hydrate from localStorage:', err);
+    }
+    setHasMounted(true);
+  }, []);
 
   // Initial Fetch from MySQL
   useEffect(() => {
@@ -72,8 +74,9 @@ export function AppProvider({ children }) {
     fetchInitialData();
   }, []);
 
-  // Sync with LocalStorage & MySQL
+  // Sync with LocalStorage & MySQL (only after hydration)
   useEffect(() => {
+    if (!hasMounted) return;
     localStorage.setItem(`${STORAGE_KEY}_companies`, JSON.stringify(companies));
     localStorage.setItem(`${STORAGE_KEY}_currentCompanyId`, JSON.stringify(currentCompanyId));
     localStorage.setItem(`${STORAGE_KEY}_pages`, JSON.stringify(pages));
@@ -93,7 +96,7 @@ export function AppProvider({ children }) {
             companies,
             pages,
             savedEntries,
-            linkings: { [currentCompanyId]: pageLinks }, // Adapting to backend expectation
+            linkings: { [currentCompanyId]: pageLinks },
             inquiries
           })
         });
@@ -104,7 +107,7 @@ export function AppProvider({ children }) {
     };
 
     syncToMySQL();
-  }, [companies, currentCompanyId, pages, savedEntries, pageLinks, fieldMappings, user, inquiries, isInitialLoad]);
+  }, [hasMounted, companies, currentCompanyId, pages, savedEntries, pageLinks, fieldMappings, user, inquiries, isInitialLoad]);
 
   const addCompany = (company, includeDefaultPages = false) => {
     const newId = Date.now();
@@ -771,6 +774,17 @@ export function AppProvider({ children }) {
       return prev.filter((l) => l.id !== linkId);
     });
   };
+
+  if (!hasMounted) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: 'var(--bg, #0f172a)' }}>
+        <div style={{ textAlign: 'center', color: 'white' }}>
+          <div className="loader" style={{ margin: '0 auto 16px' }}></div>
+          <p style={{ opacity: 0.6 }}>Loading CRM...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <AppContext.Provider

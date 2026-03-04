@@ -1,0 +1,23 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/admin/mysql/page": "/admin/mysql",
+  "/api-ide/page": "/api-ide",
+  "/company/[companyInitial]/page": "/company/[companyInitial]",
+  "/create-company/page": "/create-company",
+  "/data-entry/[pageId]/[entryId]/page": "/data-entry/[pageId]/[entryId]",
+  "/data-entry/[pageId]/page": "/data-entry/[pageId]",
+  "/edit-hierarchy/[id]/page": "/edit-hierarchy/[id]",
+  "/edit-mapping/page": "/edit-mapping",
+  "/edit-page/[pageId]/page": "/edit-page/[pageId]",
+  "/entries/[pageId]/page": "/entries/[pageId]",
+  "/inbound-links/[pageId]/[entryId]/page": "/inbound-links/[pageId]/[entryId]",
+  "/inquiry/[id]/page": "/inquiry/[id]",
+  "/login/page": "/login",
+  "/mapped-data/page": "/mapped-data",
+  "/page": "/",
+  "/pages/page": "/pages",
+  "/product/[companyInitial]/page": "/product/[companyInitial]",
+  "/view-mapping/[id]/page": "/view-mapping/[id]",
+  "/webhook/page": "/webhook"
+}

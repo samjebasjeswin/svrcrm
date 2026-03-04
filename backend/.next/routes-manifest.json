@@ -1,0 +1,193 @@
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "priority": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/company/[companyInitial]",
+      "regex": "^/company/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPcompanyInitial": "nxtPcompanyInitial"
+      },
+      "namedRegex": "^/company/(?<nxtPcompanyInitial>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/data-entry/[pageId]",
+      "regex": "^/data\\-entry/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPpageId": "nxtPpageId"
+      },
+      "namedRegex": "^/data\\-entry/(?<nxtPpageId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/data-entry/[pageId]/[entryId]",
+      "regex": "^/data\\-entry/([^/]+?)/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPpageId": "nxtPpageId",
+        "nxtPentryId": "nxtPentryId"
+      },
+      "namedRegex": "^/data\\-entry/(?<nxtPpageId>[^/]+?)/(?<nxtPentryId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/edit-hierarchy/[id]",
+      "regex": "^/edit\\-hierarchy/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/edit\\-hierarchy/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/edit-page/[pageId]",
+      "regex": "^/edit\\-page/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPpageId": "nxtPpageId"
+      },
+      "namedRegex": "^/edit\\-page/(?<nxtPpageId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/entries/[pageId]",
+      "regex": "^/entries/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPpageId": "nxtPpageId"
+      },
+      "namedRegex": "^/entries/(?<nxtPpageId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/inbound-links/[pageId]/[entryId]",
+      "regex": "^/inbound\\-links/([^/]+?)/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPpageId": "nxtPpageId",
+        "nxtPentryId": "nxtPentryId"
+      },
+      "namedRegex": "^/inbound\\-links/(?<nxtPpageId>[^/]+?)/(?<nxtPentryId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/inquiry/[id]",
+      "regex": "^/inquiry/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/inquiry/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/product/[companyInitial]",
+      "regex": "^/product/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPcompanyInitial": "nxtPcompanyInitial"
+      },
+      "namedRegex": "^/product/(?<nxtPcompanyInitial>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/view-mapping/[id]",
+      "regex": "^/view\\-mapping/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/view\\-mapping/(?<nxtPid>[^/]+?)(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_global-error",
+      "regex": "^/_global\\-error(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_global\\-error(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/admin/mysql",
+      "regex": "^/admin/mysql(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/mysql(?:/)?$"
+    },
+    {
+      "page": "/api-ide",
+      "regex": "^/api\\-ide(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api\\-ide(?:/)?$"
+    },
+    {
+      "page": "/create-company",
+      "regex": "^/create\\-company(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/create\\-company(?:/)?$"
+    },
+    {
+      "page": "/edit-mapping",
+      "regex": "^/edit\\-mapping(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/edit\\-mapping(?:/)?$"
+    },
+    {
+      "page": "/login",
+      "regex": "^/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/login(?:/)?$"
+    },
+    {
+      "page": "/mapped-data",
+      "regex": "^/mapped\\-data(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/mapped\\-data(?:/)?$"
+    },
+    {
+      "page": "/pages",
+      "regex": "^/pages(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/pages(?:/)?$"
+    },
+    {
+      "page": "/webhook",
+      "regex": "^/webhook(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/webhook(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments",
+    "clientParamParsing": false,
+    "dynamicRSCPrerender": false
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

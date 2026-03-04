@@ -4,7 +4,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 
 const app = express();
-const PORT = 5000;
+const PORT = 5001;
 
 app.use(cors({
     origin: '*', // Allow all for this demo, or specifically 'http://localhost:5174'

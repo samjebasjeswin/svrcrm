@@ -1,0 +1,1946 @@
+(globalThis.TURBOPACK || (globalThis.TURBOPACK = [])).push([typeof document === "object" ? document.currentScript : undefined,
+"[project]/Desktop/crm demo/backend/src/context/AppContext.jsx [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "AppProvider",
+    ()=>AppProvider,
+    "useApp",
+    ()=>useApp
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/crm demo/backend/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/crm demo/backend/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
+;
+var _s = __turbopack_context__.k.signature(), _s1 = __turbopack_context__.k.signature();
+;
+const AppContext = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createContext"])();
+const INITIAL_COMPANIES = [
+    {
+        id: 1,
+        name: 'SVR Global Solutions India',
+        role: 'Company Admin',
+        initials: 'SG'
+    },
+    {
+        id: 2,
+        name: 'Demo Testing Company',
+        role: 'Company Admin',
+        initials: 'DT'
+    }
+];
+const STORAGE_KEY = 'crm_demo_data';
+function AppProvider({ children }) {
+    _s();
+    const [companies, setCompanies] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
+        "AppProvider.useState": ()=>{
+            const saved = localStorage.getItem(`${STORAGE_KEY}_companies`);
+            return saved ? JSON.parse(saved) : INITIAL_COMPANIES;
+        }
+    }["AppProvider.useState"]);
+    const [currentCompanyId, setCurrentCompanyId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
+        "AppProvider.useState": ()=>{
+            const saved = localStorage.getItem(`${STORAGE_KEY}_currentCompanyId`);
+            return saved ? JSON.parse(saved) : null;
+        }
+    }["AppProvider.useState"]);
+    const [pages, setPages] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
+        "AppProvider.useState": ()=>{
+            const saved = localStorage.getItem(`${STORAGE_KEY}_pages`);
+            return saved ? JSON.parse(saved) : {};
+        }
+    }["AppProvider.useState"]);
+    const [savedEntries, setSavedEntries] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
+        "AppProvider.useState": ()=>{
+            const saved = localStorage.getItem(`${STORAGE_KEY}_entries`);
+            return saved ? JSON.parse(saved) : {};
+        }
+    }["AppProvider.useState"]);
+    const [pageLinks, setPageLinks] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
+        "AppProvider.useState": ()=>{
+            const saved = localStorage.getItem(`${STORAGE_KEY}_links`);
+            return saved ? JSON.parse(saved) : [];
+        }
+    }["AppProvider.useState"]);
+    const [fieldMappings, setFieldMappings] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
+        "AppProvider.useState": ()=>{
+            const saved = localStorage.getItem(`${STORAGE_KEY}_mappings`);
+            return saved ? JSON.parse(saved) : [];
+        }
+    }["AppProvider.useState"]);
+    const [user, setUser] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
+        "AppProvider.useState": ()=>{
+            const saved = localStorage.getItem(`${STORAGE_KEY}_user`);
+            return saved ? JSON.parse(saved) : null;
+        }
+    }["AppProvider.useState"]);
+    const [inquiries, setInquiries] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
+        "AppProvider.useState": ()=>{
+            const saved = localStorage.getItem(`${STORAGE_KEY}_inquiries`);
+            return saved ? JSON.parse(saved) : [];
+        }
+    }["AppProvider.useState"]);
+    const [isInitialLoad, setIsInitialLoad] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
+    // Initial Fetch from MySQL
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "AppProvider.useEffect": ()=>{
+            const fetchInitialData = {
+                "AppProvider.useEffect.fetchInitialData": async ()=>{
+                    try {
+                        const res = await fetch('http://localhost:5000/api/crm/state');
+                        if (res.ok) {
+                            const data = await res.json();
+                            if (data.companies && data.companies.length > 0) {
+                                setCompanies(data.companies || []);
+                                setPages(data.pages || {});
+                                setSavedEntries(data.savedEntries || {});
+                                // Linkings might be links/mappings in this file
+                                // setPageLinks(data.linkings?.[currentCompanyId] || []); 
+                                console.log('📦 Loaded state from MySQL');
+                            } else {
+                                console.log('🚚 No data in MySQL, using LocalStorage...');
+                            }
+                        }
+                    } catch (err) {
+                        console.warn('MySQL Fetch failed, using LocalStorage:', err.message);
+                    } finally{
+                        setIsInitialLoad(false);
+                    }
+                }
+            }["AppProvider.useEffect.fetchInitialData"];
+            fetchInitialData();
+        }
+    }["AppProvider.useEffect"], []);
+    // Sync with LocalStorage & MySQL
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "AppProvider.useEffect": ()=>{
+            localStorage.setItem(`${STORAGE_KEY}_companies`, JSON.stringify(companies));
+            localStorage.setItem(`${STORAGE_KEY}_currentCompanyId`, JSON.stringify(currentCompanyId));
+            localStorage.setItem(`${STORAGE_KEY}_pages`, JSON.stringify(pages));
+            localStorage.setItem(`${STORAGE_KEY}_entries`, JSON.stringify(savedEntries));
+            localStorage.setItem(`${STORAGE_KEY}_links`, JSON.stringify(pageLinks));
+            localStorage.setItem(`${STORAGE_KEY}_mappings`, JSON.stringify(fieldMappings));
+            localStorage.setItem(`${STORAGE_KEY}_user`, JSON.stringify(user));
+            localStorage.setItem(`${STORAGE_KEY}_inquiries`, JSON.stringify(inquiries));
+            const syncToMySQL = {
+                "AppProvider.useEffect.syncToMySQL": async ()=>{
+                    if (isInitialLoad) return;
+                    try {
+                        await fetch('http://localhost:5000/api/crm/sync', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                companies,
+                                pages,
+                                savedEntries,
+                                linkings: {
+                                    [currentCompanyId]: pageLinks
+                                },
+                                inquiries
+                            })
+                        });
+                        console.log('✅ Synced with MySQL');
+                    } catch (err) {
+                        console.warn('MySQL Sync failed:', err.message);
+                    }
+                }
+            }["AppProvider.useEffect.syncToMySQL"];
+            syncToMySQL();
+        }
+    }["AppProvider.useEffect"], [
+        companies,
+        currentCompanyId,
+        pages,
+        savedEntries,
+        pageLinks,
+        fieldMappings,
+        user,
+        inquiries,
+        isInitialLoad
+    ]);
+    const addCompany = (company, includeDefaultPages = false)=>{
+        const newId = Date.now();
+        const initials = company.companyName.split(' ').map((w)=>w[0]).join('').toUpperCase().slice(0, 2);
+        const newCompany = {
+            id: newId,
+            name: company.companyName,
+            role: 'Company Admin',
+            initials,
+            details: company
+        };
+        setCompanies((prev)=>[
+                ...prev,
+                newCompany
+            ]);
+        setCurrentCompanyId(newId);
+        // Create default pages if requested
+        let initialPages = [];
+        if (includeDefaultPages) {
+            initialPages = [
+                {
+                    id: Date.now() + 10,
+                    name: 'home page',
+                    headings: [
+                        {
+                            id: Date.now() + 11,
+                            title: 'Welcome Section',
+                            subHeadings: [
+                                {
+                                    id: Date.now() + 12,
+                                    title: '',
+                                    fields: []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: Date.now() + 20,
+                    name: 'Contact Us',
+                    headings: [
+                        {
+                            id: Date.now() + 21,
+                            title: 'Contact Details',
+                            subHeadings: [
+                                {
+                                    id: Date.now() + 22,
+                                    title: '',
+                                    fields: []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: Date.now() + 30,
+                    name: 'Product Inquiry',
+                    headings: [
+                        {
+                            id: Date.now() + 31,
+                            title: 'Product Info',
+                            subHeadings: [
+                                {
+                                    id: Date.now() + 32,
+                                    title: '',
+                                    fields: []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: Date.now() + 40,
+                    name: 'Static SEO',
+                    headings: [
+                        {
+                            id: Date.now() + 41,
+                            title: 'SEO Meta Data',
+                            subHeadings: [
+                                {
+                                    id: Date.now() + 42,
+                                    title: 'Standard Meta Tags',
+                                    fields: [
+                                        {
+                                            id: Date.now() + 43,
+                                            label: 'Web Page Title (<title>)',
+                                            valueType: 'Text',
+                                            placeholder: 'Title of the web page'
+                                        },
+                                        {
+                                            id: Date.now() + 44,
+                                            label: 'Meta Description (<meta name="description">)',
+                                            valueType: 'Text',
+                                            placeholder: 'Enter a concise description of the page (150-160 chars)'
+                                        },
+                                        {
+                                            id: Date.now() + 45,
+                                            label: 'Meta Keywords (<meta name="keywords">)',
+                                            valueType: 'Text',
+                                            placeholder: 'keyword1, keyword2, keyword3'
+                                        },
+                                        {
+                                            id: Date.now() + 46,
+                                            label: 'Robots (<meta name="robots">)',
+                                            valueType: 'Text',
+                                            placeholder: 'index, follow'
+                                        },
+                                        {
+                                            id: Date.now() + 47,
+                                            label: 'Website Name (<meta name="author">)',
+                                            valueType: 'Text',
+                                            placeholder: 'e.g. Valves Only - USA'
+                                        },
+                                        {
+                                            id: Date.now() + 48,
+                                            label: 'Refresh (<meta name="refresh">)',
+                                            valueType: 'Text',
+                                            placeholder: '30'
+                                        },
+                                        {
+                                            id: Date.now() + 49,
+                                            label: 'Canonical URL (<link rel="canonical">)',
+                                            valueType: 'Text',
+                                            placeholder: 'https://www.yourwebsite.com/'
+                                        }
+                                    ]
+                                },
+                                {
+                                    id: Date.now() + 50,
+                                    title: 'Open Graph Data',
+                                    fields: [
+                                        {
+                                            id: Date.now() + 51,
+                                            label: 'OG Title (<meta property="og:title">)',
+                                            valueType: 'Text',
+                                            placeholder: 'Social media title'
+                                        },
+                                        {
+                                            id: Date.now() + 52,
+                                            label: 'OG Type (<meta property="og:type">)',
+                                            valueType: 'Text',
+                                            placeholder: 'website, article'
+                                        },
+                                        {
+                                            id: Date.now() + 53,
+                                            label: 'OG URL (<meta property="og:url">)',
+                                            valueType: 'Text',
+                                            placeholder: 'https://www.yourwebsite.com/page-url'
+                                        },
+                                        {
+                                            id: Date.now() + 54,
+                                            label: 'OG Image (<meta property="og:image">)',
+                                            valueType: 'Image',
+                                            placeholder: ''
+                                        },
+                                        {
+                                            id: Date.now() + 55,
+                                            label: 'OG Description (<meta property="og:description">)',
+                                            valueType: 'Text',
+                                            placeholder: 'Social media description'
+                                        },
+                                        {
+                                            id: Date.now() + 56,
+                                            label: 'OG Locale (<meta property="og:locale">)',
+                                            valueType: 'Text',
+                                            placeholder: 'en_US'
+                                        },
+                                        {
+                                            id: Date.now() + 57,
+                                            label: 'OG Site Name (<meta property="og:site_name">)',
+                                            valueType: 'Text',
+                                            placeholder: 'Your Website Name'
+                                        },
+                                        {
+                                            id: Date.now() + 58,
+                                            label: 'Article Published Time (<meta property="article:published_time">)',
+                                            valueType: 'Text',
+                                            placeholder: 'YYYY-MM-DDTHH:mm:ss+00:00'
+                                        },
+                                        {
+                                            id: Date.now() + 59,
+                                            label: 'Article Modified Time (<meta property="article:modified_time">)',
+                                            valueType: 'Text',
+                                            placeholder: 'YYYY-MM-DDTHH:mm:ss+00:00'
+                                        },
+                                        {
+                                            id: Date.now() + 60,
+                                            label: 'Article Author (<meta property="article:author">)',
+                                            valueType: 'Text',
+                                            placeholder: 'Author URL'
+                                        }
+                                    ]
+                                },
+                                {
+                                    id: Date.now() + 61,
+                                    title: 'Twitter Card Data',
+                                    fields: [
+                                        {
+                                            id: Date.now() + 62,
+                                            label: 'Twitter Card (<meta name="twitter:card">)',
+                                            valueType: 'Text',
+                                            placeholder: 'summary_large_image'
+                                        },
+                                        {
+                                            id: Date.now() + 63,
+                                            label: 'Twitter Site (<meta name="twitter:site">)',
+                                            valueType: 'Text',
+                                            placeholder: '@yourwebsite'
+                                        },
+                                        {
+                                            id: Date.now() + 64,
+                                            label: 'Twitter Title (<meta name="twitter:title">)',
+                                            valueType: 'Text',
+                                            placeholder: 'Social Title'
+                                        },
+                                        {
+                                            id: Date.now() + 65,
+                                            label: 'Twitter Description (<meta name="twitter:description">)',
+                                            valueType: 'Text',
+                                            placeholder: 'Social Description'
+                                        },
+                                        {
+                                            id: Date.now() + 66,
+                                            label: 'Twitter Creator (<meta name="twitter:creator">)',
+                                            valueType: 'Text',
+                                            placeholder: '@yourtwitter'
+                                        },
+                                        {
+                                            id: Date.now() + 67,
+                                            label: 'Twitter Image (<meta name="twitter:image">)',
+                                            valueType: 'Image',
+                                            placeholder: ''
+                                        }
+                                    ]
+                                },
+                                {
+                                    id: Date.now() + 68,
+                                    title: 'Dublin Core Metadata',
+                                    fields: [
+                                        {
+                                            id: Date.now() + 69,
+                                            label: 'DC Title (<meta name="dc.title">)',
+                                            valueType: 'Text',
+                                            placeholder: 'Dublin Core Title'
+                                        },
+                                        {
+                                            id: Date.now() + 70,
+                                            label: 'DC Description (<meta name="dc.description">)',
+                                            valueType: 'Text',
+                                            placeholder: 'Dublin Core Description'
+                                        },
+                                        {
+                                            id: Date.now() + 71,
+                                            label: 'DC Subject (<meta name="dc.subject">)',
+                                            valueType: 'Text',
+                                            placeholder: 'Keywords, Subject'
+                                        },
+                                        {
+                                            id: Date.now() + 72,
+                                            label: 'DC Created (<meta name="dc.created">)',
+                                            valueType: 'Text',
+                                            placeholder: 'YYYY-MM-DD'
+                                        },
+                                        {
+                                            id: Date.now() + 73,
+                                            label: 'DC Modified (<meta name="dc.modified">)',
+                                            valueType: 'Text',
+                                            placeholder: 'YYYY-MM-DD'
+                                        },
+                                        {
+                                            id: Date.now() + 74,
+                                            label: 'DC Language (<meta name="dc.language">)',
+                                            valueType: 'Text',
+                                            placeholder: 'en'
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: Date.now() + 80,
+                    name: 'Mailer Settings',
+                    headings: [
+                        {
+                            id: Date.now() + 81,
+                            title: 'MAILER SETTINGS',
+                            subHeadings: [
+                                {
+                                    id: Date.now() + 82,
+                                    title: 'Configure SMTP settings for sending OTP and notification emails.',
+                                    fields: [
+                                        {
+                                            id: Date.now() + 83,
+                                            label: 'SMTP HOST',
+                                            valueType: 'Text',
+                                            placeholder: 'smtp.gmail.com'
+                                        },
+                                        {
+                                            id: Date.now() + 84,
+                                            label: 'SMTP PORT',
+                                            valueType: 'Number',
+                                            placeholder: '465'
+                                        },
+                                        {
+                                            id: Date.now() + 85,
+                                            label: 'SMTP USER',
+                                            valueType: 'Text',
+                                            placeholder: 'user@gmail.com'
+                                        },
+                                        {
+                                            id: Date.now() + 86,
+                                            label: 'SMTP PASSWORD',
+                                            valueType: 'Password',
+                                            placeholder: '••••••••'
+                                        },
+                                        {
+                                            id: Date.now() + 87,
+                                            label: 'FROM EMAIL ADDRESS',
+                                            valueType: 'Text',
+                                            placeholder: 'noreply@company.com'
+                                        }
+                                    ]
+                                },
+                                {
+                                    id: Date.now() + 88,
+                                    title: 'ADMIN NOTIFICATION EMAILS',
+                                    fields: [
+                                        {
+                                            id: Date.now() + 89,
+                                            label: 'Email Recipients',
+                                            valueType: 'Grid',
+                                            infinity: true,
+                                            gridCols: [
+                                                {
+                                                    label: 'Email Address',
+                                                    type: 'Text'
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ];
+        }
+        setPages((prev)=>({
+                ...prev,
+                [newId]: initialPages
+            }));
+        return newId;
+    };
+    const updateCompany = (id, updatedCompany)=>{
+        setCompanies((prev)=>prev.map((c)=>c.id === id ? {
+                    ...c,
+                    ...updatedCompany
+                } : c));
+    };
+    const selectCompany = (id)=>{
+        setCurrentCompanyId(id);
+        if (!pages[id]) {
+            setPages((prev)=>({
+                    ...prev,
+                    [id]: []
+                }));
+        }
+    };
+    const getCompanyPages = ()=>pages[currentCompanyId] || [];
+    const addPage = (pageName)=>{
+        const newPage = {
+            id: Date.now(),
+            name: pageName,
+            headings: [
+                {
+                    id: Date.now() + 1,
+                    title: 'Basic Information',
+                    subHeadings: [
+                        {
+                            id: Date.now() + 2,
+                            title: '',
+                            fields: []
+                        }
+                    ]
+                }
+            ]
+        };
+        setPages((prev)=>({
+                ...prev,
+                [currentCompanyId]: [
+                    ...prev[currentCompanyId] || [],
+                    newPage
+                ]
+            }));
+        return newPage.id;
+    };
+    const deletePage = (pageId)=>{
+        setPages((prev)=>({
+                ...prev,
+                [currentCompanyId]: (prev[currentCompanyId] || []).filter((p)=>p.id !== pageId)
+            }));
+        // Clean up links where this page was source or target
+        setPageLinks((prev)=>prev.filter((l)=>l.sourcePageId !== pageId && l.targetPageId !== pageId));
+        // Clean up entries
+        setSavedEntries((prev)=>{
+            const newEntries = {
+                ...prev
+            };
+            delete newEntries[`${currentCompanyId}_${pageId}`];
+            return newEntries;
+        });
+    };
+    const updatePage = (pageId, updatedPage)=>{
+        setPages((prev)=>({
+                ...prev,
+                [currentCompanyId]: (prev[currentCompanyId] || []).map((p)=>p.id === pageId ? {
+                        ...p,
+                        ...updatedPage
+                    } : p)
+            }));
+    };
+    const getPage = (pageId)=>{
+        return (pages[currentCompanyId] || []).find((p)=>p.id === Number(pageId));
+    };
+    // Ensure a "form" page exists with submission fields; create/repair if needed
+    const ensureFormPage = ()=>{
+        if (!currentCompanyId) return;
+        const currentPages = pages[currentCompanyId] || [];
+        const existing = currentPages.find((p)=>p.name.toLowerCase().trim() === 'form');
+        const formFields = [
+            {
+                id: Date.now() + 3,
+                label: 'Full Name',
+                valueType: 'Text',
+                placeholder: 'Submitted name'
+            },
+            {
+                id: Date.now() + 4,
+                label: 'Email Address',
+                valueType: 'Text',
+                placeholder: 'Submitted email'
+            },
+            {
+                id: Date.now() + 5,
+                label: 'Message',
+                valueType: 'Text',
+                placeholder: 'Submitted message'
+            },
+            {
+                id: Date.now() + 6,
+                label: 'Product Name',
+                valueType: 'Text',
+                placeholder: 'Product name (for product inquiries)'
+            },
+            {
+                id: Date.now() + 7,
+                label: 'Quantity',
+                valueType: 'Text',
+                placeholder: 'Quantity'
+            },
+            {
+                id: Date.now() + 8,
+                label: 'Type',
+                valueType: 'Text',
+                placeholder: 'contact / product'
+            },
+            {
+                id: Date.now() + 9,
+                label: 'Submitted At',
+                valueType: 'Text',
+                placeholder: 'Submission timestamp'
+            }
+        ];
+        if (!existing) {
+            const formPage = {
+                id: Date.now(),
+                name: 'form',
+                headings: [
+                    {
+                        id: Date.now() + 1,
+                        title: 'Form Submissions',
+                        subHeadings: [
+                            {
+                                id: Date.now() + 2,
+                                title: '',
+                                fields: formFields
+                            }
+                        ]
+                    }
+                ]
+            };
+            setPages((prev)=>({
+                    ...prev,
+                    [currentCompanyId]: [
+                        ...prev[currentCompanyId] || [],
+                        formPage
+                    ]
+                }));
+        } else {
+            // Repair: if form page exists but has no fields, add them
+            const hasFields = existing.headings?.some((h)=>h.subHeadings?.some((sh)=>sh.fields?.length > 0));
+            if (!hasFields) {
+                const updatedPage = {
+                    ...existing,
+                    headings: [
+                        {
+                            id: existing.headings[0]?.id || Date.now() + 1,
+                            title: 'Form Submissions',
+                            subHeadings: [
+                                {
+                                    id: existing.headings[0]?.subHeadings?.[0]?.id || Date.now() + 2,
+                                    title: '',
+                                    fields: formFields
+                                }
+                            ]
+                        }
+                    ]
+                };
+                setPages((prev)=>({
+                        ...prev,
+                        [currentCompanyId]: (prev[currentCompanyId] || []).map((p)=>p.id === existing.id ? updatedPage : p)
+                    }));
+            }
+        }
+    };
+    const ensureSeoPage = ()=>{
+        if (!currentCompanyId) return;
+        const currentPages = pages[currentCompanyId] || [];
+        const existingIndex = currentPages.findIndex((p)=>p.name.toLowerCase().trim() === 'static seo');
+        // Schema definition for comparison/creation
+        const seoSchema = {
+            name: 'Static SEO',
+            headings: [
+                {
+                    id: Date.now() + 41,
+                    title: 'SEO Meta Data',
+                    subHeadings: [
+                        {
+                            id: Date.now() + 42,
+                            title: 'Standard Meta Tags',
+                            fields: [
+                                {
+                                    id: Date.now() + 43,
+                                    label: 'Web Page Title (<title>)',
+                                    valueType: 'Text',
+                                    placeholder: 'Title of the web page'
+                                },
+                                {
+                                    id: Date.now() + 44,
+                                    label: 'Meta Description (<meta name="description">)',
+                                    valueType: 'Text',
+                                    placeholder: 'Enter a concise description of the page (150-160 chars)'
+                                },
+                                {
+                                    id: Date.now() + 45,
+                                    label: 'Meta Keywords (<meta name="keywords">)',
+                                    valueType: 'Text',
+                                    placeholder: 'keyword1, keyword2, keyword3'
+                                },
+                                {
+                                    id: Date.now() + 46,
+                                    label: 'Robots (<meta name="robots">)',
+                                    valueType: 'Text',
+                                    placeholder: 'index, follow'
+                                },
+                                {
+                                    id: Date.now() + 47,
+                                    label: 'Website Name (<meta name="author">)',
+                                    valueType: 'Text',
+                                    placeholder: 'e.g. Valves Only - USA'
+                                },
+                                {
+                                    id: Date.now() + 48,
+                                    label: 'Refresh (<meta name="refresh">)',
+                                    valueType: 'Text',
+                                    placeholder: '30'
+                                },
+                                {
+                                    id: Date.now() + 49,
+                                    label: 'Canonical URL (<link rel="canonical">)',
+                                    valueType: 'Text',
+                                    placeholder: 'https://www.yourwebsite.com/'
+                                }
+                            ]
+                        },
+                        {
+                            id: Date.now() + 50,
+                            title: 'Open Graph Data',
+                            fields: [
+                                {
+                                    id: Date.now() + 51,
+                                    label: 'OG Title (<meta property="og:title">)',
+                                    valueType: 'Text',
+                                    placeholder: 'Social media title'
+                                },
+                                {
+                                    id: Date.now() + 52,
+                                    label: 'OG Type (<meta property="og:type">)',
+                                    valueType: 'Text',
+                                    placeholder: 'website, article'
+                                },
+                                {
+                                    id: Date.now() + 53,
+                                    label: 'OG URL (<meta property="og:url">)',
+                                    valueType: 'Text',
+                                    placeholder: 'https://www.yourwebsite.com/page-url'
+                                },
+                                {
+                                    id: Date.now() + 54,
+                                    label: 'OG Image (<meta property="og:image">)',
+                                    valueType: 'Image',
+                                    placeholder: ''
+                                },
+                                {
+                                    id: Date.now() + 55,
+                                    label: 'OG Description (<meta property="og:description">)',
+                                    valueType: 'Text',
+                                    placeholder: 'Social media description'
+                                },
+                                {
+                                    id: Date.now() + 56,
+                                    label: 'OG Locale (<meta property="og:locale">)',
+                                    valueType: 'Text',
+                                    placeholder: 'en_US'
+                                },
+                                {
+                                    id: Date.now() + 57,
+                                    label: 'OG Site Name (<meta property="og:site_name">)',
+                                    valueType: 'Text',
+                                    placeholder: 'Your Website Name'
+                                },
+                                {
+                                    id: Date.now() + 58,
+                                    label: 'Article Published Time (<meta property="article:published_time">)',
+                                    valueType: 'Text',
+                                    placeholder: 'YYYY-MM-DDTHH:mm:ss+00:00'
+                                },
+                                {
+                                    id: Date.now() + 59,
+                                    label: 'Article Modified Time (<meta property="article:modified_time">)',
+                                    valueType: 'Text',
+                                    placeholder: 'YYYY-MM-DDTHH:mm:ss+00:00'
+                                },
+                                {
+                                    id: Date.now() + 60,
+                                    label: 'Article Author (<meta property="article:author">)',
+                                    valueType: 'Text',
+                                    placeholder: 'Author URL'
+                                }
+                            ]
+                        },
+                        {
+                            id: Date.now() + 61,
+                            title: 'Twitter Card Data',
+                            fields: [
+                                {
+                                    id: Date.now() + 62,
+                                    label: 'Twitter Card (<meta name="twitter:card">)',
+                                    valueType: 'Text',
+                                    placeholder: 'summary_large_image'
+                                },
+                                {
+                                    id: Date.now() + 63,
+                                    label: 'Twitter Site (<meta name="twitter:site">)',
+                                    valueType: 'Text',
+                                    placeholder: '@yourwebsite'
+                                },
+                                {
+                                    id: Date.now() + 64,
+                                    label: 'Twitter Title (<meta name="twitter:title">)',
+                                    valueType: 'Text',
+                                    placeholder: 'Social Title'
+                                },
+                                {
+                                    id: Date.now() + 65,
+                                    label: 'Twitter Description (<meta name="twitter:description">)',
+                                    valueType: 'Text',
+                                    placeholder: 'Social Description'
+                                },
+                                {
+                                    id: Date.now() + 66,
+                                    label: 'Twitter Creator (<meta name="twitter:creator">)',
+                                    valueType: 'Text',
+                                    placeholder: '@yourtwitter'
+                                },
+                                {
+                                    id: Date.now() + 67,
+                                    label: 'Twitter Image (<meta name="twitter:image">)',
+                                    valueType: 'Image',
+                                    placeholder: ''
+                                }
+                            ]
+                        },
+                        {
+                            id: Date.now() + 68,
+                            title: 'Dublin Core Metadata',
+                            fields: [
+                                {
+                                    id: Date.now() + 69,
+                                    label: 'DC Title (<meta name="dc.title">)',
+                                    valueType: 'Text',
+                                    placeholder: 'Dublin Core Title'
+                                },
+                                {
+                                    id: Date.now() + 70,
+                                    label: 'DC Description (<meta name="dc.description">)',
+                                    valueType: 'Text',
+                                    placeholder: 'Dublin Core Description'
+                                },
+                                {
+                                    id: Date.now() + 71,
+                                    label: 'DC Subject (<meta name="dc.subject">)',
+                                    valueType: 'Text',
+                                    placeholder: 'Keywords, Subject'
+                                },
+                                {
+                                    id: Date.now() + 72,
+                                    label: 'DC Created (<meta name="dc.created">)',
+                                    valueType: 'Text',
+                                    placeholder: 'YYYY-MM-DD'
+                                },
+                                {
+                                    id: Date.now() + 73,
+                                    label: 'DC Modified (<meta name="dc.modified">)',
+                                    valueType: 'Text',
+                                    placeholder: 'YYYY-MM-DD'
+                                },
+                                {
+                                    id: Date.now() + 74,
+                                    label: 'DC Language (<meta name="dc.language">)',
+                                    valueType: 'Text',
+                                    placeholder: 'en'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+        if (existingIndex === -1) {
+            setPages((prev)=>({
+                    ...prev,
+                    [currentCompanyId]: [
+                        ...prev[currentCompanyId] || [],
+                        {
+                            ...seoSchema,
+                            id: Date.now() + 400
+                        }
+                    ]
+                }));
+        } else {
+            // Repair logic: check if labels match. If they are the old ones (don't contain '<'), update the page structure.
+            const existingPage = currentPages[existingIndex];
+            const needsUpdate = !existingPage.headings?.[0]?.subHeadings?.[0]?.fields?.[0]?.label?.includes('<');
+            if (needsUpdate) {
+                setPages((prev)=>{
+                    const updatedPages = [
+                        ...prev[currentCompanyId] || []
+                    ];
+                    updatedPages[existingIndex] = {
+                        ...existingPage,
+                        headings: seoSchema.headings
+                    };
+                    return {
+                        ...prev,
+                        [currentCompanyId]: updatedPages
+                    };
+                });
+            }
+        }
+    };
+    const ensureMailerSettingsPage = ()=>{
+        if (!currentCompanyId) return;
+        const currentPages = pages[currentCompanyId] || [];
+        const existing = currentPages.find((p)=>p.name.toLowerCase().trim() === 'mailer settings');
+        if (!existing) {
+            const newPage = {
+                id: Date.now() + 80,
+                name: 'Mailer Settings',
+                headings: [
+                    {
+                        id: Date.now() + 81,
+                        title: 'MAILER SETTINGS',
+                        subHeadings: [
+                            {
+                                id: Date.now() + 82,
+                                title: 'Configure SMTP settings for sending OTP and notification emails.',
+                                fields: [
+                                    {
+                                        id: Date.now() + 83,
+                                        label: 'SMTP HOST',
+                                        valueType: 'Text',
+                                        placeholder: 'smtp.gmail.com'
+                                    },
+                                    {
+                                        id: Date.now() + 84,
+                                        label: 'SMTP PORT',
+                                        valueType: 'Number',
+                                        placeholder: '465'
+                                    },
+                                    {
+                                        id: Date.now() + 85,
+                                        label: 'SMTP USER',
+                                        valueType: 'Text',
+                                        placeholder: 'user@gmail.com'
+                                    },
+                                    {
+                                        id: Date.now() + 86,
+                                        label: 'SMTP PASSWORD',
+                                        valueType: 'Password',
+                                        placeholder: '••••••••'
+                                    },
+                                    {
+                                        id: Date.now() + 87,
+                                        label: 'FROM EMAIL ADDRESS',
+                                        valueType: 'Text',
+                                        placeholder: 'noreply@company.com'
+                                    }
+                                ]
+                            },
+                            {
+                                id: Date.now() + 88,
+                                title: 'ADMIN NOTIFICATION EMAILS',
+                                fields: [
+                                    {
+                                        id: Date.now() + 89,
+                                        label: 'Email Recipients',
+                                        valueType: 'Grid',
+                                        infinity: true,
+                                        gridCols: [
+                                            {
+                                                label: 'Email Address',
+                                                type: 'Text'
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            };
+            setPages((prev)=>({
+                    ...prev,
+                    [currentCompanyId]: [
+                        ...prev[currentCompanyId] || [],
+                        newPage
+                    ]
+                }));
+        }
+    };
+    // Call once on mount or when currentCompanyId changes
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "AppProvider.useEffect": ()=>{
+            ensureFormPage();
+            ensureSeoPage();
+            ensureMailerSettingsPage();
+        }
+    }["AppProvider.useEffect"], [
+        currentCompanyId
+    ]);
+    // ---- Saved Entries (shared across pages for linking) ----
+    const addEntry = (pageId, entryData)=>{
+        const key = `${currentCompanyId}_${pageId}`;
+        const entry = {
+            id: Date.now(),
+            data: entryData,
+            savedAt: new Date().toLocaleString()
+        };
+        setSavedEntries((prev)=>({
+                ...prev,
+                [key]: [
+                    ...prev[key] || [],
+                    entry
+                ]
+            }));
+        return entry;
+    };
+    const updateEntry = (pageId, entryId, entryData)=>{
+        const key = `${currentCompanyId}_${pageId}`;
+        setSavedEntries((prev)=>({
+                ...prev,
+                [key]: (prev[key] || []).map((e)=>e.id === Number(entryId) ? {
+                        ...e,
+                        data: entryData,
+                        updatedAt: new Date().toLocaleString()
+                    } : e)
+            }));
+    };
+    const deleteEntry = (pageId, entryId)=>{
+        const key = `${currentCompanyId}_${pageId}`;
+        setSavedEntries((prev)=>({
+                ...prev,
+                [key]: (prev[key] || []).filter((e)=>e.id !== Number(entryId))
+            }));
+    };
+    const getPageEntries = (pageId, companyId)=>{
+        const key = `${companyId || currentCompanyId}_${pageId}`;
+        return savedEntries[key] || [];
+    };
+    // Get display value for a linked entry: use specific field if provided, else fallback to first field
+    const getLinkedEntryDisplayValue = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
+        "AppProvider.useCallback[getLinkedEntryDisplayValue]": (pageId, entryId, displayFieldName)=>{
+            const entries = getPageEntries(pageId);
+            const entry = entries.find({
+                "AppProvider.useCallback[getLinkedEntryDisplayValue].entry": (e)=>e.id === Number(entryId)
+            }["AppProvider.useCallback[getLinkedEntryDisplayValue].entry"]);
+            if (!entry || !entry.data) return '';
+            const pageArr = pages[currentCompanyId] || [];
+            const page = pageArr.find({
+                "AppProvider.useCallback[getLinkedEntryDisplayValue].page": (p)=>p.id === Number(pageId)
+            }["AppProvider.useCallback[getLinkedEntryDisplayValue].page"]);
+            if (!page) return '';
+            // If a specific field name is requested, find its value
+            if (displayFieldName) {
+                for (const heading of page.headings || []){
+                    for (const sub of heading.subHeadings || []){
+                        for (const field of sub.fields || []){
+                            if (field.label === displayFieldName) {
+                                const key = `${heading.id}_${sub.id}_${field.id}`;
+                                const val = entry.data[key];
+                                if (val !== undefined && val !== null && val !== '') return val.toString();
+                            }
+                        }
+                    }
+                }
+            }
+            // Fallback: Find the first populated field's value
+            for (const heading of page.headings || []){
+                for (const sub of heading.subHeadings || []){
+                    for (const field of sub.fields || []){
+                        const key = `${heading.id}_${sub.id}_${field.id}`;
+                        const val = entry.data[key];
+                        if (val !== undefined && val !== null && val !== '') return val.toString();
+                        // Check for grid fields
+                        if (field.valueType === 'Grid') {
+                            for(let i = 0; i < (field.gridCols?.length || 0); i++){
+                                const gVal = entry.data[`${key}_col${i}`];
+                                if (gVal !== undefined && gVal !== null && gVal !== '') return gVal.toString();
+                            }
+                        }
+                    }
+                }
+            }
+            return `Entry #${entryId}`;
+        }
+    }["AppProvider.useCallback[getLinkedEntryDisplayValue]"], [
+        getPageEntries,
+        pages,
+        currentCompanyId
+    ]);
+    const getInboundLinks = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
+        "AppProvider.useCallback[getInboundLinks]": (targetPageId, targetEntryId)=>{
+            const inboundLinks = [];
+            const targetIdStr = String(targetEntryId);
+            // Only iterate over pages in the current company to maximize performance
+            const companyPages = pages[currentCompanyId] || [];
+            companyPages.forEach({
+                "AppProvider.useCallback[getInboundLinks]": (page)=>{
+                    // Find all Link fields in this page that point to targetPageId
+                    const linkFields = [];
+                    page.headings?.forEach({
+                        "AppProvider.useCallback[getInboundLinks]": (h)=>{
+                            h.subHeadings?.forEach({
+                                "AppProvider.useCallback[getInboundLinks]": (sh)=>{
+                                    sh.fields?.forEach({
+                                        "AppProvider.useCallback[getInboundLinks]": (f)=>{
+                                            if (f && f.valueType === 'Link' && String(f.linkedPageId) === String(targetPageId)) {
+                                                linkFields.push({
+                                                    pageId: page.id,
+                                                    pageName: page.name,
+                                                    fieldId: f.id,
+                                                    compositeKey: `${h.id}_${sh.id}_${f.id}`
+                                                });
+                                            }
+                                        }
+                                    }["AppProvider.useCallback[getInboundLinks]"]);
+                                }
+                            }["AppProvider.useCallback[getInboundLinks]"]);
+                        }
+                    }["AppProvider.useCallback[getInboundLinks]"]);
+                    if (linkFields.length > 0) {
+                        // Find entries for this page that have these link fields populated with targetEntryId
+                        const entries = getPageEntries(page.id);
+                        entries.forEach({
+                            "AppProvider.useCallback[getInboundLinks]": (entry)=>{
+                                if (!entry || !entry.data) return;
+                                linkFields.forEach({
+                                    "AppProvider.useCallback[getInboundLinks]": (lf)=>{
+                                        if (String(entry.data[lf.compositeKey] || "") === targetIdStr) {
+                                            inboundLinks.push({
+                                                sourcePageId: page.id,
+                                                sourcePageName: page.name,
+                                                sourceEntryId: entry.id,
+                                                sourceEntryLabel: getLinkedEntryDisplayValue(page.id, entry.id)
+                                            });
+                                        }
+                                    }
+                                }["AppProvider.useCallback[getInboundLinks]"]);
+                            }
+                        }["AppProvider.useCallback[getInboundLinks]"]);
+                    }
+                }
+            }["AppProvider.useCallback[getInboundLinks]"]);
+            return inboundLinks;
+        }
+    }["AppProvider.useCallback[getInboundLinks]"], [
+        currentCompanyId,
+        pages,
+        getPageEntries,
+        getLinkedEntryDisplayValue
+    ]);
+    const addPageLinks = (links)=>{
+        if (!links || links.length === 0) return;
+        // Add to link history with shared batchId for grouping
+        const batchId = Date.now();
+        const newLinksBatch = links.map((l)=>({
+                ...l,
+                id: Date.now() + Math.random(),
+                batchId
+            }));
+        setPageLinks((prev)=>[
+                ...prev,
+                ...newLinksBatch
+            ]);
+        const targetPageId = links[0].targetPageId;
+        const targetPage = getPage(targetPageId);
+        if (targetPage) {
+            // Create a deep copy of headings to avoid mutation issues
+            const updatedHeadings = JSON.parse(JSON.stringify(targetPage.headings));
+            if (updatedHeadings.length === 0) {
+                updatedHeadings.push({
+                    id: Date.now(),
+                    title: 'Linked Data',
+                    subHeadings: []
+                });
+            }
+            const mainHeading = updatedHeadings[0];
+            newLinksBatch.forEach((link, idx)=>{
+                let targetSubHeading;
+                if (link.groupName) {
+                    // Find or create a named sub-heading
+                    targetSubHeading = mainHeading.subHeadings.find((sh)=>sh.title === link.groupName);
+                    if (!targetSubHeading) {
+                        targetSubHeading = {
+                            id: Date.now() + Math.random() + idx,
+                            title: link.groupName,
+                            fields: []
+                        };
+                        mainHeading.subHeadings.push(targetSubHeading);
+                    }
+                } else {
+                    // Default to the first sub-heading or create one
+                    if (mainHeading.subHeadings.length === 0) {
+                        mainHeading.subHeadings.push({
+                            id: Date.now() + Math.random() + idx,
+                            title: '',
+                            fields: []
+                        });
+                    }
+                    targetSubHeading = mainHeading.subHeadings[0];
+                }
+                // Add the field with precise metadata
+                targetSubHeading.fields.push({
+                    id: Date.now() + Math.random() + idx,
+                    label: link.linkName || `Link to ${getPage(link.sourcePageId)?.name}`,
+                    valueType: 'Link',
+                    linkedPageId: link.sourcePageId,
+                    displayFieldName: link.sourceFieldName,
+                    linkId: link.id,
+                    required: false
+                });
+            });
+            updatePage(targetPageId, {
+                headings: updatedHeadings
+            });
+        }
+    };
+    const updatePageLink = (id, linkData)=>{
+        setPageLinks((prev)=>{
+            const link = prev.find((l)=>l.id === id);
+            if (!link) return prev;
+            const updatedLink = {
+                ...link,
+                ...linkData
+            };
+            // Update the page field too
+            const targetPage = getPage(link.targetPageId);
+            if (targetPage) {
+                const updatedHeadings = JSON.parse(JSON.stringify(targetPage.headings));
+                updatedHeadings.forEach((h)=>{
+                    h.subHeadings.forEach((sh)=>{
+                        sh.fields.forEach((f)=>{
+                            if (f.linkId === id) {
+                                f.label = updatedLink.linkName || f.label;
+                                f.linkedPageId = updatedLink.sourcePageId || f.linkedPageId;
+                                f.displayFieldName = updatedLink.sourceFieldName || f.displayFieldName;
+                            }
+                        });
+                    });
+                });
+                updatePage(link.targetPageId, {
+                    headings: updatedHeadings
+                });
+            }
+            return prev.map((l)=>l.id === id ? updatedLink : l);
+        });
+    };
+    const deletePageLink = (linkId)=>{
+        setPageLinks((prev)=>{
+            const link = prev.find((l)=>l.id === linkId);
+            if (link) {
+                // Also remove the field from the target page
+                const targetPage = getPage(link.targetPageId);
+                if (targetPage) {
+                    const updatedHeadings = JSON.parse(JSON.stringify(targetPage.headings));
+                    updatedHeadings.forEach((h)=>{
+                        h.subHeadings.forEach((sh)=>{
+                            sh.fields = sh.fields.filter((f)=>f.linkId !== linkId);
+                        });
+                    });
+                    updatePage(link.targetPageId, {
+                        headings: updatedHeadings
+                    });
+                }
+            }
+            return prev.filter((l)=>l.id !== linkId);
+        });
+    };
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(AppContext.Provider, {
+        value: {
+            companies,
+            currentCompanyId,
+            addCompany,
+            updateCompany,
+            selectCompany,
+            getCompanyPages,
+            addPage,
+            deletePage,
+            updatePage,
+            getPage,
+            addEntry,
+            updateEntry,
+            deleteEntry,
+            getPageEntries,
+            getLinkedEntryDisplayValue,
+            getInboundLinks,
+            pageLinks,
+            addPageLinks,
+            updatePageLink,
+            deletePageLink,
+            ensureFormPage,
+            fieldMappings,
+            addFieldMapping: (m)=>setFieldMappings((prev)=>[
+                        ...prev,
+                        {
+                            ...m,
+                            id: Date.now()
+                        }
+                    ]),
+            updateFieldMapping: (id, m)=>setFieldMappings((prev)=>prev.map((item)=>item.id === id ? {
+                            ...item,
+                            ...m
+                        } : item)),
+            deleteFieldMapping: (id)=>setFieldMappings((prev)=>prev.filter((m)=>m.id !== id)),
+            // ---- Inquiries ----
+            addInquiry: (inquiryData, companyId, type = 'contact')=>{
+                const newInquiry = {
+                    id: Date.now(),
+                    ...inquiryData,
+                    type,
+                    status: 'New',
+                    companyId: companyId ? Number(companyId) : null,
+                    submittedAt: new Date().toLocaleString()
+                };
+                setInquiries((prev)=>[
+                        newInquiry,
+                        ...prev
+                    ]);
+            },
+            updateInquiryStatus: (id, status)=>{
+                setInquiries((prev)=>prev.map((i)=>i.id === id ? {
+                            ...i,
+                            status
+                        } : i));
+            },
+            deleteInquiry: (id)=>setInquiries((prev)=>prev.filter((i)=>i.id !== id)),
+            submitExternalForm: (companyId, type, data)=>{
+                const cid = Number(companyId);
+                const cleanData = {
+                    ...data
+                };
+                const typeStr = String(type || '').toLowerCase().trim();
+                // --- Store in inquiries (General List) ---
+                const newInquiry = {
+                    id: Date.now(),
+                    ...cleanData,
+                    type: typeStr,
+                    status: 'New',
+                    seen: false,
+                    companyId: cid,
+                    submittedAt: new Date().toLocaleString()
+                };
+                setInquiries((prev)=>[
+                        newInquiry,
+                        ...prev
+                    ]);
+                // --- Dynamic Routing logic ---
+                let companyPages = pages[cid] || [];
+                // 1. Try to find page by ID or Name
+                let targetPage = companyPages.find((p)=>String(p.id) === typeStr || p.name.toLowerCase().trim() === typeStr);
+                // 2. Fallback to 'form' page if not found
+                if (!targetPage) {
+                    targetPage = companyPages.find((p)=>p.name.toLowerCase().trim() === 'form');
+                }
+                // 3. Auto-create 'form' page if still missing
+                if (!targetPage && typeStr === 'contact') {
+                    const standardFormFields = [
+                        {
+                            id: Date.now() + 103,
+                            label: 'Full Name',
+                            valueType: 'Text',
+                            placeholder: 'Submitted name'
+                        },
+                        {
+                            id: Date.now() + 104,
+                            label: 'Email Address',
+                            valueType: 'Text',
+                            placeholder: 'Submitted email'
+                        },
+                        {
+                            id: Date.now() + 105,
+                            label: 'Message',
+                            valueType: 'Text',
+                            placeholder: 'Submitted message'
+                        }
+                    ];
+                    targetPage = {
+                        id: Date.now() + 100,
+                        name: 'form',
+                        headings: [
+                            {
+                                id: Date.now() + 101,
+                                title: 'Form Submissions',
+                                subHeadings: [
+                                    {
+                                        id: Date.now() + 102,
+                                        title: '',
+                                        fields: standardFormFields
+                                    }
+                                ]
+                            }
+                        ]
+                    };
+                    setPages((prev)=>({
+                            ...prev,
+                            [cid]: [
+                                ...prev[cid] || [],
+                                targetPage
+                            ]
+                        }));
+                }
+                if (targetPage) {
+                    const entryData = {};
+                    const fieldLabelMap = {
+                        'name': 'Full Name',
+                        'email': 'Email Address',
+                        'message': 'Message',
+                        'product': 'Product Name',
+                        'quantity': 'Quantity'
+                    };
+                    for (const heading of targetPage.headings || []){
+                        for (const sub of heading.subHeadings || []){
+                            for (const field of sub.fields || []){
+                                const fieldKey = `${heading.id}_${sub.id}_${field.id}`;
+                                // Check direct matches first (ID or Label)
+                                if (cleanData[field.id]) {
+                                    entryData[fieldKey] = cleanData[field.id];
+                                } else if (cleanData[field.label]) {
+                                    entryData[fieldKey] = cleanData[field.label];
+                                } else {
+                                    // Check logic-based mapping (name -> Full Name)
+                                    for (const [dataKey, labelName] of Object.entries(fieldLabelMap)){
+                                        if (field.label.toLowerCase() === labelName.toLowerCase() && cleanData[dataKey]) {
+                                            entryData[fieldKey] = cleanData[dataKey];
+                                        }
+                                    }
+                                }
+                                // Auto-fill some fields
+                                if (field.label === 'Submitted At' || field.label === 'Date') {
+                                    entryData[fieldKey] = entryData[fieldKey] || new Date().toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                    const entryKey = `${cid}_${targetPage.id}`;
+                    const entry = {
+                        id: Date.now() + 1,
+                        data: entryData,
+                        savedAt: new Date().toLocaleString()
+                    };
+                    setSavedEntries((prev)=>({
+                            ...prev,
+                            [entryKey]: [
+                                ...prev[entryKey] || [],
+                                entry
+                            ]
+                        }));
+                }
+            },
+            inquiries,
+            pages,
+            user,
+            login: (username, password)=>{
+                if (username === 'superadmin' && password === 'pass') {
+                    const newUser = {
+                        username,
+                        role: 'Super Admin'
+                    };
+                    setUser(newUser);
+                    return {
+                        success: true,
+                        user: newUser
+                    };
+                }
+                if (username === 'systemadmin' && password === 'pass') {
+                    const newUser = {
+                        username,
+                        role: 'System Admin'
+                    };
+                    setUser(newUser);
+                    return {
+                        success: true,
+                        user: newUser
+                    };
+                }
+                return {
+                    success: false,
+                    message: 'Invalid credentials'
+                };
+            },
+            logout: ()=>setUser(null)
+        },
+        children: children
+    }, void 0, false, {
+        fileName: "[project]/Desktop/crm demo/backend/src/context/AppContext.jsx",
+        lineNumber: 776,
+        columnNumber: 5
+    }, this);
+}
+_s(AppProvider, "zYar8I6GVKXAP68S2oywo8KLBpM=");
+_c = AppProvider;
+function useApp() {
+    _s1();
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useContext"])(AppContext);
+}
+_s1(useApp, "gDsCjeeItUuvgOWf1v4qoK9RF6k=");
+var _c;
+__turbopack_context__.k.register(_c, "AppProvider");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/Desktop/crm demo/backend/src/pages/SelectCompany.jsx [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>SelectCompany
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/crm demo/backend/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/crm demo/backend/node_modules/next/navigation.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$src$2f$context$2f$AppContext$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/crm demo/backend/src/context/AppContext.jsx [app-client] (ecmascript)");
+;
+var _s = __turbopack_context__.k.signature();
+;
+;
+function SelectCompany() {
+    _s();
+    const { companies, selectCompany, user, pages } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$src$2f$context$2f$AppContext$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useApp"])();
+    const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
+    const handleSelectCompany = (id)=>{
+        selectCompany(id);
+        if (user?.role === 'System Admin') {
+            router.push('/pages');
+        } else {
+            // For Super Admin or others, land on first hub page if available
+            const companyPages = pages[id] || [];
+            if (companyPages.length > 0) {
+                router.push(`/data-entry/${companyPages[0].id}`);
+            } else {
+                // If no pages, go to pages manager anyway to create one
+                router.push('/pages');
+            }
+        }
+    };
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        className: "page-center",
+        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "select-company-wrapper animate-fade-in-up",
+            children: [
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "select-company-header",
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
+                            children: "Select Company"
+                        }, void 0, false, {
+                            fileName: "[project]/Desktop/crm demo/backend/src/pages/SelectCompany.jsx",
+                            lineNumber: 28,
+                            columnNumber: 21
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                            children: "Choose a company to continue working with"
+                        }, void 0, false, {
+                            fileName: "[project]/Desktop/crm demo/backend/src/pages/SelectCompany.jsx",
+                            lineNumber: 29,
+                            columnNumber: 21
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/Desktop/crm demo/backend/src/pages/SelectCompany.jsx",
+                    lineNumber: 27,
+                    columnNumber: 17
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "company-list",
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "card card-hover card-dashed create-company-card stagger-1 animate-fade-in-up",
+                            onClick: ()=>router.push('/create-company'),
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "plus-icon",
+                                    children: "+"
+                                }, void 0, false, {
+                                    fileName: "[project]/Desktop/crm demo/backend/src/pages/SelectCompany.jsx",
+                                    lineNumber: 36,
+                                    columnNumber: 25
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                    children: "Create New Company"
+                                }, void 0, false, {
+                                    fileName: "[project]/Desktop/crm demo/backend/src/pages/SelectCompany.jsx",
+                                    lineNumber: 37,
+                                    columnNumber: 25
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/Desktop/crm demo/backend/src/pages/SelectCompany.jsx",
+                            lineNumber: 32,
+                            columnNumber: 21
+                        }, this),
+                        companies.map((company, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: `card card-hover company-card stagger-${index + 2} animate-fade-in-up`,
+                                onClick: ()=>handleSelectCompany(company.id),
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "avatar",
+                                        children: company.initials
+                                    }, void 0, false, {
+                                        fileName: "[project]/Desktop/crm demo/backend/src/pages/SelectCompany.jsx",
+                                        lineNumber: 46,
+                                        columnNumber: 29
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "company-info",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                                children: company.name
+                                            }, void 0, false, {
+                                                fileName: "[project]/Desktop/crm demo/backend/src/pages/SelectCompany.jsx",
+                                                lineNumber: 48,
+                                                columnNumber: 33
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                children: company.role
+                                            }, void 0, false, {
+                                                fileName: "[project]/Desktop/crm demo/backend/src/pages/SelectCompany.jsx",
+                                                lineNumber: 49,
+                                                columnNumber: 33
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/Desktop/crm demo/backend/src/pages/SelectCompany.jsx",
+                                        lineNumber: 47,
+                                        columnNumber: 29
+                                    }, this)
+                                ]
+                            }, company.id, true, {
+                                fileName: "[project]/Desktop/crm demo/backend/src/pages/SelectCompany.jsx",
+                                lineNumber: 41,
+                                columnNumber: 25
+                            }, this))
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/Desktop/crm demo/backend/src/pages/SelectCompany.jsx",
+                    lineNumber: 31,
+                    columnNumber: 17
+                }, this)
+            ]
+        }, void 0, true, {
+            fileName: "[project]/Desktop/crm demo/backend/src/pages/SelectCompany.jsx",
+            lineNumber: 26,
+            columnNumber: 13
+        }, this)
+    }, void 0, false, {
+        fileName: "[project]/Desktop/crm demo/backend/src/pages/SelectCompany.jsx",
+        lineNumber: 25,
+        columnNumber: 9
+    }, this);
+}
+_s(SelectCompany, "xyl+AMU2fZ9dj6cugWvB/6mmHGI=", false, function() {
+    return [
+        __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$src$2f$context$2f$AppContext$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useApp"],
+        __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"]
+    ];
+});
+_c = SelectCompany;
+var _c;
+__turbopack_context__.k.register(_c, "SelectCompany");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/Desktop/crm demo/backend/src/app/page.jsx [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>Home
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/crm demo/backend/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$src$2f$pages$2f$SelectCompany$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/crm demo/backend/src/pages/SelectCompany.jsx [app-client] (ecmascript)");
+'use client';
+;
+;
+function Home() {
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$src$2f$pages$2f$SelectCompany$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
+        fileName: "[project]/Desktop/crm demo/backend/src/app/page.jsx",
+        lineNumber: 6,
+        columnNumber: 12
+    }, this);
+}
+_c = Home;
+var _c;
+__turbopack_context__.k.register(_c, "Home");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/Desktop/crm demo/backend/node_modules/next/dist/compiled/react/cjs/react-jsx-dev-runtime.development.js [app-client] (ecmascript)", ((__turbopack_context__, module, exports) => {
+"use strict";
+
+/**
+ * @license React
+ * react-jsx-dev-runtime.development.js
+ *
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */ var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = /*#__PURE__*/ __turbopack_context__.i("[project]/Desktop/crm demo/backend/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
+"use strict";
+"production" !== ("TURBOPACK compile-time value", "development") && function() {
+    function getComponentNameFromType(type) {
+        if (null == type) return null;
+        if ("function" === typeof type) return type.$$typeof === REACT_CLIENT_REFERENCE ? null : type.displayName || type.name || null;
+        if ("string" === typeof type) return type;
+        switch(type){
+            case REACT_FRAGMENT_TYPE:
+                return "Fragment";
+            case REACT_PROFILER_TYPE:
+                return "Profiler";
+            case REACT_STRICT_MODE_TYPE:
+                return "StrictMode";
+            case REACT_SUSPENSE_TYPE:
+                return "Suspense";
+            case REACT_SUSPENSE_LIST_TYPE:
+                return "SuspenseList";
+            case REACT_ACTIVITY_TYPE:
+                return "Activity";
+            case REACT_VIEW_TRANSITION_TYPE:
+                return "ViewTransition";
+        }
+        if ("object" === typeof type) switch("number" === typeof type.tag && console.error("Received an unexpected object in getComponentNameFromType(). This is likely a bug in React. Please file an issue."), type.$$typeof){
+            case REACT_PORTAL_TYPE:
+                return "Portal";
+            case REACT_CONTEXT_TYPE:
+                return type.displayName || "Context";
+            case REACT_CONSUMER_TYPE:
+                return (type._context.displayName || "Context") + ".Consumer";
+            case REACT_FORWARD_REF_TYPE:
+                var innerType = type.render;
+                type = type.displayName;
+                type || (type = innerType.displayName || innerType.name || "", type = "" !== type ? "ForwardRef(" + type + ")" : "ForwardRef");
+                return type;
+            case REACT_MEMO_TYPE:
+                return innerType = type.displayName || null, null !== innerType ? innerType : getComponentNameFromType(type.type) || "Memo";
+            case REACT_LAZY_TYPE:
+                innerType = type._payload;
+                type = type._init;
+                try {
+                    return getComponentNameFromType(type(innerType));
+                } catch (x) {}
+        }
+        return null;
+    }
+    function testStringCoercion(value) {
+        return "" + value;
+    }
+    function checkKeyStringCoercion(value) {
+        try {
+            testStringCoercion(value);
+            var JSCompiler_inline_result = !1;
+        } catch (e) {
+            JSCompiler_inline_result = !0;
+        }
+        if (JSCompiler_inline_result) {
+            JSCompiler_inline_result = console;
+            var JSCompiler_temp_const = JSCompiler_inline_result.error;
+            var JSCompiler_inline_result$jscomp$0 = "function" === typeof Symbol && Symbol.toStringTag && value[Symbol.toStringTag] || value.constructor.name || "Object";
+            JSCompiler_temp_const.call(JSCompiler_inline_result, "The provided key is an unsupported type %s. This value must be coerced to a string before using it here.", JSCompiler_inline_result$jscomp$0);
+            return testStringCoercion(value);
+        }
+    }
+    function getTaskName(type) {
+        if (type === REACT_FRAGMENT_TYPE) return "<>";
+        if ("object" === typeof type && null !== type && type.$$typeof === REACT_LAZY_TYPE) return "<...>";
+        try {
+            var name = getComponentNameFromType(type);
+            return name ? "<" + name + ">" : "<...>";
+        } catch (x) {
+            return "<...>";
+        }
+    }
+    function getOwner() {
+        var dispatcher = ReactSharedInternals.A;
+        return null === dispatcher ? null : dispatcher.getOwner();
+    }
+    function UnknownOwner() {
+        return Error("react-stack-top-frame");
+    }
+    function hasValidKey(config) {
+        if (hasOwnProperty.call(config, "key")) {
+            var getter = Object.getOwnPropertyDescriptor(config, "key").get;
+            if (getter && getter.isReactWarning) return !1;
+        }
+        return void 0 !== config.key;
+    }
+    function defineKeyPropWarningGetter(props, displayName) {
+        function warnAboutAccessingKey() {
+            specialPropKeyWarningShown || (specialPropKeyWarningShown = !0, console.error("%s: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://react.dev/link/special-props)", displayName));
+        }
+        warnAboutAccessingKey.isReactWarning = !0;
+        Object.defineProperty(props, "key", {
+            get: warnAboutAccessingKey,
+            configurable: !0
+        });
+    }
+    function elementRefGetterWithDeprecationWarning() {
+        var componentName = getComponentNameFromType(this.type);
+        didWarnAboutElementRef[componentName] || (didWarnAboutElementRef[componentName] = !0, console.error("Accessing element.ref was removed in React 19. ref is now a regular prop. It will be removed from the JSX Element type in a future release."));
+        componentName = this.props.ref;
+        return void 0 !== componentName ? componentName : null;
+    }
+    function ReactElement(type, key, props, owner, debugStack, debugTask) {
+        var refProp = props.ref;
+        type = {
+            $$typeof: REACT_ELEMENT_TYPE,
+            type: type,
+            key: key,
+            props: props,
+            _owner: owner
+        };
+        null !== (void 0 !== refProp ? refProp : null) ? Object.defineProperty(type, "ref", {
+            enumerable: !1,
+            get: elementRefGetterWithDeprecationWarning
+        }) : Object.defineProperty(type, "ref", {
+            enumerable: !1,
+            value: null
+        });
+        type._store = {};
+        Object.defineProperty(type._store, "validated", {
+            configurable: !1,
+            enumerable: !1,
+            writable: !0,
+            value: 0
+        });
+        Object.defineProperty(type, "_debugInfo", {
+            configurable: !1,
+            enumerable: !1,
+            writable: !0,
+            value: null
+        });
+        Object.defineProperty(type, "_debugStack", {
+            configurable: !1,
+            enumerable: !1,
+            writable: !0,
+            value: debugStack
+        });
+        Object.defineProperty(type, "_debugTask", {
+            configurable: !1,
+            enumerable: !1,
+            writable: !0,
+            value: debugTask
+        });
+        Object.freeze && (Object.freeze(type.props), Object.freeze(type));
+        return type;
+    }
+    function jsxDEVImpl(type, config, maybeKey, isStaticChildren, debugStack, debugTask) {
+        var children = config.children;
+        if (void 0 !== children) if (isStaticChildren) if (isArrayImpl(children)) {
+            for(isStaticChildren = 0; isStaticChildren < children.length; isStaticChildren++)validateChildKeys(children[isStaticChildren]);
+            Object.freeze && Object.freeze(children);
+        } else console.error("React.jsx: Static children should always be an array. You are likely explicitly calling React.jsxs or React.jsxDEV. Use the Babel transform instead.");
+        else validateChildKeys(children);
+        if (hasOwnProperty.call(config, "key")) {
+            children = getComponentNameFromType(type);
+            var keys = Object.keys(config).filter(function(k) {
+                return "key" !== k;
+            });
+            isStaticChildren = 0 < keys.length ? "{key: someKey, " + keys.join(": ..., ") + ": ...}" : "{key: someKey}";
+            didWarnAboutKeySpread[children + isStaticChildren] || (keys = 0 < keys.length ? "{" + keys.join(": ..., ") + ": ...}" : "{}", console.error('A props object containing a "key" prop is being spread into JSX:\n  let props = %s;\n  <%s {...props} />\nReact keys must be passed directly to JSX without using spread:\n  let props = %s;\n  <%s key={someKey} {...props} />', isStaticChildren, children, keys, children), didWarnAboutKeySpread[children + isStaticChildren] = !0);
+        }
+        children = null;
+        void 0 !== maybeKey && (checkKeyStringCoercion(maybeKey), children = "" + maybeKey);
+        hasValidKey(config) && (checkKeyStringCoercion(config.key), children = "" + config.key);
+        if ("key" in config) {
+            maybeKey = {};
+            for(var propName in config)"key" !== propName && (maybeKey[propName] = config[propName]);
+        } else maybeKey = config;
+        children && defineKeyPropWarningGetter(maybeKey, "function" === typeof type ? type.displayName || type.name || "Unknown" : type);
+        return ReactElement(type, children, maybeKey, getOwner(), debugStack, debugTask);
+    }
+    function validateChildKeys(node) {
+        isValidElement(node) ? node._store && (node._store.validated = 1) : "object" === typeof node && null !== node && node.$$typeof === REACT_LAZY_TYPE && ("fulfilled" === node._payload.status ? isValidElement(node._payload.value) && node._payload.value._store && (node._payload.value._store.validated = 1) : node._store && (node._store.validated = 1));
+    }
+    function isValidElement(object) {
+        return "object" === typeof object && null !== object && object.$$typeof === REACT_ELEMENT_TYPE;
+    }
+    var React = __turbopack_context__.r("[project]/Desktop/crm demo/backend/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)"), REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler"), REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy"), REACT_ACTIVITY_TYPE = Symbol.for("react.activity"), REACT_VIEW_TRANSITION_TYPE = Symbol.for("react.view_transition"), REACT_CLIENT_REFERENCE = Symbol.for("react.client.reference"), ReactSharedInternals = React.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, hasOwnProperty = Object.prototype.hasOwnProperty, isArrayImpl = Array.isArray, createTask = console.createTask ? console.createTask : function() {
+        return null;
+    };
+    React = {
+        react_stack_bottom_frame: function(callStackForError) {
+            return callStackForError();
+        }
+    };
+    var specialPropKeyWarningShown;
+    var didWarnAboutElementRef = {};
+    var unknownOwnerDebugStack = React.react_stack_bottom_frame.bind(React, UnknownOwner)();
+    var unknownOwnerDebugTask = createTask(getTaskName(UnknownOwner));
+    var didWarnAboutKeySpread = {};
+    exports.Fragment = REACT_FRAGMENT_TYPE;
+    exports.jsxDEV = function(type, config, maybeKey, isStaticChildren) {
+        var trackActualOwner = 1e4 > ReactSharedInternals.recentlyCreatedOwnerStacks++;
+        if (trackActualOwner) {
+            var previousStackTraceLimit = Error.stackTraceLimit;
+            Error.stackTraceLimit = 10;
+            var debugStackDEV = Error("react-stack-top-frame");
+            Error.stackTraceLimit = previousStackTraceLimit;
+        } else debugStackDEV = unknownOwnerDebugStack;
+        return jsxDEVImpl(type, config, maybeKey, isStaticChildren, debugStackDEV, trackActualOwner ? createTask(getTaskName(type)) : unknownOwnerDebugTask);
+    };
+}();
+}),
+"[project]/Desktop/crm demo/backend/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)", ((__turbopack_context__, module, exports) => {
+"use strict";
+
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = /*#__PURE__*/ __turbopack_context__.i("[project]/Desktop/crm demo/backend/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
+'use strict';
+if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+;
+else {
+    module.exports = __turbopack_context__.r("[project]/Desktop/crm demo/backend/node_modules/next/dist/compiled/react/cjs/react-jsx-dev-runtime.development.js [app-client] (ecmascript)");
+}
+}),
+"[project]/Desktop/crm demo/backend/node_modules/next/navigation.js [app-client] (ecmascript)", ((__turbopack_context__, module, exports) => {
+
+module.exports = __turbopack_context__.r("[project]/Desktop/crm demo/backend/node_modules/next/dist/client/components/navigation.js [app-client] (ecmascript)");
+}),
+]);
+
+//# sourceMappingURL=Desktop_crm%20demo_backend_7cdb71af._.js.map

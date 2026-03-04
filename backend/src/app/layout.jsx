@@ -1,0 +1,24 @@
+import './globals.css';
+import { AppProvider } from '../context/AppContext';
+import { Inter } from 'next/font/google';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata = {
+    title: 'Antigravity CRM',
+    description: 'Premium CRM Demo',
+};
+
+export default function RootLayout({
+    children,
+}) {
+    return (
+        <html lang="en">
+            <body className={inter.className}>
+                <AppProvider>
+                    {children}
+                </AppProvider>
+            </body>
+        </html>
+    );
+}
