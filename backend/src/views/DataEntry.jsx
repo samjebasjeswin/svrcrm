@@ -43,7 +43,17 @@ export default function DataEntry() {
                 setRepeaterRows(initialRepeaters);
             }
         }
-    }, [entryId, pageId]);
+    }, [entryId, pageId, isNew, page]);
+
+    // Auto-redirect for single-entry pages if trying to create a new one but it already exists
+    useEffect(() => {
+        if (isSettingsPage && isNew && page) {
+            const entries = getPageEntries(pageId);
+            if (entries.length > 0) {
+                router.replace(`/data-entry/${pageId}/${entries[0].id}`);
+            }
+        }
+    }, [isSettingsPage, isNew, page, pageId, router, getPageEntries]);
 
     if (!page) {
         return (
@@ -459,7 +469,9 @@ export default function DataEntry() {
                     <div className="breadcrumb">
                         <span style={{ fontWeight: 700 }}>{page.name}</span>
                         <span className="separator">›</span>
-                        <span style={{ color: 'var(--text-secondary)' }}>{(!isNew) ? 'Edit Entry' : 'New Entry'}</span>
+                        <span style={{ color: 'var(--text-secondary)' }}>
+                            {isSettingsPage ? 'Manage' : (entryId === 'new' ? 'New Entry' : 'Edit Entry')}
+                        </span>
                     </div>
                 </div>
                 <div className="data-entry-header-right">
@@ -559,7 +571,7 @@ export default function DataEntry() {
                         Clear
                     </button>
                     <button className="btn btn-primary" onClick={handleSave}>
-                        💾 {!isNew ? 'Update Entry' : 'Save Entry'}
+                        💾 {isSettingsPage ? 'Save Changes' : (!isNew ? 'Update Entry' : 'Save Entry')}
                     </button>
                 </div>
             </div>

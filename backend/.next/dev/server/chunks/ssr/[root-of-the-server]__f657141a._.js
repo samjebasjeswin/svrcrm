@@ -945,7 +945,7 @@ function PagesManager() {
                                                 style: {
                                                     flex: 1
                                                 },
-                                                onClick: ()=>router.push(`/data-entry/${page.id}`),
+                                                onClick: ()=>router.push(`/entries/${page.id}`),
                                                 children: "View"
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",

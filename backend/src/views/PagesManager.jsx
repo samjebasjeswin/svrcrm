@@ -262,7 +262,7 @@ export default function PagesManager() {
                                         </div>
                                     </div>
                                     <div style={{ display: 'flex', gap: '8px', marginTop: 'auto' }}>
-                                        <button className="btn btn-primary btn-sm" style={{ flex: 1 }} onClick={() => router.push(`/data-entry/${page.id}`)}>View</button>
+                                        <button className="btn btn-primary btn-sm" style={{ flex: 1 }} onClick={() => router.push(`/entries/${page.id}`)}>View</button>
                                         <button className="btn btn-ghost btn-sm" onClick={() => router.push(`/edit-page/${page.id}`)}>Edit</button>
                                         <button className="btn btn-danger-text btn-sm" onClick={() => handleDelete(page.id)}>Delete</button>
                                     </div>
