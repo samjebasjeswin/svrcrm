@@ -14,10 +14,10 @@ export default function StoryPage() {
             description
           }
         }`;
-                // Using the same companyId and pageId seeded in AppContext
-                const companyId = '1772530360744';
-                const pageId = '1772620158813';
-                const url = `http://localhost:5001/api/${companyId}/${pageId}?query=${encodeURIComponent(query)}`;
+                // Using the exact companyId and pageId provided
+                const companyId = '1772623665731';
+                const pageId = '1772686000215';
+                const url = `http://localhost:4000/api/${companyId}/${pageId}?query=${encodeURIComponent(query)}`;
 
                 const res = await fetch(url);
                 const json = await res.json();

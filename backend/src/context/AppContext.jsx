@@ -51,7 +51,7 @@ export function AppProvider({ children }) {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/crm/state');
+        const res = await fetch('http://localhost:5001/api/crm/state');
         if (res.ok) {
           const data = await res.json();
           if (data.companies && data.companies.length > 0) {
@@ -89,7 +89,7 @@ export function AppProvider({ children }) {
     const syncToMySQL = async () => {
       if (isInitialLoad) return;
       try {
-        await fetch('http://localhost:5000/api/crm/sync', {
+        await fetch('http://localhost:5001/api/crm/sync', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
