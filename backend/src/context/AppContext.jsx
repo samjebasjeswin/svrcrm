@@ -811,7 +811,7 @@ export function AppProvider({ children }) {
         deletePageLink,
         ensureFormPage,
         fieldMappings,
-        addFieldMapping: (m) => setFieldMappings(prev => [...prev, { ...m, id: Date.now() }]),
+        addFieldMapping: (m) => setFieldMappings(prev => [...prev, { ...m, id: Date.now(), companyId: currentCompanyId }]),
         updateFieldMapping: (id, m) => setFieldMappings(prev => prev.map(item => item.id === id ? { ...item, ...m } : item)),
         deleteFieldMapping: (id) => setFieldMappings(prev => prev.filter(m => m.id !== id)),
 

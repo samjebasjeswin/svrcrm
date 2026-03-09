@@ -4,11 +4,12 @@ import { useParams, useRouter } from 'next/navigation';
 import { useApp } from '../context/AppContext';
 
 export default function MappedDataView() {
-    const { mappingId } = useParams();
+    const params = useParams();
+    const mappingId = params.mappingId || params.id;
     const router = useRouter();
-    const { fieldMappings, getPageEntries, getPage, updateFieldMapping } = useApp();
+    const { fieldMappings, getPageEntries, getPage, updateFieldMapping, currentCompanyId } = useApp();
 
-    const mapping = fieldMappings.find(m => m.id === Number(mappingId));
+    const mapping = fieldMappings.find(m => m.id === Number(mappingId) && m.companyId === currentCompanyId);
     const [isEditingLabel, setIsEditingLabel] = useState(false);
     const [tempLabel, setTempLabel] = useState('');
 

@@ -4,11 +4,12 @@ import { useParams, useRouter } from 'next/navigation';
 import { useApp } from '../context/AppContext';
 
 export default function EditMappingHierarchy() {
-    const { mappingId } = useParams();
+    const params = useParams();
+    const mappingId = params.mappingId || params.id;
     const router = useRouter();
-    const { fieldMappings, getPageEntries, getPage, updateFieldMapping, getLinkedEntryDisplayValue } = useApp();
+    const { fieldMappings, getPageEntries, getPage, updateFieldMapping, getLinkedEntryDisplayValue, currentCompanyId } = useApp();
 
-    const mapping = fieldMappings.find(m => m.id === Number(mappingId));
+    const mapping = fieldMappings.find(m => m.id === Number(mappingId) && m.companyId === currentCompanyId);
     const [hierarchy, setHierarchy] = useState({});
     const [orderedEntries, setOrderedEntries] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');

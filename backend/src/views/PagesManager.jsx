@@ -589,7 +589,7 @@ export default function PagesManager() {
                         <div className="linking-relationship-map animate-fade-in-up" style={{ marginTop: 24 }}>
                             <div className="relationship-card card">
                                 <div className="relationship-sources">
-                                    {fieldMappings.map(mapping => (
+                                    {fieldMappings.filter(m => m.companyId === currentCompanyId).map(mapping => (
                                         <div key={mapping.id} className="relationship-row">
                                             <div className="source-info" style={{ flex: 1 }}>
                                                 <span className="source-icon">🗺️</span>
