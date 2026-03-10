@@ -3,6 +3,8 @@
   "/data-entry/[pageId]/page": "app/data-entry/[pageId]/page.js",
   "/edit-hierarchy/[id]/page": "app/edit-hierarchy/[id]/page.js",
   "/edit-page/[pageId]/page": "app/edit-page/[pageId]/page.js",
+  "/entries/[pageId]/page": "app/entries/[pageId]/page.js",
+  "/login/page": "app/login/page.js",
   "/page": "app/page.js",
   "/pages/page": "app/pages/page.js",
   "/view-mapping/[id]/page": "app/view-mapping/[id]/page.js"

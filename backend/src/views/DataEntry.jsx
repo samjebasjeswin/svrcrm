@@ -502,51 +502,60 @@ export default function DataEntry() {
                                 )}
 
                                 <div className="data-entry-fields-grid">
-                                    {(sub.fields || []).map((field) => (
-                                        <div
-                                            key={field.id}
-                                            className={`data-entry-field-group ${field.maxChars > 120 ? 'span-full' : ''}`}
-                                        >
-                                            <label className="data-entry-label">
-                                                {field.label || 'Untitled Field'}
-                                                {field.required && <span className="required">*</span>}
-                                                <span className={`data-entry-type-badge ${field.valueType === 'Link' ? 'badge-link' : ''}`}>
-                                                    {field.valueType === 'Link' ? `🔗 ${getPage(field.linkedPageId)?.name || 'Link'}` : field.valueType}
-                                                </span>
-                                                {field.infinity && (
-                                                    <span className="badge-infinity">∞ Infinity</span>
-                                                )}
-                                            </label>
-
-                                            {field.infinity ? (
-                                                <div className="repeater-container">
-                                                    {(repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [0]).map((rowId, idx) => (
-                                                        <div key={rowId} className="repeater-row animate-fade-in-up">
-                                                            <div className="repeater-row-content">
-                                                                {renderFieldInput(heading, sub, field, idx)}
-                                                            </div>
-                                                            <button
-                                                                className="repeater-delete-btn"
-                                                                onClick={() => removeRepeaterRow(getFieldKey(heading.id, sub.id, field.id), rowId)}
-                                                            >
-                                                                ✕
-                                                            </button>
-                                                        </div>
-                                                    ))}
-                                                    {(!field.maxItems || (repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [0]).length < Number(field.maxItems)) && (
-                                                        <button
-                                                            className="btn btn-primary btn-sm repeater-add-btn"
-                                                            onClick={() => addRepeaterRow(getFieldKey(heading.id, sub.id, field.id))}
-                                                        >
-                                                            + Add
-                                                        </button>
+                                    {(sub.fields || [])
+                                        .filter(field => {
+                                            const isProductField = ['Product Name', 'Quantity', 'Type'].includes(field.label);
+                                            const isAdmin = user?.role === 'Super Admin' || user?.role === 'System Admin';
+                                            if (isAdmin && page.superAdminEnabled === false && isProductField) {
+                                                return false;
+                                            }
+                                            return true;
+                                        })
+                                        .map((field) => (
+                                            <div
+                                                key={field.id}
+                                                className={`data-entry-field-group ${field.maxChars > 120 ? 'span-full' : ''}`}
+                                            >
+                                                <label className="data-entry-label">
+                                                    {field.label || 'Untitled Field'}
+                                                    {field.required && <span className="required">*</span>}
+                                                    <span className={`data-entry-type-badge ${field.valueType === 'Link' ? 'badge-link' : ''}`}>
+                                                        {field.valueType === 'Link' ? `🔗 ${getPage(field.linkedPageId)?.name || 'Link'}` : field.valueType}
+                                                    </span>
+                                                    {field.infinity && (
+                                                        <span className="badge-infinity">∞ Infinity</span>
                                                     )}
-                                                </div>
-                                            ) : (
-                                                renderFieldInput(heading, sub, field)
-                                            )}
-                                        </div>
-                                    ))}
+                                                </label>
+
+                                                {field.infinity ? (
+                                                    <div className="repeater-container">
+                                                        {(repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [0]).map((rowId, idx) => (
+                                                            <div key={rowId} className="repeater-row animate-fade-in-up">
+                                                                <div className="repeater-row-content">
+                                                                    {renderFieldInput(heading, sub, field, idx)}
+                                                                </div>
+                                                                <button
+                                                                    className="repeater-delete-btn"
+                                                                    onClick={() => removeRepeaterRow(getFieldKey(heading.id, sub.id, field.id), rowId)}
+                                                                >
+                                                                    ✕
+                                                                </button>
+                                                            </div>
+                                                        ))}
+                                                        {(!field.maxItems || (repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [0]).length < Number(field.maxItems)) && (
+                                                            <button
+                                                                className="btn btn-primary btn-sm repeater-add-btn"
+                                                                onClick={() => addRepeaterRow(getFieldKey(heading.id, sub.id, field.id))}
+                                                            >
+                                                                + Add
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                ) : (
+                                                    renderFieldInput(heading, sub, field)
+                                                )}
+                                            </div>
+                                        ))}
                                 </div>
 
 

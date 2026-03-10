@@ -157,6 +157,7 @@ export default function EditPage() {
     const [staticSeoData, setStaticSeoData] = useState({});
     const [dynamicSeoData, setDynamicSeoData] = useState({});
     const [staticSeoTimestamp, setStaticSeoTimestamp] = useState('');
+    const [superAdminEnabled, setSuperAdminEnabled] = useState(true);
 
     useEffect(() => {
         if (page) {
@@ -175,6 +176,7 @@ export default function EditPage() {
             setStaticSeoData(page.staticSeoData || {});
             setDynamicSeoData(page.dynamicSeoData || {});
             setStaticSeoTimestamp(page.staticSeoTimestamp || '');
+            setSuperAdminEnabled(page.superAdminEnabled ?? true);
         }
     }, [page?.id]);
 
@@ -418,7 +420,8 @@ export default function EditPage() {
             dynamicSeoEnabled,
             staticSeoData,
             dynamicSeoData,
-            staticSeoTimestamp
+            staticSeoTimestamp,
+            superAdminEnabled
         });
         router.push('/pages');
     };
@@ -537,6 +540,27 @@ export default function EditPage() {
                     )}
                 </div>
             )}
+
+            {/* Super Admin Configuration */}
+            <div style={{
+                display: 'flex', flexDirection: 'column', gap: '12px',
+                padding: '16px 24px', background: superAdminEnabled ? 'rgba(59,130,246,0.06)' : '#f8fafc',
+                border: `1.5px solid ${superAdminEnabled ? '#3b82f6' : 'var(--border)'}`,
+                borderRadius: '12px', marginBottom: '24px', transition: 'all 0.2s'
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div>
+                        <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--text-primary)' }}>Super Admin (Company Admin)</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                            Show this page in the sidebar and enable product-related fields
+                        </div>
+                    </div>
+                    <label className="toggle" style={{ flexShrink: 0 }}>
+                        <input type="checkbox" checked={superAdminEnabled} onChange={(e) => setSuperAdminEnabled(e.target.checked)} />
+                        <span className="toggle-slider" style={{ backgroundColor: superAdminEnabled ? '#3b82f6' : '#ccc' }}></span>
+                    </label>
+                </div>
+            </div>
 
             {/* Static SEO Configuration */}
             <div style={{
