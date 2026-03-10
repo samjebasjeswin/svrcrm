@@ -719,7 +719,7 @@ export default function EditPage() {
         return p ? p.name : '';
     };
 
-    const renderDynamicStructure = (structureHeadings, setter, sectionLabel) => {
+    const renderDynamicStructure = (structureHeadings, setter, sectionLabel, startIndex = 0, showAddSection = false) => {
         return (
             <div className="dynamic-structure-editor">
                 {structureHeadings.map((heading, hIndex) => (
@@ -727,7 +727,7 @@ export default function EditPage() {
                         <div className="heading-input-wrapper">
                             <div className="heading-top-row">
                                 <div className="heading-label">
-                                    {sectionLabel} - Heading {hIndex + 1} <span className="required">*</span>
+                                    {sectionLabel} - Heading {startIndex + hIndex + 1} <span className="required">*</span>
                                 </div>
                                 <button
                                     className="btn btn-danger-text btn-sm"
@@ -1054,9 +1054,11 @@ export default function EditPage() {
                         </div>
                     </div>
                 ))}
-                <button className="btn btn-primary" style={{ marginTop: 24, width: '100%' }} onClick={() => addHeading(setter)}>
-                    + Add New section
-                </button>
+                {showAddSection && (
+                    <button className="btn btn-primary" style={{ marginTop: 24, width: '100%' }} onClick={() => addHeading(setter)}>
+                        + Add New section
+                    </button>
+                )}
             </div>
         );
     };
@@ -1209,154 +1211,158 @@ export default function EditPage() {
 
             </div>
 
-            {/* Search field selector — shown below row when enabled */}
-            {!singleEntry && searchEnabled && (
-                <div style={{
-                    padding: '16px 20px', background: 'rgba(16,185,129,0.04)',
-                    border: '1.5px solid #10b981', borderRadius: '12px', marginBottom: '24px'
-                }}>
-                    <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px', display: 'block' }}>🔍 Searchable Field</label>
-                    <select
-                        className="form-input"
-                        style={{ height: '38px', fontSize: '13px' }}
-                        value={searchFieldId}
-                        onChange={(e) => setSearchFieldId(e.target.value)}
-                    >
-                        <option value="">-- All fields (Text search) --</option>
-                        {[
-                            ...headings,
-                            ...(staticSeoEnabled ? staticSeoHeadings : []),
-                            ...(dynamicSeoEnabled ? dynamicSeoHeadings : [])
-                        ].flatMap(h => h.subHeadings?.flatMap(sh => sh.fields?.map(f => (
-                            <option key={f.id} value={f.id}>🔍 {f.label || `Field ${f.id}`}</option>
-                        )) || []) || [])}
-                    </select>
-                    <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '6px' }}>
-                        Select which field users can search through (e.g. Name, SKU, Email)
-                    </p>
-                </div>
-            )}
-
-            {/* Static SEO expanded panel */}
-            {staticSeoEnabled && (
-                <div style={{
-                    padding: '20px 24px', background: 'rgba(79,70,229,0.04)',
-                    border: '1.5px solid var(--accent)', borderRadius: '12px', marginBottom: '24px'
-                }}>
-                    <div className="seo-fields-container animate-slide-down">
-                        {renderDynamicStructure(staticSeoHeadings, setStaticSeoHeadings, 'Static SEO')}
-                    </div>
-                    {staticSeoTimestamp && (
-                        <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '12px', marginTop: '12px', fontSize: '11px', color: 'var(--text-secondary)', textAlign: 'right' }}>
-                            🕒 Last updated: <span style={{ fontWeight: 600, color: 'var(--accent)' }}>{staticSeoTimestamp}</span>
-                        </div>
-                    )}
-                </div>
-            )}
-
-            {/* Dynamic SEO expanded panel */}
-            {dynamicSeoEnabled && (
-                <div style={{
-                    padding: '20px 24px', background: 'rgba(79,70,229,0.04)',
-                    border: '1.5px solid var(--accent)', borderRadius: '12px', marginBottom: '24px'
-                }}>
-                    <div className="seo-fields-container animate-slide-down">
-                        {renderDynamicStructure(dynamicSeoHeadings, setDynamicSeoHeadings, 'Dynamic SEO')}
-                    </div>
-                </div>
-            )}
-
-            {/* Additional Linking Panel */}
-            {linkingEnabled && (
-                <div style={{
-                    padding: '24px', background: 'rgba(59,130,246,0.04)',
-                    border: '1.5px solid #3b82f6', borderRadius: '12px', marginBottom: '24px'
-                }}>
-                    <div style={{ marginBottom: '20px' }}>
-                        <h3 style={{ fontSize: '16px', fontWeight: 700, margin: 0 }}>🔗 Additional Linking</h3>
-                        <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>
-                            Create fields that link to other pages. These will appear in your dynamic structure.
-                        </p>
-                    </div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '20px' }}>
-                        <div className="form-group">
-                            <label className="form-label" style={{ fontSize: '12px' }}>Source Page</label>
-                            <select className="form-input" value={linkSourcePageId} onChange={(e) => setLinkSourcePageId(e.target.value)}>
-                                <option value="">Select source page...</option>
-                                {otherPages.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                            </select>
-                        </div>
-                        <div className="form-group">
-                            <label className="form-label" style={{ fontSize: '12px' }}>Display Field</label>
-                            <select className="form-input" value={linkFieldName} onChange={(e) => setLinkFieldName(e.target.value)} disabled={!linkSourcePageId}>
-                                <option value="">Select display field...</option>
-                                {getAvailableFields(linkSourcePageId).map(f => <option key={f.label} value={f.label}>{f.label}</option>)}
-                            </select>
-                        </div>
-                        <div className="form-group">
-                            <label className="form-label" style={{ fontSize: '12px' }}>Custom Label</label>
-                            <input type="text" className="form-input" value={customLabel} onChange={(e) => setCustomLabel(e.target.value)} placeholder="e.g. Related Product" disabled={!linkSourcePageId} />
-                        </div>
-                        <div className="form-group">
-                            <label className="form-label" style={{ fontSize: '12px' }}>Group Name (Optional)</label>
-                            <input type="text" className="form-input" value={groupName} onChange={(e) => setGroupName(e.target.value)} placeholder="e.g. Specifications" disabled={!linkSourcePageId} />
-                        </div>
-                    </div>
-
-                    <button className="btn btn-primary btn-sm" onClick={handleAddLink} disabled={!linkSourcePageId}>
-                        + Add Linking Field
-                    </button>
-
-                    {/* Existing Links List */}
-                    {pageLinks.filter(l => l.targetPageId === Number(pageId)).length > 0 && (
-                        <div style={{ marginTop: '24px', borderTop: '1px solid rgba(59,130,246,0.1)', paddingTop: '16px' }}>
-                            <h4 style={{ fontSize: '13px', fontWeight: 700, marginBottom: '12px' }}>Existing Relationships</h4>
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                                {pageLinks.filter(l => l.targetPageId === Number(pageId)).map(link => (
-                                    <div key={link.id} style={{
-                                        background: 'white', border: '1px solid #e2e8f0', borderRadius: '8px',
-                                        padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '10px',
-                                        boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
-                                    }}>
-                                        <div style={{ fontSize: '12px' }}>
-                                            <span style={{ fontWeight: 600 }}>{link.linkName}</span>
-                                            <span style={{ color: 'var(--text-secondary)', marginLeft: '6px' }}>
-                                                ({allPages.find(p => p.id === link.sourcePageId)?.name || 'Deleted'})
-                                            </span>
-                                        </div>
-                                        <button
-                                            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '14px', padding: '0 4px' }}
-                                            onClick={() => {
-                                                if (confirm('Delete this relationship? This will remove the field from your page structure.')) {
-                                                    deletePageLink(link.id);
-                                                    // Also remove from local headings
-                                                    setHeadings(prev => {
-                                                        const next = JSON.parse(JSON.stringify(prev));
-                                                        return next.map(h => ({
-                                                            ...h,
-                                                            subHeadings: h.subHeadings.map(sh => ({
-                                                                ...sh,
-                                                                fields: sh.fields.filter(f => f.label !== link.linkName)
-                                                            }))
-                                                        }));
-                                                    });
-                                                }
-                                            }}
-                                        >
-                                            ✕
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
-            )}
-
             {/* Body */}
             <div className="edit-page-body">
-                {renderDynamicStructure(headings, setHeadings, 'Content')}
+                {/* First Heading only */}
+                {headings.length > 0 && renderDynamicStructure([headings[0]], setHeadings, 'Content', 0, false)}
+
+                {/* Search field selector — shown below first heading if enabled */}
+                {!singleEntry && searchEnabled && (
+                    <div style={{
+                        padding: '16px 20px', background: 'rgba(16,185,129,0.04)',
+                        border: '1.5px solid #10b981', borderRadius: '12px', marginBottom: '24px'
+                    }}>
+                        <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px', display: 'block' }}>🔍 Searchable Field</label>
+                        <select
+                            className="form-input"
+                            style={{ height: '38px', fontSize: '13px' }}
+                            value={searchFieldId}
+                            onChange={(e) => setSearchFieldId(e.target.value)}
+                        >
+                            <option value="">-- All fields (Text search) --</option>
+                            {[
+                                ...headings,
+                                ...(staticSeoEnabled ? staticSeoHeadings : []),
+                                ...(dynamicSeoEnabled ? dynamicSeoHeadings : [])
+                            ].flatMap(h => h.subHeadings?.flatMap(sh => sh.fields?.map(f => (
+                                <option key={f.id} value={f.id}>🔍 {f.label || `Field ${f.id}`}</option>
+                            )) || []) || [])}
+                        </select>
+                        <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '6px' }}>
+                            Select which field users can search through (e.g. Name, SKU, Email)
+                        </p>
+                    </div>
+                )}
+
+                {/* Static SEO expanded panel */}
+                {staticSeoEnabled && (
+                    <div style={{
+                        padding: '20px 24px', background: 'rgba(79,70,229,0.04)',
+                        border: '1.5px solid var(--accent)', borderRadius: '12px', marginBottom: '24px'
+                    }}>
+                        <div className="seo-fields-container animate-slide-down">
+                            {renderDynamicStructure(staticSeoHeadings, setStaticSeoHeadings, 'Static SEO')}
+                        </div>
+                        {staticSeoTimestamp && (
+                            <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '12px', marginTop: '12px', fontSize: '11px', color: 'var(--text-secondary)', textAlign: 'right' }}>
+                                🕒 Last updated: <span style={{ fontWeight: 600, color: 'var(--accent)' }}>{staticSeoTimestamp}</span>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Dynamic SEO expanded panel */}
+                {dynamicSeoEnabled && (
+                    <div style={{
+                        padding: '20px 24px', background: 'rgba(79,70,229,0.04)',
+                        border: '1.5px solid var(--accent)', borderRadius: '12px', marginBottom: '24px'
+                    }}>
+                        <div className="seo-fields-container animate-slide-down">
+                            {renderDynamicStructure(dynamicSeoHeadings, setDynamicSeoHeadings, 'Dynamic SEO')}
+                        </div>
+                    </div>
+                )}
+
+                {/* Additional Linking Panel */}
+                {linkingEnabled && (
+                    <div style={{
+                        padding: '24px', background: 'rgba(59,130,246,0.04)',
+                        border: '1.5px solid #3b82f6', borderRadius: '12px', marginBottom: '24px'
+                    }}>
+                        <div style={{ marginBottom: '20px' }}>
+                            <h3 style={{ fontSize: '16px', fontWeight: 700, margin: 0 }}>🔗 Additional Linking</h3>
+                            <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                                Create fields that link to other pages. These will appear in your dynamic structure.
+                            </p>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '20px' }}>
+                            <div className="form-group">
+                                <label className="form-label" style={{ fontSize: '12px' }}>Source Page</label>
+                                <select className="form-input" value={linkSourcePageId} onChange={(e) => setLinkSourcePageId(e.target.value)}>
+                                    <option value="">Select source page...</option>
+                                    {otherPages.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label" style={{ fontSize: '12px' }}>Display Field</label>
+                                <select className="form-input" value={linkFieldName} onChange={(e) => setLinkFieldName(e.target.value)} disabled={!linkSourcePageId}>
+                                    <option value="">Select display field...</option>
+                                    {getAvailableFields(linkSourcePageId).map(f => <option key={f.label} value={f.label}>{f.label}</option>)}
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label" style={{ fontSize: '12px' }}>Custom Label</label>
+                                <input type="text" className="form-input" value={customLabel} onChange={(e) => setCustomLabel(e.target.value)} placeholder="e.g. Related Product" disabled={!linkSourcePageId} />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label" style={{ fontSize: '12px' }}>Group Name (Optional)</label>
+                                <input type="text" className="form-input" value={groupName} onChange={(e) => setGroupName(e.target.value)} placeholder="e.g. Specifications" disabled={!linkSourcePageId} />
+                            </div>
+                        </div>
+
+                        <button className="btn btn-primary btn-sm" onClick={handleAddLink} disabled={!linkSourcePageId}>
+                            + Add Linking Field
+                        </button>
+
+                        {/* Existing Links List */}
+                        {pageLinks.filter(l => l.targetPageId === Number(pageId)).length > 0 && (
+                            <div style={{ marginTop: '24px', borderTop: '1px solid rgba(59,130,246,0.1)', paddingTop: '16px' }}>
+                                <h4 style={{ fontSize: '13px', fontWeight: 700, marginBottom: '12px' }}>Existing Relationships</h4>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                                    {pageLinks.filter(l => l.targetPageId === Number(pageId)).map(link => (
+                                        <div key={link.id} style={{
+                                            background: 'white', border: '1px solid #e2e8f0', borderRadius: '8px',
+                                            padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '10px',
+                                            boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                                        }}>
+                                            <div style={{ fontSize: '12px' }}>
+                                                <span style={{ fontWeight: 600 }}>{link.linkName}</span>
+                                                <span style={{ color: 'var(--text-secondary)', marginLeft: '6px' }}>
+                                                    ({allPages.find(p => p.id === link.sourcePageId)?.name || 'Deleted'})
+                                                </span>
+                                            </div>
+                                            <button
+                                                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '14px', padding: '0 4px' }}
+                                                onClick={() => {
+                                                    if (confirm('Delete this relationship? This will remove the field from your page structure.')) {
+                                                        deletePageLink(link.id);
+                                                        // Also remove from local headings
+                                                        setHeadings(prev => {
+                                                            const next = JSON.parse(JSON.stringify(prev));
+                                                            return next.map(h => ({
+                                                                ...h,
+                                                                subHeadings: h.subHeadings.map(sh => ({
+                                                                    ...sh,
+                                                                    fields: sh.fields.filter(f => f.label !== link.linkName)
+                                                                }))
+                                                            }));
+                                                        });
+                                                    }
+                                                }}
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Rest of Headings (or just the button if empty) */}
+                {renderDynamicStructure(headings.slice(1), setHeadings, 'Content', 1, true)}
 
                 <div className="edit-page-footer">
                     <button className="btn btn-outline" onClick={() => router.push('/pages')}>
