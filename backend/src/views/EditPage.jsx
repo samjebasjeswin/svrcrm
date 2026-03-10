@@ -156,6 +156,8 @@ export default function EditPage() {
     const [dynamicSeoEnabled, setDynamicSeoEnabled] = useState(false);
     const [staticSeoData, setStaticSeoData] = useState({});
     const [dynamicSeoData, setDynamicSeoData] = useState({});
+    const [staticSeoHeadings, setStaticSeoHeadings] = useState([]);
+    const [dynamicSeoHeadings, setDynamicSeoHeadings] = useState([]);
     const [staticSeoTimestamp, setStaticSeoTimestamp] = useState('');
     const [superAdminEnabled, setSuperAdminEnabled] = useState(true);
 
@@ -175,10 +177,81 @@ export default function EditPage() {
             setDynamicSeoEnabled(page.dynamicSeoEnabled || false);
             setStaticSeoData(page.staticSeoData || {});
             setDynamicSeoData(page.dynamicSeoData || {});
+            setStaticSeoHeadings(page.staticSeoHeadings || []);
+            setDynamicSeoHeadings(page.dynamicSeoHeadings || []);
             setStaticSeoTimestamp(page.staticSeoTimestamp || '');
             setSuperAdminEnabled(page.superAdminEnabled ?? true);
         }
     }, [page?.id]);
+
+    // Initialize Default SEO Structures if empty
+    useEffect(() => {
+        if (staticSeoEnabled && staticSeoHeadings.length === 0) {
+            setStaticSeoHeadings([
+                {
+                    id: 'static-standard',
+                    title: 'Standard Meta Tags',
+                    subHeadings: [{
+                        id: 'static-standard-sub',
+                        title: '',
+                        fields: [
+                            { id: 'st-title', label: 'Web Page Title (<title>)', valueType: 'Text', required: false },
+                            { id: 'st-desc', label: 'Meta Description', valueType: '160 Char', required: false },
+                            { id: 'st-key', label: 'Meta Keywords', valueType: 'Text', required: false },
+                            { id: 'st-rob', label: 'Robots', valueType: 'Text', required: false },
+                            { id: 'st-auth', label: 'Website Name / Author', valueType: 'Text', required: false },
+                            { id: 'st-ref', label: 'Refresh', valueType: 'Text', required: false },
+                            { id: 'st-can', label: 'Canonical URL', valueType: 'Text', required: false },
+                        ]
+                    }]
+                }
+            ]);
+        }
+        if (dynamicSeoEnabled && dynamicSeoHeadings.length === 0) {
+            setDynamicSeoHeadings([
+                {
+                    id: 'dyn-og',
+                    title: 'Open Graph Data',
+                    subHeadings: [{
+                        id: 'dyn-og-sub',
+                        title: '',
+                        fields: [
+                            { id: 'og-img', label: 'OG Image', valueType: 'Image', required: false },
+                            { id: 'og-title', label: 'OG Title', valueType: 'Text', required: false },
+                            { id: 'og-desc', label: 'OG Description', valueType: '160 Char', required: false },
+                            { id: 'og-alt', label: 'OG Alt Text', valueType: 'Text', required: false },
+                        ]
+                    }]
+                },
+                {
+                    id: 'dyn-fb',
+                    title: 'Facebook Data',
+                    subHeadings: [{
+                        id: 'dyn-fb-sub',
+                        title: '',
+                        fields: [
+                            { id: 'fb-img', label: 'Facebook Image', valueType: 'Image', required: false },
+                            { id: 'fb-title', label: 'Facebook Title', valueType: 'Text', required: false },
+                            { id: 'fb-desc', label: 'Facebook Description', valueType: '160 Char', required: false },
+                        ]
+                    }]
+                },
+                {
+                    id: 'dyn-tw',
+                    title: 'Twitter Card Data',
+                    subHeadings: [{
+                        id: 'dyn-tw-sub',
+                        title: '',
+                        fields: [
+                            { id: 'tw-img', label: 'Twitter Image', valueType: 'Image', required: false },
+                            { id: 'tw-title', label: 'Twitter Title', valueType: 'Text', required: false },
+                            { id: 'tw-desc', label: 'Twitter Description', valueType: '160 Char', required: false },
+                        ]
+                    }]
+                }
+            ]);
+        }
+    }, [staticSeoEnabled, dynamicSeoEnabled]);
 
     if (!page) {
         return (
@@ -215,8 +288,8 @@ export default function EditPage() {
     };
 
     // ---- Sub-heading operations ----
-    const addSubHeading = (headingId) => {
-        setHeadings((prev) =>
+    const addSubHeading = (headingId, setter = setHeadings) => {
+        setter((prev) =>
             prev.map((h) =>
                 h.id === headingId
                     ? {
@@ -231,8 +304,8 @@ export default function EditPage() {
         );
     };
 
-    const updateSubHeadingTitle = (headingId, subId, title) => {
-        setHeadings((prev) =>
+    const updateSubHeadingTitle = (headingId, subId, title, setter = setHeadings) => {
+        setter((prev) =>
             prev.map((h) =>
                 h.id === headingId
                     ? {
@@ -246,8 +319,8 @@ export default function EditPage() {
         );
     };
 
-    const deleteSubHeading = (headingId, subId) => {
-        setHeadings((prev) =>
+    const deleteSubHeading = (headingId, subId, setter = setHeadings) => {
+        setter((prev) =>
             prev.map((h) =>
                 h.id === headingId
                     ? { ...h, subHeadings: h.subHeadings.filter((sh) => sh.id !== subId) }
@@ -257,7 +330,7 @@ export default function EditPage() {
     };
 
     // ---- Field operations ----
-    const addGrid = (headingId, subId) => {
+    const addGrid = (headingId, subId, setter = setHeadings) => {
         const colCount = window.prompt('How many grid columns do you need?', '2');
         const num = parseInt(colCount);
         if (isNaN(num) || num <= 0) return;
@@ -268,7 +341,7 @@ export default function EditPage() {
             placeholder: 'Enter details...'
         }));
 
-        setHeadings((prev) =>
+        setter((prev) =>
             prev.map((h) =>
                 h.id === headingId
                     ? {
@@ -296,8 +369,8 @@ export default function EditPage() {
         );
     };
 
-    const addField = (headingId, subId) => {
-        setHeadings((prev) =>
+    const addField = (headingId, subId, setter = setHeadings) => {
+        setter((prev) =>
             prev.map((h) =>
                 h.id === headingId
                     ? {
@@ -324,8 +397,8 @@ export default function EditPage() {
         );
     };
 
-    const updateFieldInline = (headingId, subId, fieldId, key, value) => {
-        setHeadings((prev) =>
+    const updateFieldInline = (headingId, subId, fieldId, key, value, setter = setHeadings) => {
+        setter((prev) =>
             prev.map((h) =>
                 h.id === headingId
                     ? {
@@ -346,8 +419,8 @@ export default function EditPage() {
         );
     };
 
-    const updateFieldLink = (headingId, subId, fieldId, linkedPageId) => {
-        setHeadings((prev) =>
+    const updateFieldLink = (headingId, subId, fieldId, linkedPageId, setter = setHeadings) => {
+        setter((prev) =>
             prev.map((h) =>
                 h.id === headingId
                     ? {
@@ -370,8 +443,8 @@ export default function EditPage() {
         );
     };
 
-    const deleteField = (headingId, subId, fieldId) => {
-        setHeadings((prev) =>
+    const deleteField = (headingId, subId, fieldId, setter = setHeadings) => {
+        setter((prev) =>
             prev.map((h) =>
                 h.id === headingId
                     ? {
@@ -388,8 +461,8 @@ export default function EditPage() {
     };
 
     // ---- Heading operations ----
-    const addHeading = () => {
-        setHeadings((prev) => [
+    const addHeading = (setter = setHeadings) => {
+        setter((prev) => [
             ...prev,
             {
                 id: Date.now(),
@@ -399,15 +472,17 @@ export default function EditPage() {
         ]);
     };
 
-    const updateHeadingTitle = (headingId, title) => {
-        setHeadings((prev) =>
+    const updateHeadingTitle = (headingId, title, setter = setHeadings) => {
+        setter((prev) =>
             prev.map((h) => (h.id === headingId ? { ...h, title } : h))
         );
     };
 
-    const deleteHeading = (headingId) => {
-        if (headings.length <= 1) return;
-        setHeadings((prev) => prev.filter((h) => h.id !== headingId));
+    const deleteHeading = (headingId, setter = setHeadings) => {
+        setter((prev) => {
+            if (prev.length <= 1 && setter === setHeadings) return prev; // Keep at least one for main structure
+            return prev.filter((h) => h.id !== headingId);
+        });
     };
 
     const handleUpdate = () => {
@@ -420,6 +495,8 @@ export default function EditPage() {
             dynamicSeoEnabled,
             staticSeoData,
             dynamicSeoData,
+            staticSeoHeadings,
+            dynamicSeoHeadings,
             staticSeoTimestamp,
             superAdminEnabled
         });
@@ -449,6 +526,164 @@ export default function EditPage() {
     const getLinkedPageName = (linkedPageId) => {
         const p = allPages.find((pg) => pg.id === linkedPageId);
         return p ? p.name : '';
+    };
+
+    const renderDynamicStructure = (structureHeadings, setter, sectionLabel) => {
+        return (
+            <div className="dynamic-structure-editor">
+                {structureHeadings.map((heading, hIndex) => (
+                    <div key={heading.id} className="heading-block">
+                        <div className="heading-input-wrapper">
+                            <div className="heading-top-row">
+                                <div className="heading-label">
+                                    {sectionLabel} - Heading {hIndex + 1} <span className="required">*</span>
+                                </div>
+                                <button
+                                    className="btn btn-danger-text btn-sm"
+                                    onClick={() => deleteHeading(heading.id, setter)}
+                                    style={{ fontSize: 12, padding: '4px 8px' }}
+                                >
+                                    ✕ Remove
+                                </button>
+                            </div>
+                            <input
+                                className="heading-input"
+                                value={heading.title}
+                                onChange={(e) => updateHeadingTitle(heading.id, e.target.value, setter)}
+                                placeholder="Section heading title"
+                            />
+                        </div>
+
+                        <div className="subheadings-container">
+                            {heading.subHeadings.map((sub, sIndex) => (
+                                <div key={sub.id} className="subheading-block animate-slide-down">
+                                    <div className="subheading-header">
+                                        <div className="subheading-input-wrapper">
+                                            <div className="subheading-label">
+                                                Sub Heading {sIndex + 1}
+                                                <button
+                                                    className="btn btn-danger-text btn-sm"
+                                                    onClick={() => deleteSubHeading(heading.id, sub.id, setter)}
+                                                    style={{ fontSize: 11, padding: '2px 6px', marginLeft: 8 }}
+                                                >
+                                                    ✕
+                                                </button>
+                                            </div>
+                                            <input
+                                                className="subheading-input"
+                                                value={sub.title}
+                                                onChange={(e) => updateSubHeadingTitle(heading.id, sub.id, e.target.value, setter)}
+                                                placeholder="Sub heading title"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="fields-section">
+                                        <div className="fields-header">
+                                            <div>
+                                                <h3>Fields</h3>
+                                                <p>Configure fields for this subsection</p>
+                                            </div>
+                                            <div className="fields-header-actions" style={{ display: 'flex', gap: '10px' }}>
+                                                <button className="btn btn-accent btn-sm" onClick={() => addField(heading.id, sub.id, setter)}>
+                                                    + Add New Field
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {sub.fields.length > 0 && (
+                                            <>
+                                                <div className="fields-table-header">
+                                                    <span>Label / Grid Config</span>
+                                                    <span>Value Type *</span>
+                                                    <span>Required</span>
+                                                    <span>Actions</span>
+                                                </div>
+
+                                                {sub.fields.map((field) => (
+                                                    <div key={field.id} className="field-row">
+                                                        <input
+                                                            className="field-label-input"
+                                                            value={field.label}
+                                                            onChange={(e) =>
+                                                                updateFieldInline(heading.id, sub.id, field.id, 'label', e.target.value, setter)
+                                                            }
+                                                            placeholder="Field name"
+                                                        />
+                                                        <div className="pill-group-wrapper">
+                                                            <div className="pill-group">
+                                                                {VALUE_TYPES.map((type) => (
+                                                                    <button
+                                                                        key={type}
+                                                                        type="button"
+                                                                        className={`pill ${field.valueType === type ? getValueTypeClass(type) : ''}`}
+                                                                        onClick={() => {
+                                                                            if (type === 'Link') {
+                                                                                updateFieldInline(heading.id, sub.id, field.id, 'valueType', 'Link', setter);
+                                                                            } else {
+                                                                                updateFieldInline(heading.id, sub.id, field.id, 'valueType', type, setter);
+                                                                                updateFieldInline(heading.id, sub.id, field.id, 'linkedPageId', null, setter);
+                                                                            }
+                                                                        }}
+                                                                    >
+                                                                        {type === 'Link' ? '🔗 Link' : type}
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                            {field.valueType === 'Link' && (
+                                                                <div className="link-page-selector">
+                                                                    <select
+                                                                        className="link-page-select"
+                                                                        value={field.linkedPageId || ''}
+                                                                        onChange={(e) =>
+                                                                            updateFieldLink(heading.id, sub.id, field.id, e.target.value, setter)
+                                                                        }
+                                                                    >
+                                                                        <option value="">Select page...</option>
+                                                                        {otherPages.map((p) => (
+                                                                            <option key={p.id} value={p.id}>{p.name}</option>
+                                                                        ))}
+                                                                    </select>
+                                                                </div>
+                                                            )}
+                                                            {field.valueType === 'Slug' && (
+                                                                <div className="link-page-selector">
+                                                                    <select
+                                                                        className="link-page-select"
+                                                                        value={field.slugSourceFieldId || ''}
+                                                                        onChange={(e) =>
+                                                                            updateFieldInline(heading.id, sub.id, field.id, 'slugSourceFieldId', e.target.value, setter)
+                                                                        }
+                                                                    >
+                                                                        <option value="">Select source...</option>
+                                                                        {structureHeadings.flatMap(h => h.subHeadings?.flatMap(sh => sh.fields?.filter(f => f.id !== field.id).map(f => (
+                                                                            <option key={f.id} value={f.id}>{f.label || `Field ${f.id}`}</option>
+                                                                        )) || []) || [])}
+                                                                    </select>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div className="field-actions">
+                                                            <button className="btn btn-ghost btn-danger-text" onClick={() => deleteField(heading.id, sub.id, field.id, setter)}>🗑</button>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                            <button className="btn btn-outline btn-sm" style={{ marginTop: 16 }} onClick={() => addSubHeading(heading.id, setter)}>
+                                + Add Sub Heading
+                            </button>
+                        </div>
+                    </div>
+                ))}
+                <button className="btn btn-primary" style={{ marginTop: 24, width: '100%' }} onClick={() => addHeading(setter)}>
+                    + Add New section
+                </button>
+            </div>
+        );
     };
 
     return (
@@ -582,189 +817,16 @@ export default function EditPage() {
                     </label>
                 </div>
                 {staticSeoEnabled && (
-                    <div className="seo-fields-container animate-slide-down" style={{ borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '16px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-
-                        {/* Standard Meta Tags */}
-                        <div>
-                            <h4 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--accent)', marginBottom: '12px' }}>Standard Meta Tags</h4>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                                {[
-                                    { label: 'Web Page Title (<title>)', key: 'title' },
-                                    { label: 'Meta Description', key: 'description' },
-                                    { label: 'Meta Keywords', key: 'keywords' },
-                                    { label: 'Robots', key: 'robots' },
-                                    { label: 'Website Name / Author', key: 'author' },
-                                    { label: 'Refresh', key: 'refresh' },
-                                    { label: 'Canonical URL', key: 'canonical' }
-                                ].map((field) => (
-                                    <div key={field.key} className="form-group" style={{ marginBottom: 0 }}>
-                                        <label className="form-label" style={{ fontSize: '11px' }}>{field.label}</label>
-                                        <input
-                                            className="form-input"
-                                            style={{ height: '36px', fontSize: '12px' }}
-                                            value={staticSeoData[field.key] || ''}
-                                            onChange={(e) => {
-                                                setStaticSeoData(prev => ({ ...prev, [field.key]: e.target.value }));
-                                                setStaticSeoTimestamp(new Date().toLocaleString());
-                                            }}
-                                            placeholder={`Enter ${field.key}...`}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
+                    <>
+                        <div className="seo-fields-container animate-slide-down" style={{ borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '16px' }}>
+                            {renderDynamicStructure(staticSeoHeadings, setStaticSeoHeadings, 'Static SEO')}
                         </div>
-
-                        {/* Open Graph Data */}
-                        <div>
-                            <h4 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--accent)', marginBottom: '12px' }}>Open Graph Data</h4>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                                <div className="form-group" style={{ gridColumn: '1 / 2' }}>
-                                    <label className="form-label" style={{ fontSize: '11px' }}>OG Image</label>
-                                    <ImageUpload
-                                        value={staticSeoData.ogImage}
-                                        onChange={(val) => {
-                                            setStaticSeoData(prev => ({ ...prev, ogImage: val }));
-                                            setStaticSeoTimestamp(new Date().toLocaleString());
-                                        }}
-                                    />
-                                </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
-                                    {[
-                                        { label: 'OG Title', key: 'ogTitle' },
-                                        { label: 'OG Type', key: 'ogType' },
-                                        { label: 'OG URL', key: 'ogUrl' }
-                                    ].map((field) => (
-                                        <div key={field.key} className="form-group" style={{ marginBottom: 0 }}>
-                                            <label className="form-label" style={{ fontSize: '11px' }}>{field.label}</label>
-                                            <input
-                                                className="form-input"
-                                                style={{ height: '36px', fontSize: '12px' }}
-                                                value={staticSeoData[field.key] || ''}
-                                                onChange={(e) => {
-                                                    setStaticSeoData(prev => ({ ...prev, [field.key]: e.target.value }));
-                                                    setStaticSeoTimestamp(new Date().toLocaleString());
-                                                }}
-                                                placeholder={`Enter ${field.label}...`}
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-                                {[
-                                    { label: 'OG Description', key: 'ogDescription' },
-                                    { label: 'OG Locale', key: 'ogLocale' },
-                                    { label: 'OG Site Name', key: 'ogSiteName' },
-                                    { label: 'Article Published Time', key: 'articlePublishedTime' },
-                                    { label: 'Article Modified Time', key: 'articleModifiedTime' },
-                                    { label: 'Article Author', key: 'articleAuthor' }
-                                ].map((field) => (
-                                    <div key={field.key} className="form-group" style={{ marginBottom: 0 }}>
-                                        <label className="form-label" style={{ fontSize: '11px' }}>{field.label}</label>
-                                        <input
-                                            className="form-input"
-                                            style={{ height: '36px', fontSize: '12px' }}
-                                            value={staticSeoData[field.key] || ''}
-                                            onChange={(e) => {
-                                                setStaticSeoData(prev => ({ ...prev, [field.key]: e.target.value }));
-                                                setStaticSeoTimestamp(new Date().toLocaleString());
-                                            }}
-                                            placeholder={`Enter ${field.label}...`}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Twitter Card Data */}
-                        <div>
-                            <h4 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--accent)', marginBottom: '12px' }}>Twitter Card Data</h4>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                                <div className="form-group" style={{ gridColumn: '1 / 2' }}>
-                                    <label className="form-label" style={{ fontSize: '11px' }}>Twitter Image</label>
-                                    <ImageUpload
-                                        value={staticSeoData.twImage}
-                                        onChange={(val) => {
-                                            setStaticSeoData(prev => ({ ...prev, twImage: val }));
-                                            setStaticSeoTimestamp(new Date().toLocaleString());
-                                        }}
-                                    />
-                                </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
-                                    {[
-                                        { label: 'Twitter Card', key: 'twCard' },
-                                        { label: 'Twitter Site', key: 'twSite' },
-                                        { label: 'Twitter Title', key: 'twTitle' }
-                                    ].map((field) => (
-                                        <div key={field.key} className="form-group" style={{ marginBottom: 0 }}>
-                                            <label className="form-label" style={{ fontSize: '11px' }}>{field.label}</label>
-                                            <input
-                                                className="form-input"
-                                                style={{ height: '36px', fontSize: '12px' }}
-                                                value={staticSeoData[field.key] || ''}
-                                                onChange={(e) => {
-                                                    setStaticSeoData(prev => ({ ...prev, [field.key]: e.target.value }));
-                                                    setStaticSeoTimestamp(new Date().toLocaleString());
-                                                }}
-                                                placeholder={`Enter ${field.label}...`}
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-                                {[
-                                    { label: 'Twitter Description', key: 'twDescription' },
-                                    { label: 'Twitter Creator', key: 'twCreator' }
-                                ].map((field) => (
-                                    <div key={field.key} className="form-group" style={{ marginBottom: 0 }}>
-                                        <label className="form-label" style={{ fontSize: '11px' }}>{field.label}</label>
-                                        <input
-                                            className="form-input"
-                                            style={{ height: '36px', fontSize: '12px' }}
-                                            value={staticSeoData[field.key] || ''}
-                                            onChange={(e) => {
-                                                setStaticSeoData(prev => ({ ...prev, [field.key]: e.target.value }));
-                                                setStaticSeoTimestamp(new Date().toLocaleString());
-                                            }}
-                                            placeholder={`Enter ${field.label}...`}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Dublin Core Metadata */}
-                        <div>
-                            <h4 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--accent)', marginBottom: '12px' }}>Dublin Core Metadata</h4>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                                {[
-                                    { label: 'DC Title', key: 'dcTitle' },
-                                    { label: 'DC Description', key: 'dcDescription' },
-                                    { label: 'DC Subject', key: 'dcSubject' },
-                                    { label: 'DC Created', key: 'dcCreated' },
-                                    { label: 'DC Modified', key: 'dcModified' },
-                                    { label: 'DC Language', key: 'dcLanguage' }
-                                ].map((field) => (
-                                    <div key={field.key} className="form-group" style={{ marginBottom: 0 }}>
-                                        <label className="form-label" style={{ fontSize: '11px' }}>{field.label}</label>
-                                        <input
-                                            className="form-input"
-                                            style={{ height: '36px', fontSize: '12px' }}
-                                            value={staticSeoData[field.key] || ''}
-                                            onChange={(e) => {
-                                                setStaticSeoData(prev => ({ ...prev, [field.key]: e.target.value }));
-                                                setStaticSeoTimestamp(new Date().toLocaleString());
-                                            }}
-                                            placeholder={`Enter ${field.label}...`}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
                         {staticSeoTimestamp && (
                             <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '12px', fontSize: '11px', color: 'var(--text-secondary)', textAlign: 'right' }}>
                                 🕒 Last updated: <span style={{ fontWeight: 600, color: 'var(--accent)' }}>{staticSeoTimestamp}</span>
                             </div>
                         )}
-                    </div>
+                    </>
                 )}
             </div>
 
@@ -788,423 +850,15 @@ export default function EditPage() {
                     </label>
                 </div>
                 {dynamicSeoEnabled && (
-                    <div className="seo-fields-container animate-slide-down" style={{ borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '16px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-
-                        {/* OG Section */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                            <div className="form-group">
-                                <label className="form-label" style={{ fontSize: '11px' }}>OG Image</label>
-                                <ImageUpload
-                                    value={dynamicSeoData.ogImage}
-                                    onChange={(val) => setDynamicSeoData(prev => ({ ...prev, ogImage: val }))}
-                                />
-                            </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
-                                {[
-                                    { label: 'OG Title', key: 'ogTitle' },
-                                    { label: 'OG Description', key: 'ogDescription' },
-                                    { label: 'OG Alt Text', key: 'ogAlt' }
-                                ].map((field) => (
-                                    <div key={field.key} className="form-group" style={{ marginBottom: 0 }}>
-                                        <label className="form-label" style={{ fontSize: '11px' }}>{field.label}</label>
-                                        <input
-                                            className="form-input"
-                                            style={{ height: '36px', fontSize: '12px' }}
-                                            value={dynamicSeoData[field.key] || ''}
-                                            onChange={(e) => setDynamicSeoData(prev => ({ ...prev, [field.key]: e.target.value }))}
-                                            placeholder={`Enter ${field.label}...`}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Facebook Section */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                            <div className="form-group">
-                                <label className="form-label" style={{ fontSize: '11px' }}>Facebook Image</label>
-                                <ImageUpload
-                                    value={dynamicSeoData.fbImage}
-                                    onChange={(val) => setDynamicSeoData(prev => ({ ...prev, fbImage: val }))}
-                                />
-                            </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
-                                {[
-                                    { label: 'Facebook Title', key: 'fbTitle' },
-                                    { label: 'Facebook Description', key: 'fbDescription' }
-                                ].map((field) => (
-                                    <div key={field.key} className="form-group" style={{ marginBottom: 0 }}>
-                                        <label className="form-label" style={{ fontSize: '11px' }}>{field.label}</label>
-                                        <input
-                                            className="form-input"
-                                            style={{ height: '36px', fontSize: '12px' }}
-                                            value={dynamicSeoData[field.key] || ''}
-                                            onChange={(e) => setDynamicSeoData(prev => ({ ...prev, [field.key]: e.target.value }))}
-                                            placeholder={`Enter ${field.label}...`}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Twitter Section */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                            <div className="form-group">
-                                <label className="form-label" style={{ fontSize: '11px' }}>Twitter Image</label>
-                                <ImageUpload
-                                    value={dynamicSeoData.twImage}
-                                    onChange={(val) => setDynamicSeoData(prev => ({ ...prev, twImage: val }))}
-                                />
-                            </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
-                                {[
-                                    { label: 'Twitter Title', key: 'twTitle' },
-                                    { label: 'Twitter Description', key: 'twDescription' }
-                                ].map((field) => (
-                                    <div key={field.key} className="form-group" style={{ marginBottom: 0 }}>
-                                        <label className="form-label" style={{ fontSize: '11px' }}>{field.label}</label>
-                                        <input
-                                            className="form-input"
-                                            style={{ height: '36px', fontSize: '12px' }}
-                                            value={dynamicSeoData[field.key] || ''}
-                                            onChange={(e) => setDynamicSeoData(prev => ({ ...prev, [field.key]: e.target.value }))}
-                                            placeholder={`Enter ${field.label}...`}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+                    <div className="seo-fields-container animate-slide-down" style={{ borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '16px' }}>
+                        {renderDynamicStructure(dynamicSeoHeadings, setDynamicSeoHeadings, 'Dynamic SEO')}
                     </div>
                 )}
             </div>
 
             {/* Body */}
             <div className="edit-page-body">
-                {headings.map((heading, hIndex) => (
-                    <div key={heading.id} className="heading-block">
-                        {/* Main Heading */}
-                        <div className="heading-input-wrapper">
-                            <div className="heading-top-row">
-                                <div className="heading-label">
-                                    Heading {hIndex + 1} <span className="required">*</span>
-                                </div>
-                                {headings.length > 1 && (
-                                    <button
-                                        className="btn btn-danger-text btn-sm"
-                                        onClick={() => deleteHeading(heading.id)}
-                                        style={{ fontSize: 12, padding: '4px 8px' }}
-                                    >
-                                        ✕ Remove
-                                    </button>
-                                )}
-                            </div>
-                            <input
-                                className="heading-input"
-                                value={heading.title}
-                                onChange={(e) => updateHeadingTitle(heading.id, e.target.value)}
-                                placeholder="Main heading for this page section"
-                            />
-                            <div className="heading-placeholder">Main heading for this page section</div>
-                        </div>
-
-                        {/* Sub-headings inside this heading */}
-                        <div className="subheadings-container">
-                            {heading.subHeadings.map((sub, sIndex) => (
-                                <div key={sub.id} className="subheading-block animate-slide-down">
-                                    <div className="subheading-header">
-                                        <div className="subheading-input-wrapper">
-                                            <div className="subheading-label">
-                                                Sub Heading {sIndex + 1}
-                                                {heading.subHeadings.length > 1 && (
-                                                    <button
-                                                        className="btn btn-danger-text btn-sm"
-                                                        onClick={() => deleteSubHeading(heading.id, sub.id)}
-                                                        style={{ fontSize: 11, padding: '2px 6px', marginLeft: 8 }}
-                                                    >
-                                                        ✕
-                                                    </button>
-                                                )}
-                                            </div>
-                                            <input
-                                                className="subheading-input"
-                                                value={sub.title}
-                                                onChange={(e) => updateSubHeadingTitle(heading.id, sub.id, e.target.value)}
-                                                placeholder="Sub heading title"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* Fields for this sub-heading */}
-                                    <div className="fields-section">
-                                        <div className="fields-header">
-                                            <div>
-                                                <h3>Page Fields</h3>
-                                                <p>Add labels and select value types</p>
-                                            </div>
-                                            <div className="fields-header-actions" style={{ display: 'flex', gap: '10px' }}>
-                                                <button className="btn btn-ghost btn-sm" style={{ border: '1.5px dashed var(--accent)', color: 'var(--accent)' }} onClick={() => addGrid(heading.id, sub.id)}>
-                                                    + Grid
-                                                </button>
-                                                <button className="btn btn-accent btn-sm" onClick={() => addField(heading.id, sub.id)}>
-                                                    + Add New Field
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        {sub.fields.length > 0 && (
-                                            <>
-                                                <div className="fields-table-header">
-                                                    <span>Label / Grid Config</span>
-                                                    <span>Value Type *</span>
-                                                    <span>Required</span>
-                                                    <span>Infinity / Max</span>
-                                                    <span>Actions</span>
-                                                </div>
-
-                                                {sub.fields.map((field) => (
-                                                    <div key={field.id} className="field-row">
-                                                        <input
-                                                            className="field-label-input"
-                                                            value={field.label}
-                                                            onChange={(e) =>
-                                                                updateFieldInline(heading.id, sub.id, field.id, 'label', e.target.value)
-                                                            }
-                                                            placeholder="Field name"
-                                                        />
-                                                        <div className="pill-group-wrapper">
-                                                            <div className="pill-group">
-                                                                {VALUE_TYPES.map((type) => (
-                                                                    <button
-                                                                        key={type}
-                                                                        type="button"
-                                                                        className={`pill ${field.valueType === type ? getValueTypeClass(type) : ''}`}
-                                                                        onClick={() => {
-                                                                            if (type === 'Link') {
-                                                                                updateFieldInline(heading.id, sub.id, field.id, 'valueType', 'Link');
-                                                                            } else {
-                                                                                updateFieldInline(heading.id, sub.id, field.id, 'valueType', type);
-                                                                                updateFieldInline(heading.id, sub.id, field.id, 'linkedPageId', null);
-                                                                            }
-                                                                        }}
-                                                                    >
-                                                                        {type === 'Link' ? '🔗 Link' : type}
-                                                                    </button>
-                                                                ))}
-                                                            </div>
-                                                            {field.valueType === 'Link' && (
-                                                                <div className="link-page-selector">
-                                                                    <select
-                                                                        className="link-page-select"
-                                                                        value={field.linkedPageId || ''}
-                                                                        onChange={(e) =>
-                                                                            updateFieldLink(heading.id, sub.id, field.id, e.target.value)
-                                                                        }
-                                                                    >
-                                                                        <option value="">Select page to link...</option>
-                                                                        {otherPages.map((p) => (
-                                                                            <option key={p.id} value={p.id}>
-                                                                                📄 {p.name}
-                                                                            </option>
-                                                                        ))}
-                                                                    </select>
-                                                                    {field.linkedPageId && (
-                                                                        <span className="linked-page-badge">
-                                                                            🔗 {getLinkedPageName(field.linkedPageId)}
-                                                                        </span>
-                                                                    )}
-                                                                </div>
-                                                            )}
-
-                                                            {field.valueType === 'Slug' && (
-                                                                <div className="link-page-selector" style={{ position: 'relative' }}>
-                                                                    <select
-                                                                        className="link-page-select"
-                                                                        style={{ paddingLeft: '32px' }}
-                                                                        value={field.slugSourceFieldId || ''}
-                                                                        onChange={(e) =>
-                                                                            updateFieldInline(heading.id, sub.id, field.id, 'slugSourceFieldId', e.target.value)
-                                                                        }
-                                                                    >
-                                                                        <option value="">Select source field...</option>
-                                                                        {page.headings?.flatMap(h =>
-                                                                            h.subHeadings?.flatMap(sh =>
-                                                                                sh.fields?.filter(f => f.id !== field.id && f.valueType !== 'Slug').map(f => (
-                                                                                    <option key={f.id} value={f.id}>{f.label || `Field ${f.id}`}</option>
-                                                                                )) || []
-                                                                            ) || []
-                                                                        ) || []}
-                                                                    </select>
-                                                                    <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5, pointerEvents: 'none' }}>🔗</span>
-                                                                    {field.slugSourceFieldId && (
-                                                                        <span className="linked-page-badge" style={{ background: '#fff3e0', color: '#e65100', borderColor: '#e65100' }}>
-                                                                            Slug Source: {
-                                                                                page.headings?.flatMap(h => h.subHeadings?.flatMap(sh => sh.fields)).find(f => String(f?.id) === String(field.slugSourceFieldId))?.label || field.slugSourceFieldId
-                                                                            }
-                                                                        </span>
-                                                                    )}
-                                                                </div>
-                                                            )}
-
-                                                            {field.valueType === 'Permalink' && (
-                                                                <div className="link-page-selector" style={{ position: 'relative' }}>
-                                                                    <select
-                                                                        className="link-page-select"
-                                                                        style={{ paddingLeft: '32px' }}
-                                                                        value={field.permalinkSourceFieldId || ''}
-                                                                        onChange={(e) =>
-                                                                            updateFieldInline(heading.id, sub.id, field.id, 'permalinkSourceFieldId', e.target.value)
-                                                                        }
-                                                                    >
-                                                                        <option value="">Select source field...</option>
-                                                                        {page.headings?.flatMap(h =>
-                                                                            h.subHeadings?.flatMap(sh =>
-                                                                                sh.fields?.filter(f => f.id !== field.id && f.valueType !== 'Permalink').map(f => (
-                                                                                    <option key={f.id} value={f.id}>{f.label || `Field ${f.id}`}</option>
-                                                                                )) || []
-                                                                            ) || []
-                                                                        ) || []}
-                                                                    </select>
-                                                                    <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5, pointerEvents: 'none' }}>🔗</span>
-                                                                    {field.permalinkSourceFieldId && (
-                                                                        <span className="linked-page-badge" style={{ background: '#e0f2f1', color: '#00695c', borderColor: '#00695c' }}>
-                                                                            Permalink Source: {
-                                                                                page.headings?.flatMap(h => h.subHeadings?.flatMap(sh => sh.fields)).find(f => String(f?.id) === String(field.permalinkSourceFieldId))?.label || field.permalinkSourceFieldId
-                                                                            }
-                                                                        </span>
-                                                                    )}
-                                                                </div>
-                                                            )}
-                                                        </div>
-
-                                                        {field.valueType === 'Grid' && (
-                                                            <div className="grid-config-container animate-fade-in" style={{ gridColumn: '1 / -1', padding: '16px', background: '#f8fafc', borderRadius: 12, marginTop: 12, border: '1px solid var(--border)' }}>
-                                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                                                                    <h4 style={{ fontSize: 13, fontWeight: 700 }}>Grid Configuration ({field.gridCols?.length || 0} Columns)</h4>
-                                                                    <button
-                                                                        className="btn btn-ghost btn-sm"
-                                                                        style={{ color: 'var(--danger)' }}
-                                                                        onClick={() => {
-                                                                            const newCols = [...(field.gridCols || [])];
-                                                                            newCols.pop();
-                                                                            updateFieldInline(heading.id, sub.id, field.id, 'gridCols', newCols);
-                                                                        }}
-                                                                    >
-                                                                        - Col
-                                                                    </button>
-                                                                    <button
-                                                                        className="btn btn-ghost btn-sm"
-                                                                        style={{ color: 'var(--accent)' }}
-                                                                        onClick={() => {
-                                                                            const newCols = [...(field.gridCols || [])];
-                                                                            newCols.push({ id: Date.now(), label: '', placeholder: '' });
-                                                                            updateFieldInline(heading.id, sub.id, field.id, 'gridCols', newCols);
-                                                                        }}
-                                                                    >
-                                                                        + Col
-                                                                    </button>
-                                                                </div>
-                                                                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                                                                    {(field.gridCols || []).map((col, cIdx) => (
-                                                                        <div key={col.id || cIdx} style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                                                                            <span style={{ fontSize: 12, color: 'var(--text-secondary)', minWidth: 20 }}>{cIdx + 1}.</span>
-                                                                            <input
-                                                                                className="field-label-input"
-                                                                                value={col.label}
-                                                                                onChange={(e) => {
-                                                                                    const newCols = [...field.gridCols];
-                                                                                    newCols[cIdx].label = e.target.value;
-                                                                                    updateFieldInline(heading.id, sub.id, field.id, 'gridCols', newCols);
-                                                                                }}
-                                                                                placeholder="Column Label"
-                                                                                style={{ flex: 1 }}
-                                                                            />
-                                                                            <input
-                                                                                className="field-label-input"
-                                                                                value={col.placeholder}
-                                                                                onChange={(e) => {
-                                                                                    const newCols = [...field.gridCols];
-                                                                                    newCols[cIdx].placeholder = e.target.value;
-                                                                                    updateFieldInline(heading.id, sub.id, field.id, 'gridCols', newCols);
-                                                                                }}
-                                                                                placeholder="Placeholder"
-                                                                                style={{ flex: 1.5 }}
-                                                                            />
-                                                                        </div>
-                                                                    ))}
-                                                                </div>
-                                                            </div>
-                                                        )}
-
-                                                        <label className="toggle">
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={field.required}
-                                                                onChange={(e) =>
-                                                                    updateFieldInline(heading.id, sub.id, field.id, 'required', e.target.checked)
-                                                                }
-                                                            />
-                                                            <span className="toggle-slider"></span>
-                                                        </label>
-
-                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                            <label className="toggle">
-                                                                <input
-                                                                    type="checkbox"
-                                                                    checked={field.infinity}
-                                                                    onChange={(e) =>
-                                                                        updateFieldInline(heading.id, sub.id, field.id, 'infinity', e.target.checked)
-                                                                    }
-                                                                />
-                                                                <span className="toggle-slider infinity-slider"></span>
-                                                            </label>
-                                                            {field.infinity && (
-                                                                <input
-                                                                    type="number"
-                                                                    className="form-input"
-                                                                    style={{ width: '50px', padding: '4px 6px', fontSize: '11px', height: 'auto', textAlign: 'center' }}
-                                                                    value={field.maxItems || ''}
-                                                                    onChange={(e) => updateFieldInline(heading.id, sub.id, field.id, 'maxItems', e.target.value)}
-                                                                    placeholder="Max"
-                                                                    title="Max repeating rows (blank = infinity)"
-                                                                />
-                                                            )}
-                                                        </div>
-                                                        <div className="field-actions">
-                                                            <button
-                                                                className="field-action-btn edit"
-                                                                onClick={() => setEditingField(field)}
-                                                            >
-                                                                ✏️ Edit
-                                                            </button>
-                                                            <button
-                                                                className="field-action-btn delete"
-                                                                onClick={() => deleteField(heading.id, sub.id, field.id)}
-                                                            >
-                                                                🗑 Delete
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </>
-                                        )}
-
-                                        <button className="add-field-btn" onClick={() => addField(heading.id, sub.id)}>
-                                            + Add New Field
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-
-                            <button className="add-subheading-btn" onClick={() => addSubHeading(heading.id)}>
-                                + Add Sub Heading
-                            </button>
-                        </div>
-                    </div>
-                ))}
-
-                <button className="add-heading-btn" onClick={addHeading}>
-                    + Add Heading
-                </button>
+                {renderDynamicStructure(headings, setHeadings, 'Content')}
 
                 <div className="edit-page-footer">
                     <button className="btn btn-outline" onClick={() => router.push('/pages')}>

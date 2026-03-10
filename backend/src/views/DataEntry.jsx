@@ -422,8 +422,15 @@ export default function DataEntry() {
     };
 
     const handleSave = () => {
+        // Collect all headings from all enabled sections for validation
+        const sectionsToValidate = [
+            ...(page.headings || []),
+            ...(page.staticSeoEnabled ? (page.staticSeoHeadings || []) : []),
+            ...(page.dynamicSeoEnabled ? (page.dynamicSeoHeadings || []) : [])
+        ];
+
         // Validate required fields
-        for (const heading of headings) {
+        for (const heading of sectionsToValidate) {
             for (const sub of heading.subHeadings || []) {
                 for (const field of sub.fields || []) {
                     const key = getFieldKey(heading.id, sub.id, field.id);
@@ -438,15 +445,15 @@ export default function DataEntry() {
         if (!isNew) {
             updateEntry(Number(pageId), Number(entryId), { ...formData });
             alert('Entry updated successfully!');
-            // After update, we stay on the same page, but list will refresh via refreshKey
             setRefreshKey(k => k + 1);
         } else {
-            // Save to shared context
             addEntry(Number(pageId), { ...formData });
-            setFormData({});
-            setRefreshKey((k) => k + 1);
             alert('Entry saved successfully!');
-            // Stay on the same page for another entry
+            if (isSettingsPage) {
+                setRefreshKey((k) => k + 1);
+            } else {
+                router.push(`/data-entry/${pageId}`);
+            }
         }
     };
 
@@ -484,103 +491,121 @@ export default function DataEntry() {
 
             {/* Body */}
             <div className="data-entry-body" key={refreshKey}>
-                {headings.map((heading) => (
-                    <div key={heading.id} className="data-entry-section animate-fade-in-up">
-                        {/* Main Heading */}
-                        <div className="data-entry-main-heading">
-                            <h2>{heading.title || 'Untitled Heading'}</h2>
-                        </div>
-
-                        {/* Sub-headings with their fields */}
-                        {(heading.subHeadings || []).map((sub) => (
-                            <div key={sub.id} className="data-entry-sub-section">
-                                {sub.title && (
-                                    <div className="data-entry-sub-heading">
-                                        <h3>{sub.title}</h3>
-                                    </div>
-                                )}
-
-                                <div className="data-entry-fields-grid">
-                                    {(sub.fields || [])
-                                        .filter(field => {
-                                            const isProductField = ['Product Name', 'Quantity', 'Type'].includes(field.label);
-                                            const isAdmin = user?.role === 'Super Admin' || user?.role === 'System Admin';
-                                            if (isAdmin && page.superAdminEnabled === false && isProductField) {
-                                                return false;
-                                            }
-                                            return true;
-                                        })
-                                        .map((field) => (
-                                            <div
-                                                key={field.id}
-                                                className={`data-entry-field-group ${field.maxChars > 120 ? 'span-full' : ''}`}
-                                            >
-                                                <label className="data-entry-label">
-                                                    {field.label || 'Untitled Field'}
-                                                    {field.required && <span className="required">*</span>}
-                                                    <span className={`data-entry-type-badge ${field.valueType === 'Link' ? 'badge-link' : ''}`}>
-                                                        {field.valueType === 'Link' ? `🔗 ${getPage(field.linkedPageId)?.name || 'Link'}` : field.valueType}
-                                                    </span>
-                                                    {field.infinity && (
-                                                        <span className="badge-infinity">∞ Infinity</span>
-                                                    )}
-                                                </label>
-
-                                                {field.infinity ? (
-                                                    <div className="repeater-container">
-                                                        {(repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [0]).map((rowId, idx) => (
-                                                            <div key={rowId} className="repeater-row animate-fade-in-up">
-                                                                <div className="repeater-row-content">
-                                                                    {renderFieldInput(heading, sub, field, idx)}
-                                                                </div>
-                                                                <button
-                                                                    className="repeater-delete-btn"
-                                                                    onClick={() => removeRepeaterRow(getFieldKey(heading.id, sub.id, field.id), rowId)}
-                                                                >
-                                                                    ✕
-                                                                </button>
-                                                            </div>
-                                                        ))}
-                                                        {(!field.maxItems || (repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [0]).length < Number(field.maxItems)) && (
-                                                            <button
-                                                                className="btn btn-primary btn-sm repeater-add-btn"
-                                                                onClick={() => addRepeaterRow(getFieldKey(heading.id, sub.id, field.id))}
-                                                            >
-                                                                + Add
-                                                            </button>
-                                                        )}
-                                                    </div>
-                                                ) : (
-                                                    renderFieldInput(heading, sub, field)
-                                                )}
-                                            </div>
-                                        ))}
+                {/* Body */}
+                <div className="data-entry-body" key={refreshKey}>
+                    {/* Render Dynamic Sections */}
+                    {(() => {
+                        const renderSection = (heading, sectionLabel = '') => (
+                            <div key={heading.id} className="data-entry-section animate-fade-in-up">
+                                <div className="data-entry-main-heading">
+                                    <h2>
+                                        {heading.title || 'Untitled Heading'}
+                                        {sectionLabel && <span style={{ marginLeft: '12px', fontSize: '12px', verticalAlign: 'middle', padding: '2px 8px', borderRadius: '4px', background: 'rgba(79,70,229,0.1)', color: 'var(--accent)', fontWeight: 600 }}>{sectionLabel}</span>}
+                                    </h2>
                                 </div>
 
+                                {(heading.subHeadings || []).map((sub) => (
+                                    <div key={sub.id} className="data-entry-sub-section">
+                                        {sub.title && (
+                                            <div className="data-entry-sub-heading">
+                                                <h3>{sub.title}</h3>
+                                            </div>
+                                        )}
 
+                                        <div className="data-entry-fields-grid">
+                                            {(sub.fields || [])
+                                                .filter(field => {
+                                                    const isProductField = ['Product Name', 'Quantity', 'Type'].includes(field.label);
+                                                    const isAdmin = user?.role === 'Super Admin' || user?.role === 'System Admin';
+                                                    if (isAdmin && page.superAdminEnabled === false && isProductField) {
+                                                        return false;
+                                                    }
+                                                    return true;
+                                                })
+                                                .map((field) => (
+                                                    <div
+                                                        key={field.id}
+                                                        className={`data-entry-field-group ${field.maxChars > 120 ? 'span-full' : ''}`}
+                                                    >
+                                                        <label className="data-entry-label">
+                                                            {field.label || 'Untitled Field'}
+                                                            {field.required && <span className="required">*</span>}
+                                                            <span className={`data-entry-type-badge ${field.valueType === 'Link' ? 'badge-link' : ''}`}>
+                                                                {field.valueType === 'Link' ? `🔗 ${getPage(field.linkedPageId)?.name || 'Link'}` : field.valueType}
+                                                            </span>
+                                                            {field.infinity && (
+                                                                <span className="badge-infinity">∞ Infinity</span>
+                                                            )}
+                                                        </label>
+
+                                                        {field.infinity ? (
+                                                            <div className="repeater-container">
+                                                                {(repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [0]).map((rowId, idx) => (
+                                                                    <div key={rowId} className="repeater-row animate-fade-in-up">
+                                                                        <div className="repeater-row-content">
+                                                                            {renderFieldInput(heading, sub, field, idx)}
+                                                                        </div>
+                                                                        <button
+                                                                            className="repeater-delete-btn"
+                                                                            onClick={() => removeRepeaterRow(getFieldKey(heading.id, sub.id, field.id), rowId)}
+                                                                        >
+                                                                            ✕
+                                                                        </button>
+                                                                    </div>
+                                                                ))}
+                                                                {(!field.maxItems || (repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [0]).length < Number(field.maxItems)) && (
+                                                                    <button
+                                                                        className="btn btn-primary btn-sm repeater-add-btn"
+                                                                        onClick={() => addRepeaterRow(getFieldKey(heading.id, sub.id, field.id))}
+                                                                    >
+                                                                        + Add
+                                                                    </button>
+                                                                )}
+                                                            </div>
+                                                        ) : (
+                                                            renderFieldInput(heading, sub, field)
+                                                        )}
+                                                    </div>
+                                                ))}
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
-                ))}
+                        );
 
-                {headings.length === 0 && (
-                    <div className="data-entry-empty-page">
-                        <h3>No structure configured</h3>
-                        <p>Go to Edit Page to set up headings and fields first.</p>
-                        <button className="btn btn-primary" onClick={() => router.push(`/edit-page/${pageId}`)}>
-                            Edit Page Structure
+                        return (
+                            <>
+                                {/* Main Content Sections */}
+                                {(page.headings || []).map(h => renderSection(h))}
+
+                                {/* Static SEO Sections */}
+                                {page.staticSeoEnabled && (page.staticSeoHeadings || []).map(h => renderSection(h, 'Static SEO'))}
+
+                                {/* Dynamic SEO Sections */}
+                                {page.dynamicSeoEnabled && (page.dynamicSeoHeadings || []).map(h => renderSection(h, 'Dynamic SEO'))}
+                            </>
+                        );
+                    })()}
+
+                    {headings.length === 0 && !page.staticSeoEnabled && !page.dynamicSeoEnabled && (
+                        <div className="data-entry-empty-page">
+                            <h3>No structure configured</h3>
+                            <p>Go to Edit Page to set up headings and fields first.</p>
+                            <button className="btn btn-primary" onClick={() => router.push(`/edit-page/${pageId}`)}>
+                                Edit Page Structure
+                            </button>
+                        </div>
+                    )}
+
+                    {/* Footer */}
+                    <div className="data-entry-footer">
+                        <button className="btn btn-outline" onClick={handleClear}>
+                            Clear
+                        </button>
+                        <button className="btn btn-primary" onClick={handleSave}>
+                            💾 {isSettingsPage ? 'Save Changes' : (!isNew ? 'Update Entry' : 'Save Entry')}
                         </button>
                     </div>
-                )}
-
-                {/* Footer */}
-                <div className="data-entry-footer">
-                    <button className="btn btn-outline" onClick={handleClear}>
-                        Clear
-                    </button>
-                    <button className="btn btn-primary" onClick={handleSave}>
-                        💾 {isSettingsPage ? 'Save Changes' : (!isNew ? 'Update Entry' : 'Save Entry')}
-                    </button>
                 </div>
 
                 {/* Integrated Catalog List Section */}
