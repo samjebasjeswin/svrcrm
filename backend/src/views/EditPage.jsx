@@ -699,6 +699,7 @@ export default function EditPage() {
                                                 <p>Configure fields for this subsection</p>
                                             </div>
                                             <div className="fields-header-actions" style={{ display: 'flex', gap: '10px' }}>
+
                                                 <button className="btn btn-accent btn-sm" onClick={() => addField(heading.id, sub.id, setter)}>
                                                     + Add New Field
                                                 </button>
@@ -711,7 +712,7 @@ export default function EditPage() {
                                                     <span>Label</span>
                                                     <span>Value Type *</span>
                                                     <span style={{ textAlign: 'center' }}>Required</span>
-                                                    <span style={{ textAlign: 'center' }}>Infinite</span>
+                                                    <span style={{ textAlign: 'center' }}>  Infinite</span>
                                                     <span style={{ textAlign: 'center' }}>Max</span>
                                                     <span style={{ textAlign: 'center' }}>Unique</span>
                                                     <span style={{ textAlign: 'center' }}>Delete</span>
@@ -728,11 +729,6 @@ export default function EditPage() {
                                                                 }
                                                                 placeholder="Field name"
                                                             />
-                                                            {field.valueType === 'Grid' && (
-                                                                <div className="grid-config-hint" style={{ fontSize: '10px', color: 'var(--accent)', marginTop: '4px', fontWeight: '600' }}>
-                                                                    Grid: {field.gridCols?.length || 0} columns
-                                                                </div>
-                                                            )}
                                                         </div>
                                                         <div className="pill-group-wrapper">
                                                             <div className="pill-group">
@@ -897,6 +893,71 @@ export default function EditPage() {
                                                         <div className="field-actions" style={{ display: 'flex', justifyContent: 'center' }}>
                                                             <button className="btn btn-ghost btn-danger-text" style={{ padding: '4px 6px', fontSize: '14px' }} onClick={() => deleteField(heading.id, sub.id, field.id, setter)}>🗑</button>
                                                         </div>
+
+                                                        {field.valueType === 'Grid' && (
+                                                            <div className="grid-config-container animate-fade-in" style={{ gridColumn: '1 / -1', padding: '16px', background: '#f8fafc', borderRadius: 12, marginTop: 12, border: '1px solid var(--border)' }}>
+                                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                                                                    <h4 style={{ fontSize: 13, fontWeight: 700 }}>Grid Configuration ({field.gridCols?.length || 0} Columns)</h4>
+                                                                    <div>
+                                                                        <button
+                                                                            type="button"
+                                                                            className="btn btn-ghost btn-sm"
+                                                                            style={{ color: 'var(--danger)', marginRight: 8 }}
+                                                                            onClick={() => {
+                                                                                const newCols = [...(field.gridCols || [])];
+                                                                                if (newCols.length > 0) {
+                                                                                    newCols.pop();
+                                                                                    updateFieldInline(heading.id, sub.id, field.id, 'gridCols', newCols, setter);
+                                                                                }
+                                                                            }}
+                                                                        >
+                                                                            - Col
+                                                                        </button>
+                                                                        <button
+                                                                            type="button"
+                                                                            className="btn btn-ghost btn-sm"
+                                                                            style={{ color: 'var(--accent)' }}
+                                                                            onClick={() => {
+                                                                                const newCols = [...(field.gridCols || [])];
+                                                                                newCols.push({ id: Date.now(), label: '', placeholder: '' });
+                                                                                updateFieldInline(heading.id, sub.id, field.id, 'gridCols', newCols, setter);
+                                                                            }}
+                                                                        >
+                                                                            + Col
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                                                                    {(field.gridCols || []).map((col, cIdx) => (
+                                                                        <div key={col.id || cIdx} style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                                                                            <span style={{ fontSize: 12, color: 'var(--text-secondary)', minWidth: 20 }}>{cIdx + 1}.</span>
+                                                                            <input
+                                                                                className="field-label-input"
+                                                                                value={col.label}
+                                                                                onChange={(e) => {
+                                                                                    const newCols = [...field.gridCols];
+                                                                                    newCols[cIdx] = { ...newCols[cIdx], label: e.target.value };
+                                                                                    updateFieldInline(heading.id, sub.id, field.id, 'gridCols', newCols, setter);
+                                                                                }}
+                                                                                placeholder="Column Label"
+                                                                                style={{ flex: 1 }}
+                                                                            />
+                                                                            <input
+                                                                                className="field-label-input"
+                                                                                value={col.placeholder}
+                                                                                onChange={(e) => {
+                                                                                    const newCols = [...field.gridCols];
+                                                                                    newCols[cIdx] = { ...newCols[cIdx], placeholder: e.target.value };
+                                                                                    updateFieldInline(heading.id, sub.id, field.id, 'gridCols', newCols, setter);
+                                                                                }}
+                                                                                placeholder="Placeholder"
+                                                                                style={{ flex: 1.5 }}
+                                                                            />
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 ))}
                                             </>
