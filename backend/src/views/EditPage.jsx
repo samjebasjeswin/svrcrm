@@ -290,7 +290,51 @@ export default function EditPage() {
             setStaticSeoData(page.staticSeoData || {});
             setDynamicSeoData(page.dynamicSeoData || {});
             setStaticSeoHeadings(page.staticSeoHeadings || []);
-            setDynamicSeoHeadings(page.dynamicSeoHeadings || []);
+
+            // Migrate legacy Dynamic SEO structure (3 headings -> 1 heading with 3 subheadings)
+            let loadedDynamicHeadings = page.dynamicSeoHeadings || [];
+            if (loadedDynamicHeadings.length > 1 && loadedDynamicHeadings[0]?.id === 'dyn-og') {
+                const ogHeading = loadedDynamicHeadings.find(h => h.id === 'dyn-og');
+                const fbHeading = loadedDynamicHeadings.find(h => h.id === 'dyn-fb');
+                const twHeading = loadedDynamicHeadings.find(h => h.id === 'dyn-tw');
+
+                loadedDynamicHeadings = [{
+                    id: 'dyn-seo',
+                    title: 'Dynamic SEO',
+                    subHeadings: [
+                        {
+                            id: 'dyn-og-sub',
+                            title: 'Open Graph Data',
+                            fields: ogHeading?.subHeadings?.[0]?.fields || [
+                                { id: 'og-img', label: 'OG Image', valueType: 'Image', required: false },
+                                { id: 'og-title', label: 'OG Title', valueType: 'Text', required: false },
+                                { id: 'og-desc', label: 'OG Description', valueType: '160 Char', required: false },
+                                { id: 'og-alt', label: 'OG Alt Text', valueType: 'Text', required: false },
+                            ]
+                        },
+                        {
+                            id: 'dyn-fb-sub',
+                            title: 'Facebook Data',
+                            fields: fbHeading?.subHeadings?.[0]?.fields || [
+                                { id: 'fb-img', label: 'Facebook Image', valueType: 'Image', required: false },
+                                { id: 'fb-title', label: 'Facebook Title', valueType: 'Text', required: false },
+                                { id: 'fb-desc', label: 'Facebook Description', valueType: '160 Char', required: false },
+                            ]
+                        },
+                        {
+                            id: 'dyn-tw-sub',
+                            title: 'Twitter Card Data',
+                            fields: twHeading?.subHeadings?.[0]?.fields || [
+                                { id: 'tw-img', label: 'Twitter Image', valueType: 'Image', required: false },
+                                { id: 'tw-title', label: 'Twitter Title', valueType: 'Text', required: false },
+                                { id: 'tw-desc', label: 'Twitter Description', valueType: '160 Char', required: false },
+                            ]
+                        }
+                    ]
+                }];
+            }
+            setDynamicSeoHeadings(loadedDynamicHeadings);
+
             setStaticSeoTimestamp(page.staticSeoTimestamp || '');
             setSuperAdminEnabled(page.superAdminEnabled ?? true);
             setLinkingEnabled(page.linkingEnabled || false);
@@ -323,44 +367,38 @@ export default function EditPage() {
         if (dynamicSeoEnabled && dynamicSeoHeadings.length === 0) {
             setDynamicSeoHeadings([
                 {
-                    id: 'dyn-og',
-                    title: 'Open Graph Data',
-                    subHeadings: [{
-                        id: 'dyn-og-sub',
-                        title: '',
-                        fields: [
-                            { id: 'og-img', label: 'OG Image', valueType: 'Image', required: false },
-                            { id: 'og-title', label: 'OG Title', valueType: 'Text', required: false },
-                            { id: 'og-desc', label: 'OG Description', valueType: '160 Char', required: false },
-                            { id: 'og-alt', label: 'OG Alt Text', valueType: 'Text', required: false },
-                        ]
-                    }]
-                },
-                {
-                    id: 'dyn-fb',
-                    title: 'Facebook Data',
-                    subHeadings: [{
-                        id: 'dyn-fb-sub',
-                        title: '',
-                        fields: [
-                            { id: 'fb-img', label: 'Facebook Image', valueType: 'Image', required: false },
-                            { id: 'fb-title', label: 'Facebook Title', valueType: 'Text', required: false },
-                            { id: 'fb-desc', label: 'Facebook Description', valueType: '160 Char', required: false },
-                        ]
-                    }]
-                },
-                {
-                    id: 'dyn-tw',
-                    title: 'Twitter Card Data',
-                    subHeadings: [{
-                        id: 'dyn-tw-sub',
-                        title: '',
-                        fields: [
-                            { id: 'tw-img', label: 'Twitter Image', valueType: 'Image', required: false },
-                            { id: 'tw-title', label: 'Twitter Title', valueType: 'Text', required: false },
-                            { id: 'tw-desc', label: 'Twitter Description', valueType: '160 Char', required: false },
-                        ]
-                    }]
+                    id: 'dyn-seo',
+                    title: 'Dynamic SEO',
+                    subHeadings: [
+                        {
+                            id: 'dyn-og-sub',
+                            title: 'Open Graph Data',
+                            fields: [
+                                { id: 'og-img', label: 'OG Image', valueType: 'Image', required: false },
+                                { id: 'og-title', label: 'OG Title', valueType: 'Text', required: false },
+                                { id: 'og-desc', label: 'OG Description', valueType: '160 Char', required: false },
+                                { id: 'og-alt', label: 'OG Alt Text', valueType: 'Text', required: false },
+                            ]
+                        },
+                        {
+                            id: 'dyn-fb-sub',
+                            title: 'Facebook Data',
+                            fields: [
+                                { id: 'fb-img', label: 'Facebook Image', valueType: 'Image', required: false },
+                                { id: 'fb-title', label: 'Facebook Title', valueType: 'Text', required: false },
+                                { id: 'fb-desc', label: 'Facebook Description', valueType: '160 Char', required: false },
+                            ]
+                        },
+                        {
+                            id: 'dyn-tw-sub',
+                            title: 'Twitter Card Data',
+                            fields: [
+                                { id: 'tw-img', label: 'Twitter Image', valueType: 'Image', required: false },
+                                { id: 'tw-title', label: 'Twitter Title', valueType: 'Text', required: false },
+                                { id: 'tw-desc', label: 'Twitter Description', valueType: '160 Char', required: false },
+                            ]
+                        }
+                    ]
                 }
             ]);
         }
