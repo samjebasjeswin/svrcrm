@@ -27,7 +27,7 @@ function AppLayout({ children }) {
     const isTabActive = (tab)=>searchParams.get('tab') === tab;
     const sidebarSections = [
         {
-            label: 'HUB ADMIN',
+            label: 'SUPER ADMIN',
             items: pages.filter((page)=>page.superAdminEnabled !== false).map((page)=>{
                 const count = getPageEntries(page.id).length;
                 const lowerName = page.name.toLowerCase().trim();
@@ -41,6 +41,8 @@ function AppLayout({ children }) {
                     } else {
                         targetPath = `/data-entry/${page.id}/new`;
                     }
+                } else if (isForm) {
+                    targetPath = `/entries/${page.id}`;
                 }
                 return {
                     icon: isForm ? '📋' : '📦',
@@ -49,45 +51,51 @@ function AppLayout({ children }) {
                     badge: isForm && newInquiries > 0 ? newInquiries : null,
                     path: targetPath
                 };
-            }),
-            footer: user?.role === 'System Admin' ? {
-                icon: '+',
-                label: 'Add Page',
-                path: '/pages'
-            } : null
+            })
         },
         ...user?.role === 'System Admin' || user?.role === 'Super Admin' ? [
             {
-                label: 'SYSTEM ADMIN',
+                label: 'MAPPING ADMIN',
                 hideLabel: true,
                 items: [
                     {
                         icon: '🗺️',
                         label: 'Mapping',
                         path: '/pages?tab=mapping'
+                    }
+                ]
+            }
+        ] : [],
+        ...user?.role === 'System Admin' ? [
+            {
+                label: 'SYSTEM ADMIN',
+                hideLabel: false,
+                items: [
+                    {
+                        icon: '+',
+                        label: 'Add Page',
+                        path: '/pages'
                     },
-                    ...user?.role === 'System Admin' ? [
-                        {
-                            icon: '📄',
-                            label: 'Pages',
-                            path: '/pages'
-                        },
-                        {
-                            icon: '🔗',
-                            label: 'Linking',
-                            path: '/pages?tab=linking'
-                        },
-                        {
-                            icon: '📡',
-                            label: 'API Report',
-                            path: '/pages?tab=api'
-                        },
-                        {
-                            icon: '🧪',
-                            label: 'API IDE',
-                            path: '/api-ide'
-                        }
-                    ] : []
+                    {
+                        icon: '📄',
+                        label: 'Pages',
+                        path: '/pages'
+                    },
+                    {
+                        icon: '🔗',
+                        label: 'Linking',
+                        path: '/pages?tab=linking'
+                    },
+                    {
+                        icon: '📡',
+                        label: 'API Report',
+                        path: '/pages?tab=api'
+                    },
+                    {
+                        icon: '🧪',
+                        label: 'API IDE',
+                        path: '/api-ide'
+                    }
                 ]
             }
         ] : []
@@ -145,7 +153,7 @@ function AppLayout({ children }) {
                                     children: currentCompany?.initials || '?'
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/AppLayout.jsx",
-                                    lineNumber: 83,
+                                    lineNumber: 85,
                                     columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -164,26 +172,26 @@ function AppLayout({ children }) {
                                         children: currentCompany?.name || 'Select Company'
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AppLayout.jsx",
-                                        lineNumber: 91,
+                                        lineNumber: 93,
                                         columnNumber: 29
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/AppLayout.jsx",
-                                    lineNumber: 90,
+                                    lineNumber: 92,
                                     columnNumber: 25
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/AppLayout.jsx",
-                            lineNumber: 82,
+                            lineNumber: 84,
                             columnNumber: 21
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/AppLayout.jsx",
-                        lineNumber: 78,
+                        lineNumber: 80,
                         columnNumber: 17
                     }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    user?.role !== 'Super Admin' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         style: {
                             padding: '12px 14px 8px'
                         },
@@ -215,20 +223,20 @@ function AppLayout({ children }) {
                                     children: "+"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/AppLayout.jsx",
-                                    lineNumber: 111,
-                                    columnNumber: 25
+                                    lineNumber: 114,
+                                    columnNumber: 29
                                 }, this),
                                 " Create"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/AppLayout.jsx",
-                            lineNumber: 100,
-                            columnNumber: 21
+                            lineNumber: 103,
+                            columnNumber: 25
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/AppLayout.jsx",
-                        lineNumber: 99,
-                        columnNumber: 17
+                        lineNumber: 102,
+                        columnNumber: 21
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         style: {
@@ -254,7 +262,7 @@ function AppLayout({ children }) {
                                         children: section.label
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AppLayout.jsx",
-                                        lineNumber: 120,
+                                        lineNumber: 124,
                                         columnNumber: 33
                                     }, this),
                                     section.items.map((item)=>{
@@ -291,7 +299,7 @@ function AppLayout({ children }) {
                                                     children: item.icon
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/AppLayout.jsx",
-                                                    lineNumber: 144,
+                                                    lineNumber: 148,
                                                     columnNumber: 41
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -308,7 +316,7 @@ function AppLayout({ children }) {
                                                     children: item.label
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/AppLayout.jsx",
-                                                    lineNumber: 145,
+                                                    lineNumber: 149,
                                                     columnNumber: 41
                                                 }, this),
                                                 item.badge && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -324,13 +332,13 @@ function AppLayout({ children }) {
                                                     children: item.badge
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/AppLayout.jsx",
-                                                    lineNumber: 155,
+                                                    lineNumber: 159,
                                                     columnNumber: 45
                                                 }, this)
                                             ]
                                         }, item.label, true, {
                                             fileName: "[project]/src/components/AppLayout.jsx",
-                                            lineNumber: 132,
+                                            lineNumber: 136,
                                             columnNumber: 37
                                         }, this);
                                     }),
@@ -360,7 +368,7 @@ function AppLayout({ children }) {
                                                 children: "+"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/AppLayout.jsx",
-                                                lineNumber: 176,
+                                                lineNumber: 180,
                                                 columnNumber: 37
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -371,24 +379,24 @@ function AppLayout({ children }) {
                                                 children: section.footer.label
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/AppLayout.jsx",
-                                                lineNumber: 177,
+                                                lineNumber: 181,
                                                 columnNumber: 37
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/AppLayout.jsx",
-                                        lineNumber: 166,
+                                        lineNumber: 170,
                                         columnNumber: 33
                                     }, this)
                                 ]
                             }, section.label, true, {
                                 fileName: "[project]/src/components/AppLayout.jsx",
-                                lineNumber: 118,
+                                lineNumber: 122,
                                 columnNumber: 25
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/src/components/AppLayout.jsx",
-                        lineNumber: 116,
+                        lineNumber: 120,
                         columnNumber: 17
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -420,7 +428,7 @@ function AppLayout({ children }) {
                                     children: user?.username?.[0]?.toUpperCase() || 'U'
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/AppLayout.jsx",
-                                    lineNumber: 187,
+                                    lineNumber: 191,
                                     columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -439,7 +447,7 @@ function AppLayout({ children }) {
                                             children: user?.username
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/AppLayout.jsx",
-                                            lineNumber: 195,
+                                            lineNumber: 199,
                                             columnNumber: 29
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -452,13 +460,13 @@ function AppLayout({ children }) {
                                             children: user?.role?.toUpperCase() || 'COMPANY_ADMIN'
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/AppLayout.jsx",
-                                            lineNumber: 198,
+                                            lineNumber: 202,
                                             columnNumber: 29
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/AppLayout.jsx",
-                                    lineNumber: 194,
+                                    lineNumber: 198,
                                     columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -483,24 +491,24 @@ function AppLayout({ children }) {
                                     children: "⏻"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/AppLayout.jsx",
-                                    lineNumber: 202,
+                                    lineNumber: 206,
                                     columnNumber: 25
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/AppLayout.jsx",
-                            lineNumber: 186,
+                            lineNumber: 190,
                             columnNumber: 21
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/AppLayout.jsx",
-                        lineNumber: 185,
+                        lineNumber: 189,
                         columnNumber: 17
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/AppLayout.jsx",
-                lineNumber: 73,
+                lineNumber: 75,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -513,13 +521,13 @@ function AppLayout({ children }) {
                 children: children
             }, void 0, false, {
                 fileName: "[project]/src/components/AppLayout.jsx",
-                lineNumber: 220,
+                lineNumber: 224,
                 columnNumber: 13
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/AppLayout.jsx",
-        lineNumber: 71,
+        lineNumber: 73,
         columnNumber: 9
     }, this);
 }
@@ -1002,7 +1010,6 @@ function DataEntry() {
                 }["DataEntry.useEffect.entry"]);
                 if (entry) {
                     setFormData(entry.data);
-                    // Initialize repeaterRows if entry has repeating data
                     const initialRepeaters = {};
                     Object.keys(entry.data).forEach({
                         "DataEntry.useEffect": (key)=>{
@@ -1016,8 +1023,49 @@ function DataEntry() {
                             }
                         }
                     }["DataEntry.useEffect"]);
+                    // Also ensure fields with maxItems have at least that many rows initialized
+                    page.headings?.forEach({
+                        "DataEntry.useEffect": (h)=>h.subHeadings?.forEach({
+                                "DataEntry.useEffect": (sh)=>sh.fields?.forEach({
+                                        "DataEntry.useEffect": (f)=>{
+                                            if (f.maxItems > 0) {
+                                                const fieldKey = getFieldKey(h.id, sh.id, f.id);
+                                                if (!initialRepeaters[fieldKey] || initialRepeaters[fieldKey].length < f.maxItems) {
+                                                    const currentRows = initialRepeaters[fieldKey] || [];
+                                                    const needed = f.maxItems - currentRows.length;
+                                                    for(let i = 0; i < needed; i++){
+                                                        const nextId = currentRows.length > 0 ? Math.max(...currentRows) + 1 : i;
+                                                        currentRows.push(nextId);
+                                                    }
+                                                    initialRepeaters[fieldKey] = currentRows;
+                                                }
+                                            }
+                                        }
+                                    }["DataEntry.useEffect"])
+                            }["DataEntry.useEffect"])
+                    }["DataEntry.useEffect"]);
                     setRepeaterRows(initialRepeaters);
                 }
+            } else if (isNew && page) {
+                // Pre-initialize rows for new entries if maxItems > 0
+                const initialRepeaters = {};
+                page.headings?.forEach({
+                    "DataEntry.useEffect": (h)=>h.subHeadings?.forEach({
+                            "DataEntry.useEffect": (sh)=>sh.fields?.forEach({
+                                    "DataEntry.useEffect": (f)=>{
+                                        if (f.maxItems > 0) {
+                                            const fieldKey = getFieldKey(h.id, sh.id, f.id);
+                                            initialRepeaters[fieldKey] = Array.from({
+                                                length: f.maxItems
+                                            }, {
+                                                "DataEntry.useEffect": (_, i)=>i
+                                            }["DataEntry.useEffect"]);
+                                        }
+                                    }
+                                }["DataEntry.useEffect"])
+                        }["DataEntry.useEffect"])
+                }["DataEntry.useEffect"]);
+                setRepeaterRows(initialRepeaters);
             }
         }
     }["DataEntry.useEffect"], [
@@ -1056,7 +1104,7 @@ function DataEntry() {
                         children: "Page not found"
                     }, void 0, false, {
                         fileName: "[project]/src/views/DataEntry.jsx",
-                        lineNumber: 64,
+                        lineNumber: 90,
                         columnNumber: 21
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1068,18 +1116,18 @@ function DataEntry() {
                         children: "Back to Pages"
                     }, void 0, false, {
                         fileName: "[project]/src/views/DataEntry.jsx",
-                        lineNumber: 65,
+                        lineNumber: 91,
                         columnNumber: 21
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/views/DataEntry.jsx",
-                lineNumber: 63,
+                lineNumber: 89,
                 columnNumber: 17
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/views/DataEntry.jsx",
-            lineNumber: 62,
+            lineNumber: 88,
             columnNumber: 13
         }, this);
     }
@@ -1095,19 +1143,37 @@ function DataEntry() {
                 [finalKey]: value
             };
             const formatAsSlug = (val)=>String(val || '').toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+            // Helper to get all fields from all enabled sections
+            const getAllAvailableHeadings = ()=>[
+                    ...page.headings || [],
+                    ...page.staticSeoEnabled ? page.staticSeoHeadings || [] : [],
+                    ...page.dynamicSeoEnabled ? page.dynamicSeoHeadings || [] : []
+                ];
+            const allActiveHeadings = getAllAvailableHeadings();
             // Find current field to check if it's a Permalink or Slug
             let currentField = null;
-            page?.headings?.forEach((h)=>h.subHeadings?.forEach((sh)=>sh.fields?.forEach((f)=>{
+            allActiveHeadings.forEach((h)=>h.subHeadings?.forEach((sh)=>sh.fields?.forEach((f)=>{
                         if (String(f.id).trim() === String(fieldId).trim()) currentField = f;
                     })));
             // Bi-directional logic: If Permalink is edited, update its Slug source
             if (currentField?.valueType === 'Permalink' && currentField.permalinkSourceFieldId) {
                 const slugSourceFieldId = currentField.permalinkSourceFieldId;
-                const slugKey = rowIdx !== null ? `${getFieldKey(headingId, subId, slugSourceFieldId)}_row${rowIdx}` : getFieldKey(headingId, subId, slugSourceFieldId);
-                newData[slugKey] = formatAsSlug(value);
+                // We need to find the heading and subHeading of the slugSourceFieldId
+                let sourceHeadingId = null;
+                let sourceSubId = null;
+                allActiveHeadings.forEach((h)=>h.subHeadings?.forEach((sh)=>sh.fields?.forEach((f)=>{
+                            if (String(f.id).trim() === String(slugSourceFieldId).trim()) {
+                                sourceHeadingId = h.id;
+                                sourceSubId = sh.id;
+                            }
+                        })));
+                if (sourceHeadingId && sourceSubId) {
+                    const slugKey = rowIdx !== null ? `${getFieldKey(sourceHeadingId, sourceSubId, slugSourceFieldId)}_row${rowIdx}` : getFieldKey(sourceHeadingId, sourceSubId, slugSourceFieldId);
+                    newData[slugKey] = formatAsSlug(value);
+                }
             }
             // Forward logic: If Name/Any is edited, update Slugs/Permalinks that link to it
-            page?.headings?.forEach((h)=>{
+            allActiveHeadings.forEach((h)=>{
                 h.subHeadings?.forEach((sh)=>{
                     sh.fields?.forEach((f)=>{
                         const isSlugSource = f.valueType === 'Slug' && f.slugSourceFieldId && String(f.slugSourceFieldId).trim() === String(fieldId).trim();
@@ -1118,7 +1184,7 @@ function DataEntry() {
                             newData[targetKey] = formattedValue;
                             // Chaining: If Slug is updated, also update any Permalink that links to IT
                             if (f.valueType === 'Slug') {
-                                page?.headings?.forEach((h2)=>{
+                                allActiveHeadings.forEach((h2)=>{
                                     h2.subHeadings?.forEach((sh2)=>{
                                         sh2.fields?.forEach((f2)=>{
                                             if (f2.valueType === 'Permalink' && String(f2.permalinkSourceFieldId).trim() === String(f.id).trim()) {
@@ -1141,11 +1207,12 @@ function DataEntry() {
         const finalKey = rowIdx !== null ? `${baseKey}_row${rowIdx}` : baseKey;
         return formData[finalKey] || '';
     };
-    const addRepeaterRow = (fieldKey)=>{
+    const addRepeaterRow = (fieldKey, maxItems = 0)=>{
         setRepeaterRows((prev)=>{
             const currentRows = prev[fieldKey] || [
                 0
-            ]; // Start with row 0 if none
+            ];
+            if (maxItems > 0 && currentRows.length >= maxItems) return prev;
             const nextId = Math.max(...currentRows, -1) + 1;
             return {
                 ...prev,
@@ -1199,7 +1266,7 @@ function DataEntry() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                lineNumber: 184,
+                                lineNumber: 232,
                                 columnNumber: 25
                             }, this),
                             linkedEntries.map((entry)=>{
@@ -1209,14 +1276,14 @@ function DataEntry() {
                                     children: displayVal
                                 }, entry.id, false, {
                                     fileName: "[project]/src/views/DataEntry.jsx",
-                                    lineNumber: 188,
+                                    lineNumber: 236,
                                     columnNumber: 33
                                 }, this);
                             })
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/views/DataEntry.jsx",
-                        lineNumber: 178,
+                        lineNumber: 226,
                         columnNumber: 21
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1234,7 +1301,7 @@ function DataEntry() {
                         children: "+"
                     }, void 0, false, {
                         fileName: "[project]/src/views/DataEntry.jsx",
-                        lineNumber: 194,
+                        lineNumber: 242,
                         columnNumber: 21
                     }, this),
                     linkedEntries.length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1252,19 +1319,19 @@ function DataEntry() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                lineNumber: 206,
+                                lineNumber: 254,
                                 columnNumber: 29
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/views/DataEntry.jsx",
-                        lineNumber: 204,
+                        lineNumber: 252,
                         columnNumber: 25
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/views/DataEntry.jsx",
-                lineNumber: 177,
+                lineNumber: 225,
                 columnNumber: 17
             }, this);
         }
@@ -1284,7 +1351,7 @@ function DataEntry() {
                             type: "number"
                         }, void 0, false, {
                             fileName: "[project]/src/views/DataEntry.jsx",
-                            lineNumber: 229,
+                            lineNumber: 277,
                             columnNumber: 25
                         }, this),
                         field.maxChars > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1296,13 +1363,13 @@ function DataEntry() {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/views/DataEntry.jsx",
-                            lineNumber: 231,
+                            lineNumber: 279,
                             columnNumber: 29
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/views/DataEntry.jsx",
-                    lineNumber: 228,
+                    lineNumber: 276,
                     columnNumber: 21
                 }, this);
             case 'Text':
@@ -1315,14 +1382,14 @@ function DataEntry() {
                             className: "data-entry-textarea"
                         }, void 0, false, {
                             fileName: "[project]/src/views/DataEntry.jsx",
-                            lineNumber: 239,
+                            lineNumber: 287,
                             columnNumber: 29
                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                             ...inputProps,
                             type: "text"
                         }, void 0, false, {
                             fileName: "[project]/src/views/DataEntry.jsx",
-                            lineNumber: 241,
+                            lineNumber: 289,
                             columnNumber: 29
                         }, this),
                         field.maxChars > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1334,13 +1401,13 @@ function DataEntry() {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/views/DataEntry.jsx",
-                            lineNumber: 244,
+                            lineNumber: 292,
                             columnNumber: 29
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/views/DataEntry.jsx",
-                    lineNumber: 237,
+                    lineNumber: 285,
                     columnNumber: 21
                 }, this);
             case 'Symbol':
@@ -1351,12 +1418,12 @@ function DataEntry() {
                         type: "text"
                     }, void 0, false, {
                         fileName: "[project]/src/views/DataEntry.jsx",
-                        lineNumber: 251,
+                        lineNumber: 299,
                         columnNumber: 25
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/views/DataEntry.jsx",
-                    lineNumber: 250,
+                    lineNumber: 298,
                     columnNumber: 21
                 }, this);
             case 'Password':
@@ -1367,12 +1434,12 @@ function DataEntry() {
                         type: "password"
                     }, void 0, false, {
                         fileName: "[project]/src/views/DataEntry.jsx",
-                        lineNumber: 257,
+                        lineNumber: 305,
                         columnNumber: 25
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/views/DataEntry.jsx",
-                    lineNumber: 256,
+                    lineNumber: 304,
                     columnNumber: 21
                 }, this);
             case 'Number & Text':
@@ -1385,7 +1452,7 @@ function DataEntry() {
                             placeholder: `Enter number & text for ${field.label}`
                         }, void 0, false, {
                             fileName: "[project]/src/views/DataEntry.jsx",
-                            lineNumber: 263,
+                            lineNumber: 311,
                             columnNumber: 25
                         }, this),
                         field.maxChars > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1397,13 +1464,13 @@ function DataEntry() {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/views/DataEntry.jsx",
-                            lineNumber: 265,
+                            lineNumber: 313,
                             columnNumber: 29
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/views/DataEntry.jsx",
-                    lineNumber: 262,
+                    lineNumber: 310,
                     columnNumber: 21
                 }, this);
             case 'Symbol & Text':
@@ -1416,7 +1483,7 @@ function DataEntry() {
                             placeholder: `Enter symbol & text for ${field.label}`
                         }, void 0, false, {
                             fileName: "[project]/src/views/DataEntry.jsx",
-                            lineNumber: 272,
+                            lineNumber: 320,
                             columnNumber: 25
                         }, this),
                         field.maxChars > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1428,23 +1495,23 @@ function DataEntry() {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/views/DataEntry.jsx",
-                            lineNumber: 274,
+                            lineNumber: 322,
                             columnNumber: 29
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/views/DataEntry.jsx",
-                    lineNumber: 271,
+                    lineNumber: 319,
                     columnNumber: 21
                 }, this);
             case 'Rich Editor':
                 return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$RichTextEditor$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
                     value: value,
-                    onChange: (val)=>handleChange(heading.id, sub.id, field.id, val, field.maxChars, rowIdx),
+                    onChange: (val)=>handleChange(heading.id, sub.id, field.id, val, 0, rowIdx),
                     placeholder: field.label
                 }, void 0, false, {
                     fileName: "[project]/src/views/DataEntry.jsx",
-                    lineNumber: 280,
+                    lineNumber: 328,
                     columnNumber: 21
                 }, this);
             case '120 Char':
@@ -1459,7 +1526,7 @@ function DataEntry() {
                             placeholder: `Description (max 120 chars)...`
                         }, void 0, false, {
                             fileName: "[project]/src/views/DataEntry.jsx",
-                            lineNumber: 289,
+                            lineNumber: 337,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1470,13 +1537,13 @@ function DataEntry() {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/views/DataEntry.jsx",
-                            lineNumber: 296,
+                            lineNumber: 344,
                             columnNumber: 25
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/views/DataEntry.jsx",
-                    lineNumber: 288,
+                    lineNumber: 336,
                     columnNumber: 21
                 }, this);
             case '160 Char':
@@ -1491,7 +1558,7 @@ function DataEntry() {
                             placeholder: `Description (max 160 chars)...`
                         }, void 0, false, {
                             fileName: "[project]/src/views/DataEntry.jsx",
-                            lineNumber: 302,
+                            lineNumber: 350,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1502,13 +1569,13 @@ function DataEntry() {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/views/DataEntry.jsx",
-                            lineNumber: 309,
+                            lineNumber: 357,
                             columnNumber: 25
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/views/DataEntry.jsx",
-                    lineNumber: 301,
+                    lineNumber: 349,
                     columnNumber: 21
                 }, this);
             case 'Image':
@@ -1517,11 +1584,16 @@ function DataEntry() {
                     onChange: (val)=>handleChange(heading.id, sub.id, field.id, val, 0, rowIdx)
                 }, void 0, false, {
                     fileName: "[project]/src/views/DataEntry.jsx",
-                    lineNumber: 314,
+                    lineNumber: 362,
                     columnNumber: 21
                 }, this);
             case 'Slug':
-                const slugSourceField = page.headings?.flatMap((h)=>h.subHeadings?.flatMap((sh)=>sh.fields)).find((f)=>String(f?.id) === String(field.slugSourceFieldId));
+                const allAHeadings = [
+                    ...page.headings || [],
+                    ...page.staticSeoEnabled ? page.staticSeoHeadings || [] : [],
+                    ...page.dynamicSeoEnabled ? page.dynamicSeoHeadings || [] : []
+                ];
+                const slugSourceField = allAHeadings.flatMap((h)=>h.subHeadings?.flatMap((sh)=>sh.fields)).find((f)=>String(f?.id).trim() === String(field.slugSourceFieldId).trim());
                 return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "data-entry-field-input-wrapper",
                     children: [
@@ -1537,7 +1609,7 @@ function DataEntry() {
                             }
                         }, void 0, false, {
                             fileName: "[project]/src/views/DataEntry.jsx",
-                            lineNumber: 324,
+                            lineNumber: 377,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1552,17 +1624,22 @@ function DataEntry() {
                             children: slugSourceField ? `Linked to: ${slugSourceField.label}` : 'No source connected'
                         }, void 0, false, {
                             fileName: "[project]/src/views/DataEntry.jsx",
-                            lineNumber: 331,
+                            lineNumber: 384,
                             columnNumber: 25
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/views/DataEntry.jsx",
-                    lineNumber: 323,
+                    lineNumber: 376,
                     columnNumber: 21
                 }, this);
             case 'Permalink':
-                const permSourceField = page.headings?.flatMap((h)=>h.subHeadings?.flatMap((sh)=>sh.fields)).find((f)=>String(f?.id) === String(field.permalinkSourceFieldId));
+                const allAHeadingsPerm = [
+                    ...page.headings || [],
+                    ...page.staticSeoEnabled ? page.staticSeoHeadings || [] : [],
+                    ...page.dynamicSeoEnabled ? page.dynamicSeoHeadings || [] : []
+                ];
+                const permSourceField = allAHeadingsPerm.flatMap((h)=>h.subHeadings?.flatMap((sh)=>sh.fields)).find((f)=>String(f?.id).trim() === String(field.permalinkSourceFieldId).trim());
                 return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "data-entry-field-input-wrapper",
                     children: [
@@ -1576,7 +1653,7 @@ function DataEntry() {
                             }
                         }, void 0, false, {
                             fileName: "[project]/src/views/DataEntry.jsx",
-                            lineNumber: 341,
+                            lineNumber: 399,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1591,13 +1668,13 @@ function DataEntry() {
                             children: permSourceField ? `Linked to: ${permSourceField.label} (Editable)` : 'No source connected'
                         }, void 0, false, {
                             fileName: "[project]/src/views/DataEntry.jsx",
-                            lineNumber: 350,
+                            lineNumber: 408,
                             columnNumber: 25
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/views/DataEntry.jsx",
-                    lineNumber: 340,
+                    lineNumber: 398,
                     columnNumber: 21
                 }, this);
             case 'Grid':
@@ -1627,7 +1704,7 @@ function DataEntry() {
                                         children: col.label
                                     }, void 0, false, {
                                         fileName: "[project]/src/views/DataEntry.jsx",
-                                        lineNumber: 369,
+                                        lineNumber: 427,
                                         columnNumber: 41
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1642,24 +1719,24 @@ function DataEntry() {
                                         placeholder: col.placeholder || `Enter ${col.label}...`
                                     }, void 0, false, {
                                         fileName: "[project]/src/views/DataEntry.jsx",
-                                        lineNumber: 372,
+                                        lineNumber: 430,
                                         columnNumber: 41
                                     }, this)
                                 ]
                             }, cIdx, true, {
                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                lineNumber: 368,
+                                lineNumber: 426,
                                 columnNumber: 37
                             }, this);
                         })
                     }, void 0, false, {
                         fileName: "[project]/src/views/DataEntry.jsx",
-                        lineNumber: 358,
+                        lineNumber: 416,
                         columnNumber: 25
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/views/DataEntry.jsx",
-                    lineNumber: 357,
+                    lineNumber: 415,
                     columnNumber: 21
                 }, this);
             default:
@@ -1668,7 +1745,7 @@ function DataEntry() {
                     type: "text"
                 }, void 0, false, {
                     fileName: "[project]/src/views/DataEntry.jsx",
-                    lineNumber: 387,
+                    lineNumber: 445,
                     columnNumber: 24
                 }, this);
         }
@@ -1718,9 +1795,23 @@ function DataEntry() {
             for (const sub of heading.subHeadings || []){
                 for (const field of sub.fields || []){
                     const key = getFieldKey(heading.id, sub.id, field.id);
-                    if (field.required && !formData[key]?.toString().trim()) {
-                        alert(`"${field.label}" is required`);
-                        return;
+                    if (field.infinity) {
+                        const rowIds = repeaterRows[key] || [
+                            0
+                        ];
+                        for(let i = 0; i < rowIds.length; i++){
+                            const rowKey = `${key}_row${i}`;
+                            const val = formData[rowKey];
+                            if (field.required && (!val || !val.toString().trim())) {
+                                alert(`"${field.label}" (Row ${i + 1}) is required`);
+                                return;
+                            }
+                        }
+                    } else {
+                        if (field.required && !formData[key]?.toString().trim()) {
+                            alert(`"${field.label}" is required`);
+                            return;
+                        }
                     }
                 }
             }
@@ -1762,7 +1853,7 @@ function DataEntry() {
                                 children: "←"
                             }, void 0, false, {
                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                lineNumber: 472,
+                                lineNumber: 543,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1775,7 +1866,7 @@ function DataEntry() {
                                         children: page.name
                                     }, void 0, false, {
                                         fileName: "[project]/src/views/DataEntry.jsx",
-                                        lineNumber: 476,
+                                        lineNumber: 547,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1783,7 +1874,7 @@ function DataEntry() {
                                         children: "›"
                                     }, void 0, false, {
                                         fileName: "[project]/src/views/DataEntry.jsx",
-                                        lineNumber: 477,
+                                        lineNumber: 548,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1793,19 +1884,19 @@ function DataEntry() {
                                         children: isSettingsPage ? 'Manage' : entryId === 'new' ? 'New Entry' : 'Edit Entry'
                                     }, void 0, false, {
                                         fileName: "[project]/src/views/DataEntry.jsx",
-                                        lineNumber: 478,
+                                        lineNumber: 549,
                                         columnNumber: 25
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                lineNumber: 475,
+                                lineNumber: 546,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/views/DataEntry.jsx",
-                        lineNumber: 471,
+                        lineNumber: 542,
                         columnNumber: 17
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1816,18 +1907,18 @@ function DataEntry() {
                             children: "Back to List"
                         }, void 0, false, {
                             fileName: "[project]/src/views/DataEntry.jsx",
-                            lineNumber: 485,
+                            lineNumber: 556,
                             columnNumber: 25
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/views/DataEntry.jsx",
-                        lineNumber: 483,
+                        lineNumber: 554,
                         columnNumber: 17
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/views/DataEntry.jsx",
-                lineNumber: 470,
+                lineNumber: 541,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1859,18 +1950,18 @@ function DataEntry() {
                                                             children: sectionLabel
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/views/DataEntry.jsx",
-                                                            lineNumber: 503,
+                                                            lineNumber: 574,
                                                             columnNumber: 58
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/views/DataEntry.jsx",
-                                                    lineNumber: 501,
+                                                    lineNumber: 572,
                                                     columnNumber: 37
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                                lineNumber: 500,
+                                                lineNumber: 571,
                                                 columnNumber: 33
                                             }, this),
                                             (heading.subHeadings || []).map((sub)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1882,12 +1973,12 @@ function DataEntry() {
                                                                 children: sub.title
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                                                lineNumber: 511,
+                                                                lineNumber: 582,
                                                                 columnNumber: 49
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/views/DataEntry.jsx",
-                                                            lineNumber: 510,
+                                                            lineNumber: 581,
                                                             columnNumber: 45
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1915,7 +2006,7 @@ function DataEntry() {
                                                                                     children: "*"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/views/DataEntry.jsx",
-                                                                                    lineNumber: 532,
+                                                                                    lineNumber: 603,
                                                                                     columnNumber: 80
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1923,7 +2014,7 @@ function DataEntry() {
                                                                                     children: field.valueType === 'Link' ? `🔗 ${getPage(field.linkedPageId)?.name || 'Link'}` : field.valueType
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/views/DataEntry.jsx",
-                                                                                    lineNumber: 533,
+                                                                                    lineNumber: 604,
                                                                                     columnNumber: 61
                                                                                 }, this),
                                                                                 field.infinity && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1931,16 +2022,16 @@ function DataEntry() {
                                                                                     children: "∞ Infinity"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/views/DataEntry.jsx",
-                                                                                    lineNumber: 537,
+                                                                                    lineNumber: 608,
                                                                                     columnNumber: 65
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/src/views/DataEntry.jsx",
-                                                                            lineNumber: 530,
+                                                                            lineNumber: 601,
                                                                             columnNumber: 57
                                                                         }, this),
-                                                                        field.infinity ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                        field.infinity || field.maxItems > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                             className: "repeater-container",
                                                                             children: [
                                                                                 (repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [
@@ -1953,62 +2044,69 @@ function DataEntry() {
                                                                                                 children: renderFieldInput(heading, sub, field, idx)
                                                                                             }, void 0, false, {
                                                                                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                                                                                lineNumber: 545,
+                                                                                                lineNumber: 616,
                                                                                                 columnNumber: 73
                                                                                             }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                                                            field.infinity && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                                                                 className: "repeater-delete-btn",
                                                                                                 onClick: ()=>removeRepeaterRow(getFieldKey(heading.id, sub.id, field.id), rowId),
                                                                                                 children: "✕"
                                                                                             }, void 0, false, {
                                                                                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                                                                                lineNumber: 548,
-                                                                                                columnNumber: 73
+                                                                                                lineNumber: 620,
+                                                                                                columnNumber: 77
                                                                                             }, this)
                                                                                         ]
                                                                                     }, rowId, true, {
                                                                                         fileName: "[project]/src/views/DataEntry.jsx",
-                                                                                        lineNumber: 544,
+                                                                                        lineNumber: 615,
                                                                                         columnNumber: 69
                                                                                     }, this)),
-                                                                                (!field.maxItems || (repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [
-                                                                                    0
-                                                                                ]).length < Number(field.maxItems)) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                                                                    className: "btn btn-primary btn-sm repeater-add-btn",
-                                                                                    onClick: ()=>addRepeaterRow(getFieldKey(heading.id, sub.id, field.id)),
-                                                                                    children: "+ Add"
-                                                                                }, void 0, false, {
+                                                                                field.infinity && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                                                    className: "repeater-add-btn",
+                                                                                    onClick: ()=>addRepeaterRow(getFieldKey(heading.id, sub.id, field.id), field.maxItems),
+                                                                                    disabled: field.maxItems > 0 && (repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [
+                                                                                        0
+                                                                                    ]).length >= field.maxItems,
+                                                                                    style: {
+                                                                                        marginTop: '8px'
+                                                                                    },
+                                                                                    children: [
+                                                                                        "+ Add ",
+                                                                                        field.label || 'Row'
+                                                                                    ]
+                                                                                }, void 0, true, {
                                                                                     fileName: "[project]/src/views/DataEntry.jsx",
-                                                                                    lineNumber: 557,
+                                                                                    lineNumber: 630,
                                                                                     columnNumber: 69
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/src/views/DataEntry.jsx",
-                                                                            lineNumber: 542,
+                                                                            lineNumber: 613,
                                                                             columnNumber: 61
                                                                         }, this) : renderFieldInput(heading, sub, field)
                                                                     ]
                                                                 }, field.id, true, {
                                                                     fileName: "[project]/src/views/DataEntry.jsx",
-                                                                    lineNumber: 526,
+                                                                    lineNumber: 597,
                                                                     columnNumber: 53
                                                                 }, this))
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/views/DataEntry.jsx",
-                                                            lineNumber: 515,
+                                                            lineNumber: 586,
                                                             columnNumber: 41
                                                         }, this)
                                                     ]
                                                 }, sub.id, true, {
                                                     fileName: "[project]/src/views/DataEntry.jsx",
-                                                    lineNumber: 508,
+                                                    lineNumber: 579,
                                                     columnNumber: 37
                                                 }, this))
                                         ]
                                     }, heading.id, true, {
                                         fileName: "[project]/src/views/DataEntry.jsx",
-                                        lineNumber: 499,
+                                        lineNumber: 570,
                                         columnNumber: 29
                                     }, this);
                                 return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -2026,14 +2124,14 @@ function DataEntry() {
                                         children: "No structure configured"
                                     }, void 0, false, {
                                         fileName: "[project]/src/views/DataEntry.jsx",
-                                        lineNumber: 592,
+                                        lineNumber: 667,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         children: "Go to Edit Page to set up headings and fields first."
                                     }, void 0, false, {
                                         fileName: "[project]/src/views/DataEntry.jsx",
-                                        lineNumber: 593,
+                                        lineNumber: 668,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2042,13 +2140,13 @@ function DataEntry() {
                                         children: "Edit Page Structure"
                                     }, void 0, false, {
                                         fileName: "[project]/src/views/DataEntry.jsx",
-                                        lineNumber: 594,
+                                        lineNumber: 669,
                                         columnNumber: 29
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                lineNumber: 591,
+                                lineNumber: 666,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2060,7 +2158,7 @@ function DataEntry() {
                                         children: "Clear"
                                     }, void 0, false, {
                                         fileName: "[project]/src/views/DataEntry.jsx",
-                                        lineNumber: 602,
+                                        lineNumber: 677,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2072,19 +2170,19 @@ function DataEntry() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/views/DataEntry.jsx",
-                                        lineNumber: 605,
+                                        lineNumber: 680,
                                         columnNumber: 25
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                lineNumber: 601,
+                                lineNumber: 676,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, refreshKey, true, {
                         fileName: "[project]/src/views/DataEntry.jsx",
-                        lineNumber: 495,
+                        lineNumber: 566,
                         columnNumber: 17
                     }, this),
                     !isSettingsPage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2118,7 +2216,7 @@ function DataEntry() {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                                lineNumber: 616,
+                                                lineNumber: 691,
                                                 columnNumber: 33
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2129,13 +2227,13 @@ function DataEntry() {
                                                 children: "View and manage existing entries"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                                lineNumber: 617,
+                                                lineNumber: 692,
                                                 columnNumber: 33
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/views/DataEntry.jsx",
-                                        lineNumber: 615,
+                                        lineNumber: 690,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2156,7 +2254,7 @@ function DataEntry() {
                                                 children: "🔍"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                                lineNumber: 620,
+                                                lineNumber: 695,
                                                 columnNumber: 33
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2172,19 +2270,19 @@ function DataEntry() {
                                                 onChange: (e)=>setSearchQuery(e.target.value)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                                lineNumber: 621,
+                                                lineNumber: 696,
                                                 columnNumber: 33
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/views/DataEntry.jsx",
-                                        lineNumber: 619,
+                                        lineNumber: 694,
                                         columnNumber: 29
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                lineNumber: 614,
+                                lineNumber: 689,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2202,7 +2300,7 @@ function DataEntry() {
                                                         children: "SL NO."
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/views/DataEntry.jsx",
-                                                        lineNumber: 636,
+                                                        lineNumber: 711,
                                                         columnNumber: 41
                                                     }, this),
                                                     (()=>{
@@ -2211,13 +2309,13 @@ function DataEntry() {
                                                             children: firstField.label
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/views/DataEntry.jsx",
-                                                            lineNumber: 639,
+                                                            lineNumber: 714,
                                                             columnNumber: 65
                                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
                                                             children: "Entry"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/views/DataEntry.jsx",
-                                                            lineNumber: 639,
+                                                            lineNumber: 714,
                                                             columnNumber: 95
                                                         }, this);
                                                     })(),
@@ -2228,18 +2326,18 @@ function DataEntry() {
                                                         children: "ACTIONS"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/views/DataEntry.jsx",
-                                                        lineNumber: 641,
+                                                        lineNumber: 716,
                                                         columnNumber: 41
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                                lineNumber: 635,
+                                                lineNumber: 710,
                                                 columnNumber: 37
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/views/DataEntry.jsx",
-                                            lineNumber: 634,
+                                            lineNumber: 709,
                                             columnNumber: 33
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -2264,12 +2362,12 @@ function DataEntry() {
                                                             children: "No entries found"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/views/DataEntry.jsx",
-                                                            lineNumber: 657,
+                                                            lineNumber: 732,
                                                             columnNumber: 56
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/views/DataEntry.jsx",
-                                                        lineNumber: 657,
+                                                        lineNumber: 732,
                                                         columnNumber: 52
                                                     }, this);
                                                 }
@@ -2282,14 +2380,14 @@ function DataEntry() {
                                                                 children: idx + 1
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                                                lineNumber: 662,
+                                                                lineNumber: 737,
                                                                 columnNumber: 49
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                                 children: fieldKey ? entry.data?.[fieldKey] || '—' : `Entry #${entry.id}`
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                                                lineNumber: 663,
+                                                                lineNumber: 738,
                                                                 columnNumber: 49
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -2309,7 +2407,7 @@ function DataEntry() {
                                                                             children: "👁️"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/views/DataEntry.jsx",
-                                                                            lineNumber: 666,
+                                                                            lineNumber: 741,
                                                                             columnNumber: 57
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2319,7 +2417,7 @@ function DataEntry() {
                                                                             children: "✏️"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/views/DataEntry.jsx",
-                                                                            lineNumber: 667,
+                                                                            lineNumber: 742,
                                                                             columnNumber: 57
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2334,53 +2432,53 @@ function DataEntry() {
                                                                             children: "🗑️"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/views/DataEntry.jsx",
-                                                                            lineNumber: 668,
+                                                                            lineNumber: 743,
                                                                             columnNumber: 57
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/views/DataEntry.jsx",
-                                                                    lineNumber: 665,
+                                                                    lineNumber: 740,
                                                                     columnNumber: 53
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                                                lineNumber: 664,
+                                                                lineNumber: 739,
                                                                 columnNumber: 49
                                                             }, this)
                                                         ]
                                                     }, entry.id, true, {
                                                         fileName: "[project]/src/views/DataEntry.jsx",
-                                                        lineNumber: 661,
+                                                        lineNumber: 736,
                                                         columnNumber: 45
                                                     }, this));
                                             })()
                                         }, void 0, false, {
                                             fileName: "[project]/src/views/DataEntry.jsx",
-                                            lineNumber: 644,
+                                            lineNumber: 719,
                                             columnNumber: 33
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/views/DataEntry.jsx",
-                                    lineNumber: 633,
+                                    lineNumber: 708,
                                     columnNumber: 29
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                lineNumber: 632,
+                                lineNumber: 707,
                                 columnNumber: 25
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/views/DataEntry.jsx",
-                        lineNumber: 613,
+                        lineNumber: 688,
                         columnNumber: 21
                     }, this)
                 ]
             }, refreshKey, true, {
                 fileName: "[project]/src/views/DataEntry.jsx",
-                lineNumber: 493,
+                lineNumber: 564,
                 columnNumber: 13
             }, this),
             viewEntryData && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2432,7 +2530,7 @@ function DataEntry() {
                                     children: "Entry Details"
                                 }, void 0, false, {
                                     fileName: "[project]/src/views/DataEntry.jsx",
-                                    lineNumber: 699,
+                                    lineNumber: 774,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2441,13 +2539,13 @@ function DataEntry() {
                                     children: "✕"
                                 }, void 0, false, {
                                     fileName: "[project]/src/views/DataEntry.jsx",
-                                    lineNumber: 700,
+                                    lineNumber: 775,
                                     columnNumber: 29
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/views/DataEntry.jsx",
-                            lineNumber: 698,
+                            lineNumber: 773,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2472,7 +2570,7 @@ function DataEntry() {
                                             children: h.title
                                         }, void 0, false, {
                                             fileName: "[project]/src/views/DataEntry.jsx",
-                                            lineNumber: 705,
+                                            lineNumber: 780,
                                             columnNumber: 37
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2505,7 +2603,7 @@ function DataEntry() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/views/DataEntry.jsx",
-                                                                    lineNumber: 714,
+                                                                    lineNumber: 789,
                                                                     columnNumber: 61
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2517,35 +2615,35 @@ function DataEntry() {
                                                                     children: val || '—'
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/views/DataEntry.jsx",
-                                                                    lineNumber: 715,
+                                                                    lineNumber: 790,
                                                                     columnNumber: 61
                                                                 }, this)
                                                             ]
                                                         }, f.id, true, {
                                                             fileName: "[project]/src/views/DataEntry.jsx",
-                                                            lineNumber: 713,
+                                                            lineNumber: 788,
                                                             columnNumber: 57
                                                         }, this);
                                                     })
                                                 }, sh.id, false, {
                                                     fileName: "[project]/src/views/DataEntry.jsx",
-                                                    lineNumber: 708,
+                                                    lineNumber: 783,
                                                     columnNumber: 45
                                                 }, this))
                                         }, void 0, false, {
                                             fileName: "[project]/src/views/DataEntry.jsx",
-                                            lineNumber: 706,
+                                            lineNumber: 781,
                                             columnNumber: 37
                                         }, this)
                                     ]
                                 }, h.id, true, {
                                     fileName: "[project]/src/views/DataEntry.jsx",
-                                    lineNumber: 704,
+                                    lineNumber: 779,
                                     columnNumber: 33
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/src/views/DataEntry.jsx",
-                            lineNumber: 702,
+                            lineNumber: 777,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2563,23 +2661,23 @@ function DataEntry() {
                                 children: "Close"
                             }, void 0, false, {
                                 fileName: "[project]/src/views/DataEntry.jsx",
-                                lineNumber: 726,
+                                lineNumber: 801,
                                 columnNumber: 29
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/views/DataEntry.jsx",
-                            lineNumber: 725,
+                            lineNumber: 800,
                             columnNumber: 25
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/views/DataEntry.jsx",
-                    lineNumber: 693,
+                    lineNumber: 768,
                     columnNumber: 21
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/views/DataEntry.jsx",
-                lineNumber: 688,
+                lineNumber: 763,
                 columnNumber: 17
             }, this)
         ]
