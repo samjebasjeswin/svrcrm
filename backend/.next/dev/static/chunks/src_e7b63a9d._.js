@@ -33,7 +33,7 @@ function AppLayout({ children }) {
                 const lowerName = page.name.toLowerCase().trim();
                 const isForm = lowerName === 'form';
                 const isSettingsPage = page.singleEntry || lowerName === 'static seo' || lowerName === 'mailer settings';
-                let targetPath = `/data-entry/${page.id}`;
+                let targetPath = `/entries/${page.id}`;
                 if (isSettingsPage) {
                     const entries = getPageEntries(page.id);
                     if (entries.length > 0) {
@@ -1734,7 +1734,7 @@ function DataEntry() {
             if (isSettingsPage) {
                 router.push(`/data-entry/${pageId}/${newEntry.id}`);
             } else {
-                router.push(`/data-entry/${pageId}`);
+                router.push(`/entries/${pageId}`);
             }
         }
     };

@@ -78,27 +78,15 @@ async function GET(request, { params }) {
         if (!stateRes.ok) throw new Error('Failed to fetch state');
         const state = await stateRes.json();
         const pages = state.pages[companyId] || [];
-        let selectedPage = pages.find((p)=>String(p.id) === String(pageId));
-        let activePageId = pageId;
-        // If page not found, check if it's a mapping
+        const selectedPage = pages.find((p)=>String(p.id) === String(pageId));
         if (!selectedPage) {
-            const mappings = state.fieldMappings || [];
-            const mapping = mappings.find((m)=>String(m.id) === String(pageId) && String(m.company_id) === String(companyId));
-            if (mapping) {
-                activePageId = mapping.target_page_id;
-                selectedPage = pages.find((p)=>String(p.id) === String(activePageId));
-                console.log('🗺️ Resolved mapping:', pageId, 'to page:', activePageId);
-            }
-        }
-        if (!selectedPage) {
-            console.error('Page or Mapping not found:', companyId, pageId);
+            console.error('Page not found:', companyId, pageId);
             return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
-                error: 'Endpoint not found',
+                error: 'Page not found',
                 _debug: {
                     companyId,
                     pageId,
-                    cachedPagesKeys: Object.keys(state.pages),
-                    mappingCount: (state.fieldMappings || []).length
+                    cachedPagesKeys: Object.keys(state.pages)
                 }
             }, {
                 status: 404,
@@ -106,7 +94,7 @@ async function GET(request, { params }) {
             });
         }
         const entriesMap = state.savedEntries || {};
-        const entries = entriesMap[`${companyId}_${activePageId}`] || [];
+        const entries = entriesMap[`${companyId}_${pageId}`] || [];
         // extract available fields
         const availableFields = [];
         (selectedPage.headings || selectedPage.schema_json || []).forEach((h)=>{

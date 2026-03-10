@@ -9,7 +9,7 @@ import ImageUpload from '../components/ImageUpload';
 export default function DataEntry() {
     const { pageId, entryId } = useParams();
     const router = useRouter();
-    const { getPage, addEntry, updateEntry, getPageEntries, getLinkedEntryDisplayValue, user } = useApp();
+    const { getPage, addEntry, updateEntry, deleteEntry, getPageEntries, getLinkedEntryDisplayValue, getInboundLinks, user } = useApp();
     const isNew = !entryId || entryId === 'new';
 
     const page = getPage(pageId);
@@ -19,6 +19,8 @@ export default function DataEntry() {
     const [formData, setFormData] = useState({});
     const [refreshKey, setRefreshKey] = useState(0);
     const [repeaterRows, setRepeaterRows] = useState({}); // { [fieldKey]: [rowId1, rowId2, ...] }
+    const [searchQuery, setSearchQuery] = useState('');
+    const [viewEntryData, setViewEntryData] = useState(null);
 
     // Load entry for editing
     useEffect(() => {
@@ -436,18 +438,15 @@ export default function DataEntry() {
         if (!isNew) {
             updateEntry(Number(pageId), Number(entryId), { ...formData });
             alert('Entry updated successfully!');
-            if (!isSettingsPage) router.push(`/data-entry/${pageId}`);
+            // After update, we stay on the same page, but list will refresh via refreshKey
+            setRefreshKey(k => k + 1);
         } else {
             // Save to shared context
-            const newEntry = addEntry(Number(pageId), { ...formData });
+            addEntry(Number(pageId), { ...formData });
             setFormData({});
             setRefreshKey((k) => k + 1);
             alert('Entry saved successfully!');
-            if (isSettingsPage) {
-                router.push(`/data-entry/${pageId}/${newEntry.id}`);
-            } else {
-                router.push(`/data-entry/${pageId}`);
-            }
+            // Stay on the same page for another entry
         }
     };
 
@@ -583,7 +582,127 @@ export default function DataEntry() {
                         💾 {isSettingsPage ? 'Save Changes' : (!isNew ? 'Update Entry' : 'Save Entry')}
                     </button>
                 </div>
+
+                {/* Integrated Catalog List Section */}
+                {!isSettingsPage && (
+                    <div className="catalog-list-integrated animate-fade-in-up" style={{ marginTop: '48px', paddingTop: '48px', borderTop: '2px dashed var(--border)' }}>
+                        <div className="section-header" style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div>
+                                <h2 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--text-primary)' }}>{page.name} Catalog</h2>
+                                <p style={{ fontSize: '14px', color: 'var(--text-soft)' }}>View and manage existing entries</p>
+                            </div>
+                            <div className="search-input-wrapper" style={{ position: 'relative', width: '300px' }}>
+                                <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>🔍</span>
+                                <input
+                                    type="text"
+                                    className="data-entry-input"
+                                    style={{ paddingLeft: '40px', height: '40px', fontSize: '13px' }}
+                                    placeholder="Search entries..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="table-container">
+                            <table className="premium-table">
+                                <thead>
+                                    <tr>
+                                        <th style={{ width: '60px' }}>SL NO.</th>
+                                        {(() => {
+                                            const firstField = page.headings?.[0]?.subHeadings?.[0]?.fields?.[0];
+                                            return firstField ? <th>{firstField.label}</th> : <th>Entry</th>;
+                                        })()}
+                                        <th style={{ textAlign: 'right' }}>ACTIONS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {(() => {
+                                        const entries = getPageEntries(pageId);
+                                        const firstField = page.headings?.[0]?.subHeadings?.[0]?.fields?.[0];
+                                        const fieldKey = firstField ? getFieldKey(page.headings[0].id, page.headings[0].subHeadings[0].id, firstField.id) : null;
+
+                                        const filtered = entries.filter(e => {
+                                            if (!searchQuery.trim()) return true;
+                                            const val = fieldKey ? String(e.data?.[fieldKey] || '').toLowerCase() : '';
+                                            return val.includes(searchQuery.toLowerCase());
+                                        });
+
+                                        if (filtered.length === 0) {
+                                            return <tr><td colSpan={3} style={{ textAlign: 'center', padding: '32px', color: 'var(--text-muted)' }}>No entries found</td></tr>;
+                                        }
+
+                                        return filtered.map((entry, idx) => (
+                                            <tr key={entry.id}>
+                                                <td style={{ fontWeight: '600' }}>{idx + 1}</td>
+                                                <td>{fieldKey ? (entry.data?.[fieldKey] || '—') : `Entry #${entry.id}`}</td>
+                                                <td style={{ textAlign: 'right' }}>
+                                                    <div className="table-actions" style={{ justifyContent: 'flex-end' }}>
+                                                        <button className="action-icon-btn" title="View" onClick={() => setViewEntryData(entry)}>👁️</button>
+                                                        <button className="action-icon-btn" title="Edit" onClick={() => router.push(`/data-entry/${pageId}/${entry.id}`)}>✏️</button>
+                                                        <button className="action-icon-btn delete" title="Delete" onClick={() => {
+                                                            if (confirm('Are you sure you want to delete this entry?')) {
+                                                                deleteEntry(pageId, entry.id);
+                                                                setRefreshKey(k => k + 1);
+                                                            }
+                                                        }}>🗑️</button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ));
+                                    })()}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
             </div>
+
+            {/* View Details Modal */}
+            {viewEntryData && (
+                <div className="modal-overlay animate-fade-in" style={{
+                    position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+                    background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    zIndex: 1000, backdropFilter: 'blur(10px)'
+                }} onClick={() => setViewEntryData(null)}>
+                    <div className="modal-content animate-scale-up" style={{
+                        background: 'white', borderRadius: '24px', width: '100%', maxWidth: '500px',
+                        maxHeight: '80vh', display: 'flex', flexDirection: 'column', overflow: 'hidden',
+                        boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15)'
+                    }} onClick={e => e.stopPropagation()}>
+                        <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '800' }}>Entry Details</h3>
+                            <button className="action-icon-btn" onClick={() => setViewEntryData(null)}>✕</button>
+                        </div>
+                        <div style={{ padding: '24px', overflowY: 'auto', flex: 1 }}>
+                            {headings.map(h => (
+                                <div key={h.id} style={{ marginBottom: '24px' }}>
+                                    <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--text-soft)', textTransform: 'uppercase', marginBottom: '12px' }}>{h.title}</div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                        {h.subHeadings?.map(sh => (
+                                            <div key={sh.id}>
+                                                {sh.fields?.map(f => {
+                                                    const key = getFieldKey(h.id, sh.id, f.id);
+                                                    const val = viewEntryData.data?.[key];
+                                                    return (
+                                                        <div key={f.id} style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '16px', marginBottom: '8px' }}>
+                                                            <div style={{ fontSize: '13px', color: 'var(--text-soft)', fontWeight: '600' }}>{f.label}:</div>
+                                                            <div style={{ fontSize: '13px', color: 'var(--text-primary)', fontWeight: '700' }}>{val || '—'}</div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div style={{ padding: '16px 24px', background: '#f8fafc', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+                            <button className="btn btn-primary btn-sm" onClick={() => setViewEntryData(null)}>Close</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 }
