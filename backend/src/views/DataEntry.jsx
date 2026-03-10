@@ -513,6 +513,31 @@ export default function DataEntry() {
             }
         }
 
+        // Validate unique fields — prevent duplicate values
+        const existingEntries = getPageEntries(pageId);
+        for (const heading of sectionsToValidate) {
+            for (const sub of heading.subHeadings || []) {
+                for (const field of sub.fields || []) {
+                    if (!field.unique) continue;
+                    const key = getFieldKey(heading.id, sub.id, field.id);
+                    const newValue = (formData[key] || '').toString().trim().toLowerCase();
+                    if (!newValue) continue; // skip empty
+
+                    const isDuplicate = existingEntries.some(entry => {
+                        // Skip the current entry when editing
+                        if (!isNew && entry.id === Number(entryId)) return false;
+                        const existingVal = (entry.data?.[key] || '').toString().trim().toLowerCase();
+                        return existingVal === newValue;
+                    });
+
+                    if (isDuplicate) {
+                        alert(`"${field.label}" must be unique. The value "${formData[key]}" already exists.`);
+                        return;
+                    }
+                }
+            }
+        }
+
         if (!isNew) {
             updateEntry(Number(pageId), Number(entryId), { ...formData });
             alert('Entry updated successfully!');

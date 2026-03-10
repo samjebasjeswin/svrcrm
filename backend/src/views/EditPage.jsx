@@ -497,6 +497,7 @@ export default function EditPage() {
                                             required: false,
                                             infinity: false,
                                             maxItems: 0,
+                                            unique: false,
                                         },
                                     ],
                                 }
@@ -706,17 +707,18 @@ export default function EditPage() {
 
                                         {sub.fields.length > 0 && (
                                             <>
-                                                <div className="fields-table-header" style={{ gridTemplateColumns: 'minmax(150px, 1.5fr) minmax(300px, 3fr) 80px 80px 80px 80px' }}>
-                                                    <span>Label / Grid Config</span>
+                                                <div className="fields-table-header" style={{ gridTemplateColumns: 'minmax(140px, 1.2fr) minmax(250px, 2.5fr) 50px 60px 50px 55px 50px' }}>
+                                                    <span>Label</span>
                                                     <span>Value Type *</span>
-                                                    <span style={{ textAlign: 'center' }}>Req</span>
-                                                    <span style={{ textAlign: 'center' }}>Inf</span>
+                                                    <span style={{ textAlign: 'center' }}>Required</span>
+                                                    <span style={{ textAlign: 'center' }}>Infinite</span>
                                                     <span style={{ textAlign: 'center' }}>Max</span>
-                                                    <span style={{ textAlign: 'center' }}>Actions</span>
+                                                    <span style={{ textAlign: 'center' }}>Unique</span>
+                                                    <span style={{ textAlign: 'center' }}>Delete</span>
                                                 </div>
 
                                                 {sub.fields.map((field) => (
-                                                    <div key={field.id} className="field-row" style={{ gridTemplateColumns: 'minmax(150px, 1.5fr) minmax(300px, 3fr) 80px 80px 80px 80px' }}>
+                                                    <div key={field.id} className="field-row" style={{ gridTemplateColumns: 'minmax(140px, 1.2fr) minmax(250px, 2.5fr) 50px 60px 50px 55px 50px' }}>
                                                         <div className="field-label-cell">
                                                             <input
                                                                 className="field-label-input"
@@ -856,19 +858,23 @@ export default function EditPage() {
                                                             )}
                                                         </div>
                                                         <div className="field-checkbox-cell" style={{ display: 'flex', justifyContent: 'center' }}>
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={field.required || false}
-                                                                onChange={(e) => updateFieldInline(heading.id, sub.id, field.id, 'required', e.target.checked, setter)}
-                                                            />
+                                                            <button
+                                                                className={`pill pill-sm ${field.required ? 'active' : ''}`}
+                                                                style={{ fontSize: '10px', padding: '2px 8px', minWidth: '40px' }}
+                                                                onClick={() => updateFieldInline(heading.id, sub.id, field.id, 'required', !field.required, setter)}
+                                                            >
+                                                                {field.required ? 'ON' : 'OFF'}
+                                                            </button>
                                                         </div>
                                                         <div className="field-checkbox-cell" style={{ display: 'flex', justifyContent: 'center' }}>
-                                                            <input
-                                                                type="checkbox"
+                                                            <button
+                                                                className={`pill pill-sm ${field.infinity ? 'active' : ''}`}
+                                                                style={{ fontSize: '10px', padding: '2px 8px', minWidth: '40px' }}
                                                                 disabled={field.valueType === 'Grid' || field.valueType === 'Slug' || field.valueType === 'Permalink'}
-                                                                checked={field.infinity || false}
-                                                                onChange={(e) => updateFieldInline(heading.id, sub.id, field.id, 'infinity', e.target.checked, setter)}
-                                                            />
+                                                                onClick={() => updateFieldInline(heading.id, sub.id, field.id, 'infinity', !field.infinity, setter)}
+                                                            >
+                                                                {field.infinity ? 'ON' : 'OFF'}
+                                                            </button>
                                                         </div>
                                                         <div className="field-value-cell" style={{ textAlign: 'center' }}>
                                                             {!(field.valueType === 'Grid' || field.valueType === 'Slug' || field.valueType === 'Permalink') ? (
@@ -883,18 +889,18 @@ export default function EditPage() {
                                                                 <span style={{ color: 'var(--text-soft)' }}>—</span>
                                                             )}
                                                         </div>
-                                                        <div className="field-actions" style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                                        <div className="field-checkbox-cell" style={{ display: 'flex', justifyContent: 'center' }}>
                                                             <button
-                                                                className="btn btn-ghost"
-                                                                title="Edit advanced settings"
-                                                                onClick={() => {
-                                                                    setActiveSetter(() => setter);
-                                                                    setEditingField(field);
-                                                                }}
+                                                                className={`pill pill-sm ${field.unique ? 'active' : ''}`}
+                                                                style={{ fontSize: '10px', padding: '2px 8px', minWidth: '40px' }}
+                                                                title="Unique - prevent duplicate values"
+                                                                onClick={() => updateFieldInline(heading.id, sub.id, field.id, 'unique', !field.unique, setter)}
                                                             >
-                                                                ✏️
+                                                                {field.unique ? 'ON' : 'OFF'}
                                                             </button>
-                                                            <button className="btn btn-ghost btn-danger-text" onClick={() => deleteField(heading.id, sub.id, field.id, setter)}>🗑</button>
+                                                        </div>
+                                                        <div className="field-actions" style={{ display: 'flex', justifyContent: 'center' }}>
+                                                            <button className="btn btn-ghost btn-danger-text" style={{ padding: '4px 6px', fontSize: '14px' }} onClick={() => deleteField(heading.id, sub.id, field.id, setter)}>🗑</button>
                                                         </div>
                                                     </div>
                                                 ))}
