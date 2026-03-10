@@ -944,154 +944,164 @@ export default function EditPage() {
                 </div>
             </div>
 
-            {/* Single Entry Toggle */}
-            <div style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: '14px 24px', background: singleEntry ? 'rgba(79,70,229,0.06)' : '#f8fafc',
-                border: `1.5px solid ${singleEntry ? 'var(--accent)' : 'var(--border)'}`,
-                borderRadius: '12px', marginBottom: '24px', transition: 'all 0.2s'
-            }}>
-                <div>
-                    <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--text-primary)' }}>Single Entry Mode</div>
-                    <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                        {singleEntry
-                            ? 'ON — This page works like a settings page (one form, no catalog list)'
-                            : 'OFF — This page shows a catalog with multiple entries'}
-                    </div>
-                </div>
-                <label className="toggle" style={{ flexShrink: 0 }}>
-                    <input type="checkbox" checked={singleEntry} onChange={(e) => setSingleEntry(e.target.checked)} />
-                    <span className="toggle-slider"></span>
-                </label>
-            </div>
+            {/* ── 5-toggle row ── */}
+            <div style={{ display: 'flex', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
 
-            {/* Search Configuration */}
-            {!singleEntry && (
+                {/* Single Entry */}
                 <div style={{
-                    display: 'flex', flexDirection: 'column', gap: '12px',
-                    padding: '16px 24px', background: searchEnabled ? 'rgba(16,185,129,0.06)' : '#f8fafc',
-                    border: `1.5px solid ${searchEnabled ? '#10b981' : 'var(--border)'}`,
-                    borderRadius: '12px', marginBottom: '24px', transition: 'all 0.2s'
+                    flex: '1 1 160px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+                    padding: '14px 16px', background: singleEntry ? 'rgba(79,70,229,0.06)' : '#f8fafc',
+                    border: `1.5px solid ${singleEntry ? 'var(--accent)' : 'var(--border)'}`,
+                    borderRadius: '12px', transition: 'all 0.2s', gap: '10px'
                 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div>
+                        <div style={{ fontWeight: 700, fontSize: '13px', color: 'var(--text-primary)' }}>Single Entry</div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '3px', lineHeight: 1.4 }}>
+                            {singleEntry ? 'Settings page mode' : 'Multi-entry catalog'}
+                        </div>
+                    </div>
+                    <label className="toggle" style={{ alignSelf: 'flex-start' }}>
+                        <input type="checkbox" checked={singleEntry} onChange={(e) => setSingleEntry(e.target.checked)} />
+                        <span className="toggle-slider"></span>
+                    </label>
+                </div>
+
+                {/* Enable Search */}
+                {!singleEntry && (
+                    <div style={{
+                        flex: '1 1 160px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+                        padding: '14px 16px', background: searchEnabled ? 'rgba(16,185,129,0.06)' : '#f8fafc',
+                        border: `1.5px solid ${searchEnabled ? '#10b981' : 'var(--border)'}`,
+                        borderRadius: '12px', transition: 'all 0.2s', gap: '10px'
+                    }}>
                         <div>
-                            <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--text-primary)' }}>Enable Search</div>
-                            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                                Show a search bar in the catalog list to filter entries
+                            <div style={{ fontWeight: 700, fontSize: '13px', color: 'var(--text-primary)' }}>Enable Search</div>
+                            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '3px', lineHeight: 1.4 }}>
+                                Search bar in catalog list
                             </div>
                         </div>
-                        <label className="toggle" style={{ flexShrink: 0 }}>
+                        <label className="toggle" style={{ alignSelf: 'flex-start' }}>
                             <input type="checkbox" checked={searchEnabled} onChange={(e) => setSearchEnabled(e.target.checked)} />
-                            <span className="toggle-slider" style={{ backgroundColor: searchEnabled ? '#10b981' : '#ccc' }}></span>
+                            <span className="toggle-slider" style={{ backgroundColor: searchEnabled ? '#10b981' : undefined }}></span>
                         </label>
                     </div>
-                    {searchEnabled && (
-                        <div className="search-field-selector" style={{ borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '12px' }}>
-                            <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px', display: 'block' }}>Searchable Field</label>
-                            <select
-                                className="form-input"
-                                style={{ height: '38px', fontSize: '13px' }}
-                                value={searchFieldId}
-                                onChange={(e) => setSearchFieldId(e.target.value)}
-                            >
-                                <option value="">-- All fields (Text search) --</option>
-                                {
-                                    [
-                                        ...headings,
-                                        ...(staticSeoEnabled ? staticSeoHeadings : []),
-                                        ...(dynamicSeoEnabled ? dynamicSeoHeadings : [])
-                                    ].flatMap(h => h.subHeadings?.flatMap(sh => sh.fields?.map(f => (
-                                        <option key={f.id} value={f.id}>🔍 {f.label || `Field ${f.id}`}</option>
-                                    )) || []) || [])
-                                }
-                            </select>
-                            <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '6px' }}>
-                                Select which field users can search through (e.g. Name, SKU, Email)
-                            </p>
+                )}
+
+                {/* Super Admin */}
+                <div style={{
+                    flex: '1 1 160px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+                    padding: '14px 16px', background: superAdminEnabled ? 'rgba(59,130,246,0.06)' : '#f8fafc',
+                    border: `1.5px solid ${superAdminEnabled ? '#3b82f6' : 'var(--border)'}`,
+                    borderRadius: '12px', transition: 'all 0.2s', gap: '10px'
+                }}>
+                    <div>
+                        <div style={{ fontWeight: 700, fontSize: '13px', color: 'var(--text-primary)' }}>Super Admin</div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '3px', lineHeight: 1.4 }}>
+                            Sidebar & product fields
+                        </div>
+                    </div>
+                    <label className="toggle" style={{ alignSelf: 'flex-start' }}>
+                        <input type="checkbox" checked={superAdminEnabled} onChange={(e) => setSuperAdminEnabled(e.target.checked)} />
+                        <span className="toggle-slider" style={{ backgroundColor: superAdminEnabled ? '#3b82f6' : undefined }}></span>
+                    </label>
+                </div>
+
+                {/* Static SEO */}
+                <div style={{
+                    flex: '1 1 160px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+                    padding: '14px 16px', background: staticSeoEnabled ? 'rgba(79,70,229,0.06)' : '#f8fafc',
+                    border: `1.5px solid ${staticSeoEnabled ? 'var(--accent)' : 'var(--border)'}`,
+                    borderRadius: '12px', transition: 'all 0.2s', gap: '10px'
+                }}>
+                    <div>
+                        <div style={{ fontWeight: 700, fontSize: '13px', color: 'var(--text-primary)' }}>Static SEO</div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '3px', lineHeight: 1.4 }}>
+                            Standard meta tags
+                        </div>
+                    </div>
+                    <label className="toggle" style={{ alignSelf: 'flex-start' }}>
+                        <input type="checkbox" checked={staticSeoEnabled} onChange={(e) => setStaticSeoEnabled(e.target.checked)} />
+                        <span className="toggle-slider"></span>
+                    </label>
+                </div>
+
+                {/* Dynamic SEO */}
+                <div style={{
+                    flex: '1 1 160px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+                    padding: '14px 16px', background: dynamicSeoEnabled ? 'rgba(79,70,229,0.06)' : '#f8fafc',
+                    border: `1.5px solid ${dynamicSeoEnabled ? 'var(--accent)' : 'var(--border)'}`,
+                    borderRadius: '12px', transition: 'all 0.2s', gap: '10px'
+                }}>
+                    <div>
+                        <div style={{ fontWeight: 700, fontSize: '13px', color: 'var(--text-primary)' }}>Dynamic SEO</div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '3px', lineHeight: 1.4 }}>
+                            Social media meta tags
+                        </div>
+                    </div>
+                    <label className="toggle" style={{ alignSelf: 'flex-start' }}>
+                        <input type="checkbox" checked={dynamicSeoEnabled} onChange={(e) => setDynamicSeoEnabled(e.target.checked)} />
+                        <span className="toggle-slider"></span>
+                    </label>
+                </div>
+
+            </div>
+
+            {/* Search field selector — shown below row when enabled */}
+            {!singleEntry && searchEnabled && (
+                <div style={{
+                    padding: '16px 20px', background: 'rgba(16,185,129,0.04)',
+                    border: '1.5px solid #10b981', borderRadius: '12px', marginBottom: '24px'
+                }}>
+                    <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px', display: 'block' }}>🔍 Searchable Field</label>
+                    <select
+                        className="form-input"
+                        style={{ height: '38px', fontSize: '13px' }}
+                        value={searchFieldId}
+                        onChange={(e) => setSearchFieldId(e.target.value)}
+                    >
+                        <option value="">-- All fields (Text search) --</option>
+                        {[
+                            ...headings,
+                            ...(staticSeoEnabled ? staticSeoHeadings : []),
+                            ...(dynamicSeoEnabled ? dynamicSeoHeadings : [])
+                        ].flatMap(h => h.subHeadings?.flatMap(sh => sh.fields?.map(f => (
+                            <option key={f.id} value={f.id}>🔍 {f.label || `Field ${f.id}`}</option>
+                        )) || []) || [])}
+                    </select>
+                    <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '6px' }}>
+                        Select which field users can search through (e.g. Name, SKU, Email)
+                    </p>
+                </div>
+            )}
+
+            {/* Static SEO expanded panel */}
+            {staticSeoEnabled && (
+                <div style={{
+                    padding: '20px 24px', background: 'rgba(79,70,229,0.04)',
+                    border: '1.5px solid var(--accent)', borderRadius: '12px', marginBottom: '24px'
+                }}>
+                    <div className="seo-fields-container animate-slide-down">
+                        {renderDynamicStructure(staticSeoHeadings, setStaticSeoHeadings, 'Static SEO')}
+                    </div>
+                    {staticSeoTimestamp && (
+                        <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '12px', marginTop: '12px', fontSize: '11px', color: 'var(--text-secondary)', textAlign: 'right' }}>
+                            🕒 Last updated: <span style={{ fontWeight: 600, color: 'var(--accent)' }}>{staticSeoTimestamp}</span>
                         </div>
                     )}
                 </div>
             )}
 
-            {/* Super Admin Configuration */}
-            <div style={{
-                display: 'flex', flexDirection: 'column', gap: '12px',
-                padding: '16px 24px', background: superAdminEnabled ? 'rgba(59,130,246,0.06)' : '#f8fafc',
-                border: `1.5px solid ${superAdminEnabled ? '#3b82f6' : 'var(--border)'}`,
-                borderRadius: '12px', marginBottom: '24px', transition: 'all 0.2s'
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div>
-                        <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--text-primary)' }}>Super Admin (Company Admin)</div>
-                        <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                            Show this page in the sidebar and enable product-related fields
-                        </div>
-                    </div>
-                    <label className="toggle" style={{ flexShrink: 0 }}>
-                        <input type="checkbox" checked={superAdminEnabled} onChange={(e) => setSuperAdminEnabled(e.target.checked)} />
-                        <span className="toggle-slider" style={{ backgroundColor: superAdminEnabled ? '#3b82f6' : '#ccc' }}></span>
-                    </label>
-                </div>
-            </div>
-
-            {/* Static SEO Configuration */}
-            <div style={{
-                display: 'flex', flexDirection: 'column', gap: '12px',
-                padding: '16px 24px', background: staticSeoEnabled ? 'rgba(79,70,229,0.06)' : '#f8fafc',
-                border: `1.5px solid ${staticSeoEnabled ? 'var(--accent)' : 'var(--border)'}`,
-                borderRadius: '12px', marginBottom: '24px', transition: 'all 0.2s'
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div>
-                        <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--text-primary)' }}>Static SEO</div>
-                        <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                            Configure standard meta tags for search engine optimization
-                        </div>
-                    </div>
-                    <label className="toggle" style={{ flexShrink: 0 }}>
-                        <input type="checkbox" checked={staticSeoEnabled} onChange={(e) => setStaticSeoEnabled(e.target.checked)} />
-                        <span className="toggle-slider"></span>
-                    </label>
-                </div>
-                {staticSeoEnabled && (
-                    <>
-                        <div className="seo-fields-container animate-slide-down" style={{ borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '16px' }}>
-                            {renderDynamicStructure(staticSeoHeadings, setStaticSeoHeadings, 'Static SEO')}
-                        </div>
-                        {staticSeoTimestamp && (
-                            <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '12px', fontSize: '11px', color: 'var(--text-secondary)', textAlign: 'right' }}>
-                                🕒 Last updated: <span style={{ fontWeight: 600, color: 'var(--accent)' }}>{staticSeoTimestamp}</span>
-                            </div>
-                        )}
-                    </>
-                )}
-            </div>
-
-            {/* Dynamic SEO Configuration */}
-            <div style={{
-                display: 'flex', flexDirection: 'column', gap: '12px',
-                padding: '16px 24px', background: dynamicSeoEnabled ? 'rgba(79,70,229,0.06)' : '#f8fafc',
-                border: `1.5px solid ${dynamicSeoEnabled ? 'var(--accent)' : 'var(--border)'}`,
-                borderRadius: '12px', marginBottom: '24px', transition: 'all 0.2s'
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div>
-                        <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--text-primary)' }}>Dynamic SEO</div>
-                        <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                            Configure social media meta tags for better link sharing
-                        </div>
-                    </div>
-                    <label className="toggle" style={{ flexShrink: 0 }}>
-                        <input type="checkbox" checked={dynamicSeoEnabled} onChange={(e) => setDynamicSeoEnabled(e.target.checked)} />
-                        <span className="toggle-slider"></span>
-                    </label>
-                </div>
-                {dynamicSeoEnabled && (
-                    <div className="seo-fields-container animate-slide-down" style={{ borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '16px' }}>
+            {/* Dynamic SEO expanded panel */}
+            {dynamicSeoEnabled && (
+                <div style={{
+                    padding: '20px 24px', background: 'rgba(79,70,229,0.04)',
+                    border: '1.5px solid var(--accent)', borderRadius: '12px', marginBottom: '24px'
+                }}>
+                    <div className="seo-fields-container animate-slide-down">
                         {renderDynamicStructure(dynamicSeoHeadings, setDynamicSeoHeadings, 'Dynamic SEO')}
                     </div>
-                )}
-            </div>
+                </div>
+            )}
 
             {/* Body */}
             <div className="edit-page-body">
