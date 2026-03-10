@@ -44,7 +44,7 @@ function AppLayout({ children }) {
     const sidebarSections = [
         {
             label: 'HUB ADMIN',
-            items: pages.map((page)=>{
+            items: pages.filter((page)=>page.superAdminEnabled !== false).map((page)=>{
                 const count = getPageEntries(page.id).length;
                 const lowerName = page.name.toLowerCase().trim();
                 const isForm = lowerName === 'form';

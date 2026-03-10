@@ -44,7 +44,7 @@ function AppLayout({ children }) {
     const sidebarSections = [
         {
             label: 'HUB ADMIN',
-            items: pages.map((page)=>{
+            items: pages.filter((page)=>page.superAdminEnabled !== false).map((page)=>{
                 const count = getPageEntries(page.id).length;
                 const lowerName = page.name.toLowerCase().trim();
                 const isForm = lowerName === 'form';
@@ -557,10 +557,11 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$back
 ;
 ;
 function EditMappingHierarchy() {
-    const { mappingId } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useParams"])();
+    const params = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useParams"])();
+    const mappingId = params.mappingId || params.id;
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRouter"])();
-    const { fieldMappings, getPageEntries, getPage, updateFieldMapping, getLinkedEntryDisplayValue } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$src$2f$context$2f$AppContext$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useApp"])();
-    const mapping = fieldMappings.find((m)=>m.id === Number(mappingId));
+    const { fieldMappings, getPageEntries, getPage, updateFieldMapping, getLinkedEntryDisplayValue, currentCompanyId } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$src$2f$context$2f$AppContext$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useApp"])();
+    const mapping = fieldMappings.find((m)=>m.id === Number(mappingId) && m.companyId === currentCompanyId);
     const [hierarchy, setHierarchy] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])({});
     const [orderedEntries, setOrderedEntries] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     const [searchTerm, setSearchTerm] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
@@ -596,7 +597,7 @@ function EditMappingHierarchy() {
                     children: "Mapping not found"
                 }, void 0, false, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                    lineNumber: 43,
+                    lineNumber: 44,
                     columnNumber: 17
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -605,13 +606,13 @@ function EditMappingHierarchy() {
                     children: "Back to Pages"
                 }, void 0, false, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                    lineNumber: 44,
+                    lineNumber: 45,
                     columnNumber: 17
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-            lineNumber: 42,
+            lineNumber: 43,
             columnNumber: 13
         }, this);
     }
@@ -750,7 +751,7 @@ function EditMappingHierarchy() {
                                 children: "⠿"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                lineNumber: 192,
+                                lineNumber: 193,
                                 columnNumber: 29
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -758,7 +759,7 @@ function EditMappingHierarchy() {
                                 children: "📄"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                lineNumber: 193,
+                                lineNumber: 194,
                                 columnNumber: 29
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -774,19 +775,19 @@ function EditMappingHierarchy() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                        lineNumber: 197,
+                                        lineNumber: 198,
                                         columnNumber: 37
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                lineNumber: 194,
+                                lineNumber: 195,
                                 columnNumber: 29
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                        lineNumber: 186,
+                        lineNumber: 187,
                         columnNumber: 25
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -794,13 +795,13 @@ function EditMappingHierarchy() {
                         children: buildTree(entry.id)
                     }, void 0, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                        lineNumber: 201,
+                        lineNumber: 202,
                         columnNumber: 25
                     }, this)
                 ]
             }, entry.id, true, {
                 fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                lineNumber: 180,
+                lineNumber: 181,
                 columnNumber: 21
             }, this);
         });
@@ -840,12 +841,12 @@ function EditMappingHierarchy() {
                                     autoFocus: true
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                    lineNumber: 215,
+                                    lineNumber: 216,
                                     columnNumber: 29
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                lineNumber: 214,
+                                lineNumber: 215,
                                 columnNumber: 25
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
                                 style: {
@@ -867,13 +868,13 @@ function EditMappingHierarchy() {
                                         children: "✏️"
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                        lineNumber: 232,
+                                        lineNumber: 233,
                                         columnNumber: 29
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                lineNumber: 226,
+                                lineNumber: 227,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -887,7 +888,7 @@ function EditMappingHierarchy() {
                                         children: mapping.targetPageName
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                        lineNumber: 236,
+                                        lineNumber: 237,
                                         columnNumber: 31
                                     }, this),
                                     " | Field: ",
@@ -895,19 +896,19 @@ function EditMappingHierarchy() {
                                         children: mapping.targetFieldName
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                        lineNumber: 236,
+                                        lineNumber: 237,
                                         columnNumber: 82
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                lineNumber: 235,
+                                lineNumber: 236,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                        lineNumber: 212,
+                        lineNumber: 213,
                         columnNumber: 17
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -922,7 +923,7 @@ function EditMappingHierarchy() {
                                 children: "Cancel"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                lineNumber: 240,
+                                lineNumber: 241,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -931,19 +932,19 @@ function EditMappingHierarchy() {
                                 children: "Save Hierarchy"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                lineNumber: 241,
+                                lineNumber: 242,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                        lineNumber: 239,
+                        lineNumber: 240,
                         columnNumber: 17
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                lineNumber: 211,
+                lineNumber: 212,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -966,7 +967,7 @@ function EditMappingHierarchy() {
                                             children: "Configure Entries"
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                            lineNumber: 250,
+                                            lineNumber: 251,
                                             columnNumber: 29
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -985,18 +986,18 @@ function EditMappingHierarchy() {
                                                 }
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                lineNumber: 252,
+                                                lineNumber: 253,
                                                 columnNumber: 33
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                            lineNumber: 251,
+                                            lineNumber: 252,
                                             columnNumber: 29
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                    lineNumber: 249,
+                                    lineNumber: 250,
                                     columnNumber: 25
                                 }, this),
                                 selectedIds.size > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1009,14 +1010,14 @@ function EditMappingHierarchy() {
                                                     children: selectedIds.size
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                    lineNumber: 266,
+                                                    lineNumber: 267,
                                                     columnNumber: 37
                                                 }, this),
                                                 " selected"
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                            lineNumber: 265,
+                                            lineNumber: 266,
                                             columnNumber: 33
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1033,7 +1034,7 @@ function EditMappingHierarchy() {
                                                             children: "Set Parent for all..."
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                            lineNumber: 274,
+                                                            lineNumber: 275,
                                                             columnNumber: 41
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1041,7 +1042,7 @@ function EditMappingHierarchy() {
                                                             children: "None (Root)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                            lineNumber: 275,
+                                                            lineNumber: 276,
                                                             columnNumber: 41
                                                         }, this),
                                                         entries.map((e)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1049,13 +1050,13 @@ function EditMappingHierarchy() {
                                                                 children: getEntryName(e)
                                                             }, e.id, false, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                                lineNumber: 277,
+                                                                lineNumber: 278,
                                                                 columnNumber: 45
                                                             }, this))
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                    lineNumber: 269,
+                                                    lineNumber: 270,
                                                     columnNumber: 37
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1069,7 +1070,7 @@ function EditMappingHierarchy() {
                                                             children: "Set Role for all..."
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                            lineNumber: 285,
+                                                            lineNumber: 286,
                                                             columnNumber: 41
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1077,7 +1078,7 @@ function EditMappingHierarchy() {
                                                             children: "Standard"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                            lineNumber: 286,
+                                                            lineNumber: 287,
                                                             columnNumber: 41
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1085,7 +1086,7 @@ function EditMappingHierarchy() {
                                                             children: "Primary"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                            lineNumber: 287,
+                                                            lineNumber: 288,
                                                             columnNumber: 41
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1093,13 +1094,13 @@ function EditMappingHierarchy() {
                                                             children: "Leaf"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                            lineNumber: 288,
+                                                            lineNumber: 289,
                                                             columnNumber: 41
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                    lineNumber: 280,
+                                                    lineNumber: 281,
                                                     columnNumber: 37
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1108,19 +1109,19 @@ function EditMappingHierarchy() {
                                                     children: "Clear"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                    lineNumber: 290,
+                                                    lineNumber: 291,
                                                     columnNumber: 37
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                            lineNumber: 268,
+                                            lineNumber: 269,
                                             columnNumber: 33
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                    lineNumber: 264,
+                                    lineNumber: 265,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1135,20 +1136,20 @@ function EditMappingHierarchy() {
                                                     onChange: toggleSelectAll
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                    lineNumber: 297,
+                                                    lineNumber: 298,
                                                     columnNumber: 33
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                     className: "checkmark"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                    lineNumber: 302,
+                                                    lineNumber: 303,
                                                     columnNumber: 33
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                            lineNumber: 296,
+                                            lineNumber: 297,
                                             columnNumber: 29
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1160,13 +1161,13 @@ function EditMappingHierarchy() {
                                             children: "SELECT ALL"
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                            lineNumber: 304,
+                                            lineNumber: 305,
                                             columnNumber: 29
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                    lineNumber: 295,
+                                    lineNumber: 296,
                                     columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1191,33 +1192,33 @@ function EditMappingHierarchy() {
                                                                     onChange: ()=>toggleSelect(entry.id)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                                    lineNumber: 314,
+                                                                    lineNumber: 315,
                                                                     columnNumber: 49
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                     className: "checkmark"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                                    lineNumber: 319,
+                                                                    lineNumber: 320,
                                                                     columnNumber: 49
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                            lineNumber: 313,
+                                                            lineNumber: 314,
                                                             columnNumber: 45
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
                                                             children: getEntryName(entry)
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                            lineNumber: 321,
+                                                            lineNumber: 322,
                                                             columnNumber: 45
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                    lineNumber: 312,
+                                                    lineNumber: 313,
                                                     columnNumber: 41
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1230,7 +1231,7 @@ function EditMappingHierarchy() {
                                                                     children: "Parent"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                                    lineNumber: 325,
+                                                                    lineNumber: 326,
                                                                     columnNumber: 49
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1243,7 +1244,7 @@ function EditMappingHierarchy() {
                                                                             children: "None (Root)"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                                            lineNumber: 331,
+                                                                            lineNumber: 332,
                                                                             columnNumber: 53
                                                                         }, this),
                                                                         entries.filter((e)=>e.id !== entry.id).map((e)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1251,19 +1252,19 @@ function EditMappingHierarchy() {
                                                                                 children: getEntryName(e)
                                                                             }, e.id, false, {
                                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                                                lineNumber: 333,
+                                                                                lineNumber: 334,
                                                                                 columnNumber: 57
                                                                             }, this))
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                                    lineNumber: 326,
+                                                                    lineNumber: 327,
                                                                     columnNumber: 49
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                            lineNumber: 324,
+                                                            lineNumber: 325,
                                                             columnNumber: 45
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1273,7 +1274,7 @@ function EditMappingHierarchy() {
                                                                     children: "Role"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                                    lineNumber: 338,
+                                                                    lineNumber: 339,
                                                                     columnNumber: 49
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1286,7 +1287,7 @@ function EditMappingHierarchy() {
                                                                             children: "Standard"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                                            lineNumber: 344,
+                                                                            lineNumber: 345,
                                                                             columnNumber: 53
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1294,7 +1295,7 @@ function EditMappingHierarchy() {
                                                                             children: "Primary"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                                            lineNumber: 345,
+                                                                            lineNumber: 346,
                                                                             columnNumber: 53
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1302,48 +1303,48 @@ function EditMappingHierarchy() {
                                                                             children: "Leaf"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                                            lineNumber: 346,
+                                                                            lineNumber: 347,
                                                                             columnNumber: 53
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                                    lineNumber: 339,
+                                                                    lineNumber: 340,
                                                                     columnNumber: 49
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                            lineNumber: 337,
+                                                            lineNumber: 338,
                                                             columnNumber: 45
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                                    lineNumber: 323,
+                                                    lineNumber: 324,
                                                     columnNumber: 41
                                                 }, this)
                                             ]
                                         }, entry.id, true, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                            lineNumber: 311,
+                                            lineNumber: 312,
                                             columnNumber: 37
                                         }, this);
                                     })
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                    lineNumber: 307,
+                                    lineNumber: 308,
                                     columnNumber: 25
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                            lineNumber: 248,
+                            lineNumber: 249,
                             columnNumber: 21
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                        lineNumber: 247,
+                        lineNumber: 248,
                         columnNumber: 17
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1359,13 +1360,13 @@ function EditMappingHierarchy() {
                                             children: "← Drag items to reorder"
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                            lineNumber: 360,
+                                            lineNumber: 361,
                                             columnNumber: 47
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                    lineNumber: 360,
+                                    lineNumber: 361,
                                     columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1378,29 +1379,29 @@ function EditMappingHierarchy() {
                                         children: "No entries found."
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                        lineNumber: 363,
+                                        lineNumber: 364,
                                         columnNumber: 33
                                     }, this) : buildTree(null)
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                                    lineNumber: 361,
+                                    lineNumber: 362,
                                     columnNumber: 25
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                            lineNumber: 359,
+                            lineNumber: 360,
                             columnNumber: 21
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                        lineNumber: 358,
+                        lineNumber: 359,
                         columnNumber: 17
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                lineNumber: 245,
+                lineNumber: 246,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("style", {
@@ -1616,13 +1617,13 @@ function EditMappingHierarchy() {
             `
             }, void 0, false, {
                 fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-                lineNumber: 372,
+                lineNumber: 373,
                 columnNumber: 13
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/Desktop/crm demo/backend/src/views/EditMappingHierarchy.jsx",
-        lineNumber: 210,
+        lineNumber: 211,
         columnNumber: 9
     }, this);
 }

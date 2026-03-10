@@ -1,30 +1,18 @@
 {
   "app": {
-    "[project]/src/app/data-entry/[pageId]/[entryId]/page": [
+    "[project]/Desktop/crm demo/backend/src/app/data-entry/[pageId]/[entryId]/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ],
-    "[project]/src/app/data-entry/[pageId]/page": [
+    "[project]/Desktop/crm demo/backend/src/app/data-entry/[pageId]/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ],
-    "[project]/src/app/edit-hierarchy/[id]/page": [
+    "[project]/Desktop/crm demo/backend/src/app/edit-page/[pageId]/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ],
-    "[project]/src/app/edit-page/[pageId]/page": [
+    "[project]/Desktop/crm demo/backend/src/app/entries/[pageId]/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ],
-    "[project]/src/app/entries/[pageId]/page": [
-      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
-    ],
-    "[project]/src/app/login/page": [
-      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
-    ],
-    "[project]/src/app/page": [
-      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
-    ],
-    "[project]/src/app/pages/page": [
-      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
-    ],
-    "[project]/src/app/view-mapping/[id]/page": [
+    "[project]/Desktop/crm demo/backend/src/app/pages/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ]
   },

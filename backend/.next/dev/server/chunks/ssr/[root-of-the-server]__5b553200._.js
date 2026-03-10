@@ -1326,7 +1326,8 @@ function AppProvider({ children }) {
                         ...prev,
                         {
                             ...m,
-                            id: Date.now()
+                            id: Date.now(),
+                            companyId: currentCompanyId
                         }
                     ]),
             updateFieldMapping: (id, m)=>setFieldMappings((prev)=>prev.map((item)=>item.id === id ? {

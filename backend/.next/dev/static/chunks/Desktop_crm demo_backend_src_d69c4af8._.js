@@ -28,7 +28,7 @@ function AppLayout({ children }) {
     const sidebarSections = [
         {
             label: 'HUB ADMIN',
-            items: pages.map((page)=>{
+            items: pages.filter((page)=>page.superAdminEnabled !== false).map((page)=>{
                 const count = getPageEntries(page.id).length;
                 const lowerName = page.name.toLowerCase().trim();
                 const isForm = lowerName === 'form';
@@ -41,6 +41,8 @@ function AppLayout({ children }) {
                     } else {
                         targetPath = `/data-entry/${page.id}/new`;
                     }
+                } else if (isForm) {
+                    targetPath = `/entries/${page.id}`;
                 }
                 return {
                     icon: isForm ? '📋' : '📦',
@@ -145,7 +147,7 @@ function AppLayout({ children }) {
                                     children: currentCompany?.initials || '?'
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                                    lineNumber: 83,
+                                    lineNumber: 85,
                                     columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -164,23 +166,23 @@ function AppLayout({ children }) {
                                         children: currentCompany?.name || 'Select Company'
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                                        lineNumber: 91,
+                                        lineNumber: 93,
                                         columnNumber: 29
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                                    lineNumber: 90,
+                                    lineNumber: 92,
                                     columnNumber: 25
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                            lineNumber: 82,
+                            lineNumber: 84,
                             columnNumber: 21
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                        lineNumber: 78,
+                        lineNumber: 80,
                         columnNumber: 17
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -215,19 +217,19 @@ function AppLayout({ children }) {
                                     children: "+"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                                    lineNumber: 111,
+                                    lineNumber: 113,
                                     columnNumber: 25
                                 }, this),
                                 " Create"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                            lineNumber: 100,
+                            lineNumber: 102,
                             columnNumber: 21
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                        lineNumber: 99,
+                        lineNumber: 101,
                         columnNumber: 17
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -254,7 +256,7 @@ function AppLayout({ children }) {
                                         children: section.label
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                                        lineNumber: 120,
+                                        lineNumber: 122,
                                         columnNumber: 33
                                     }, this),
                                     section.items.map((item)=>{
@@ -291,7 +293,7 @@ function AppLayout({ children }) {
                                                     children: item.icon
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                                                    lineNumber: 144,
+                                                    lineNumber: 146,
                                                     columnNumber: 41
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -308,7 +310,7 @@ function AppLayout({ children }) {
                                                     children: item.label
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                                                    lineNumber: 145,
+                                                    lineNumber: 147,
                                                     columnNumber: 41
                                                 }, this),
                                                 item.badge && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -324,13 +326,13 @@ function AppLayout({ children }) {
                                                     children: item.badge
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                                                    lineNumber: 155,
+                                                    lineNumber: 157,
                                                     columnNumber: 45
                                                 }, this)
                                             ]
                                         }, item.label, true, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                                            lineNumber: 132,
+                                            lineNumber: 134,
                                             columnNumber: 37
                                         }, this);
                                     }),
@@ -360,7 +362,7 @@ function AppLayout({ children }) {
                                                 children: "+"
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                                                lineNumber: 176,
+                                                lineNumber: 178,
                                                 columnNumber: 37
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -371,24 +373,24 @@ function AppLayout({ children }) {
                                                 children: section.footer.label
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                                                lineNumber: 177,
+                                                lineNumber: 179,
                                                 columnNumber: 37
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                                        lineNumber: 166,
+                                        lineNumber: 168,
                                         columnNumber: 33
                                     }, this)
                                 ]
                             }, section.label, true, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                                lineNumber: 118,
+                                lineNumber: 120,
                                 columnNumber: 25
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                        lineNumber: 116,
+                        lineNumber: 118,
                         columnNumber: 17
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -420,7 +422,7 @@ function AppLayout({ children }) {
                                     children: user?.username?.[0]?.toUpperCase() || 'U'
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                                    lineNumber: 187,
+                                    lineNumber: 189,
                                     columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -439,7 +441,7 @@ function AppLayout({ children }) {
                                             children: user?.username
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                                            lineNumber: 195,
+                                            lineNumber: 197,
                                             columnNumber: 29
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -452,13 +454,13 @@ function AppLayout({ children }) {
                                             children: user?.role?.toUpperCase() || 'COMPANY_ADMIN'
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                                            lineNumber: 198,
+                                            lineNumber: 200,
                                             columnNumber: 29
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                                    lineNumber: 194,
+                                    lineNumber: 196,
                                     columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -483,24 +485,24 @@ function AppLayout({ children }) {
                                     children: "⏻"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                                    lineNumber: 202,
+                                    lineNumber: 204,
                                     columnNumber: 25
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                            lineNumber: 186,
+                            lineNumber: 188,
                             columnNumber: 21
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                        lineNumber: 185,
+                        lineNumber: 187,
                         columnNumber: 17
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                lineNumber: 73,
+                lineNumber: 75,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -513,13 +515,13 @@ function AppLayout({ children }) {
                 children: children
             }, void 0, false, {
                 fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-                lineNumber: 220,
+                lineNumber: 222,
                 columnNumber: 13
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/Desktop/crm demo/backend/src/components/AppLayout.jsx",
-        lineNumber: 71,
+        lineNumber: 73,
         columnNumber: 9
     }, this);
 }

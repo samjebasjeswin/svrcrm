@@ -32,6 +32,8 @@ export default function AppLayout({ children }) {
                     } else {
                         targetPath = `/data-entry/${page.id}/new`;
                     }
+                } else if (isForm) {
+                    targetPath = `/entries/${page.id}`;
                 }
 
                 return {
