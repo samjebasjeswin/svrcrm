@@ -221,24 +221,101 @@ export default function DataEntry() {
             const linkedEntries = getPageEntries(field.linkedPageId);
             const linkedPage = getPage(field.linkedPageId);
 
+            const selectedEntry = linkedEntries.find(e => String(e.id) === String(value));
+            const selectedDisplay = selectedEntry ? getLinkedEntryDisplayValue(field.linkedPageId, selectedEntry.id, field.displayFieldName) : '';
+
             return (
-                <div className="data-entry-field-input-wrapper" style={{ display: 'flex', gap: '8px' }}>
-                    <select
-                        className="data-entry-input data-entry-select"
-                        style={{ flex: 1 }}
-                        value={value}
-                        onChange={(e) => handleChange(heading.id, sub.id, field.id, e.target.value, 0, rowIdx)}
-                    >
-                        <option value="">-- Select {linkedPage?.name || 'item'} --</option>
-                        {linkedEntries.map((entry) => {
-                            const displayVal = getLinkedEntryDisplayValue(field.linkedPageId, entry.id, field.displayFieldName);
-                            return (
-                                <option key={entry.id} value={entry.id}>
-                                    {displayVal}
-                                </option>
-                            );
-                        })}
-                    </select>
+                <div className="data-entry-field-input-wrapper" style={{ display: 'flex', gap: '8px', position: 'relative' }}>
+                    <div style={{ flex: 1, position: 'relative', zIndex: value ? 1 : 0 }}>
+                        <div
+                            className="data-entry-input data-entry-select"
+                            style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                            onClick={(e) => {
+                                const dropdown = e.currentTarget.nextElementSibling;
+                                const parentWrapper = e.currentTarget.closest('.data-entry-field-input-wrapper');
+                                const section = e.currentTarget.closest('.data-entry-section');
+                                if (dropdown) {
+                                    const isOpening = dropdown.style.display === 'none';
+                                    dropdown.style.display = isOpening ? 'block' : 'none';
+                                    if (parentWrapper) parentWrapper.style.zIndex = isOpening ? '1000' : '1';
+                                    if (section) section.style.zIndex = isOpening ? '1000' : '1';
+                                }
+                            }}
+                        >
+                            <span style={{ color: value ? 'var(--text-primary)' : 'var(--text-soft)' }}>
+                                {value ? selectedDisplay : `-- Select ${linkedPage?.name || 'item'} --`}
+                            </span>
+                            <span style={{ fontSize: '10px' }}>▼</span>
+                        </div>
+                        <div style={{
+                            display: 'none', position: 'absolute', top: '100%', left: 0, right: 0,
+                            background: 'white', border: '1.5px solid var(--border)', borderRadius: '8px',
+                            boxShadow: '0 8px 24px rgba(0,0,0,0.12)', zIndex: 1001, maxHeight: '250px',
+                            overflow: 'hidden', marginTop: '4px'
+                        }}>
+                            <div style={{ padding: '8px', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, background: 'white', zIndex: 1 }}>
+                                <input
+                                    type="text"
+                                    className="data-entry-input"
+                                    style={{ fontSize: '12px', padding: '6px 10px', height: '32px' }}
+                                    placeholder={`🔍 Search ${linkedPage?.name || 'entries'}...`}
+                                    onClick={(e) => e.stopPropagation()}
+                                    onChange={(e) => {
+                                        const search = e.target.value.toLowerCase();
+                                        const list = e.target.closest('div[style]').parentElement.querySelector('.link-search-list');
+                                        if (list) {
+                                            Array.from(list.children).forEach(item => {
+                                                item.style.display = item.textContent.toLowerCase().includes(search) ? '' : 'none';
+                                            });
+                                        }
+                                    }}
+                                />
+                            </div>
+                            <div className="link-search-list" style={{ overflowY: 'auto', maxHeight: '200px' }}>
+                                <div
+                                    style={{ padding: '8px 12px', cursor: 'pointer', fontSize: '13px', color: 'var(--text-soft)', borderBottom: '1px solid var(--border-light)' }}
+                                    onClick={(e) => {
+                                        handleChange(heading.id, sub.id, field.id, '', 0, rowIdx);
+                                        const panel = e.currentTarget.closest('div[style*="position: absolute"]');
+                                        if (panel) panel.style.display = 'none';
+                                        const parentWrapper = e.currentTarget.closest('.data-entry-field-input-wrapper');
+                                        if (parentWrapper) parentWrapper.style.zIndex = '1';
+                                        const section = e.currentTarget.closest('.data-entry-section');
+                                        if (section) section.style.zIndex = '1';
+                                    }}
+                                >
+                                    -- Clear Selection --
+                                </div>
+                                {linkedEntries.map((entry) => {
+                                    const displayVal = getLinkedEntryDisplayValue(field.linkedPageId, entry.id, field.displayFieldName);
+                                    return (
+                                        <div
+                                            key={entry.id}
+                                            style={{
+                                                padding: '8px 12px', cursor: 'pointer', fontSize: '13px',
+                                                background: String(entry.id) === String(value) ? 'rgba(79,70,229,0.08)' : 'transparent',
+                                                fontWeight: String(entry.id) === String(value) ? '600' : '400',
+                                                borderBottom: '1px solid #f1f5f9'
+                                            }}
+                                            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(79,70,229,0.06)'}
+                                            onMouseLeave={(e) => e.currentTarget.style.background = String(entry.id) === String(value) ? 'rgba(79,70,229,0.08)' : 'transparent'}
+                                            onClick={(e) => {
+                                                handleChange(heading.id, sub.id, field.id, String(entry.id), 0, rowIdx);
+                                                const panel = e.currentTarget.closest('div[style*="position: absolute"]');
+                                                if (panel) panel.style.display = 'none';
+                                                const parentWrapper = e.currentTarget.closest('.data-entry-field-input-wrapper');
+                                                if (parentWrapper) parentWrapper.style.zIndex = '1';
+                                                const section = e.currentTarget.closest('.data-entry-section');
+                                                if (section) section.style.zIndex = '1';
+                                            }}
+                                        >
+                                            {displayVal}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
                     <button
                         type="button"
                         className="btn btn-ghost btn-sm"
@@ -592,7 +669,7 @@ export default function DataEntry() {
                     {/* Render Dynamic Sections */}
                     {(() => {
                         const renderSection = (heading, sectionLabel = '') => (
-                            <div key={heading.id} className="data-entry-section animate-fade-in-up">
+                            <div key={heading.id} className="data-entry-section animate-fade-in-up" style={{ position: 'relative' }}>
                                 <div className="data-entry-main-heading">
                                     <h2>
                                         {heading.title || 'Untitled Heading'}
