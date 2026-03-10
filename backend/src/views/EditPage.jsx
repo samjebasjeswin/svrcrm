@@ -247,7 +247,7 @@ function FieldEditModal({ field, onSave, onClose, pages, currentPageId }) {
 export default function EditPage() {
     const { pageId } = useParams();
     const router = useRouter();
-    const { getPage, updatePage, deletePage, getCompanyPages } = useApp();
+    const { getPage, updatePage, deletePage, getCompanyPages, pageLinks, addPageLinks, deletePageLink } = useApp();
 
     const page = getPage(pageId);
     const allPages = getCompanyPages();
@@ -266,6 +266,11 @@ export default function EditPage() {
     const [staticSeoTimestamp, setStaticSeoTimestamp] = useState('');
     const [superAdminEnabled, setSuperAdminEnabled] = useState(true);
     const [activeSetter, setActiveSetter] = useState(null);
+    const [linkingEnabled, setLinkingEnabled] = useState(false);
+    const [linkSourcePageId, setLinkSourcePageId] = useState('');
+    const [linkFieldName, setLinkFieldName] = useState('');
+    const [customLabel, setCustomLabel] = useState('');
+    const [groupName, setGroupName] = useState('');
     const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
 
     useEffect(() => {
@@ -288,6 +293,7 @@ export default function EditPage() {
             setDynamicSeoHeadings(page.dynamicSeoHeadings || []);
             setStaticSeoTimestamp(page.staticSeoTimestamp || '');
             setSuperAdminEnabled(page.superAdminEnabled ?? true);
+            setLinkingEnabled(page.linkingEnabled || false);
         }
     }, [page?.id]);
 
@@ -598,6 +604,75 @@ export default function EditPage() {
         });
     };
 
+    const getAvailableFields = (pid) => {
+        const p = allPages.find(page => page.id === Number(pid));
+        if (!p) return [];
+        const fields = [];
+        (p.headings || []).forEach(h => {
+            (h.subHeadings || []).forEach(sh => {
+                (sh.fields || []).forEach(f => { fields.push(f); });
+            });
+        });
+        return fields;
+    };
+
+    const handleAddLink = () => {
+        if (!linkSourcePageId) return;
+        const sourcePage = allPages.find(p => p.id === Number(linkSourcePageId));
+        if (!sourcePage) return;
+        const fieldName = linkFieldName || 'name';
+        const finalLabel = customLabel.trim() || fieldName;
+
+        // Add link history via Context
+        addPageLinks([{
+            sourcePageId: sourcePage.id,
+            targetPageId: Number(pageId),
+            linkName: finalLabel,
+            groupName: groupName.trim(),
+            sourceFieldName: fieldName
+        }]);
+
+        // Manually add field to local headings so it shows up immediately
+        setHeadings(prev => {
+            const next = JSON.parse(JSON.stringify(prev));
+            if (next.length === 0) {
+                next.push({ id: Date.now(), title: 'Linked Data', subHeadings: [] });
+            }
+            const mainHeading = next[0];
+            let targetSubHeading;
+            if (groupName.trim()) {
+                targetSubHeading = mainHeading.subHeadings.find(sh => sh.title === groupName.trim());
+                if (!targetSubHeading) {
+                    targetSubHeading = { id: Date.now() + Math.random(), title: groupName.trim(), fields: [] };
+                    mainHeading.subHeadings.push(targetSubHeading);
+                }
+            } else {
+                if (mainHeading.subHeadings.length === 0) {
+                    mainHeading.subHeadings.push({ id: Date.now() + Math.random(), title: '', fields: [] });
+                }
+                targetSubHeading = mainHeading.subHeadings[0];
+            }
+
+            targetSubHeading.fields.push({
+                id: Date.now() + Math.random(),
+                label: finalLabel,
+                valueType: 'Link',
+                linkedPageId: Number(linkSourcePageId),
+                displayFieldName: fieldName,
+                required: false,
+                infinity: false
+            });
+            return next;
+        });
+
+        // Reset form
+        setLinkSourcePageId('');
+        setLinkFieldName('');
+        setCustomLabel('');
+        setGroupName('');
+        alert('Link added and field created!');
+    };
+
     const handleUpdate = () => {
         updatePage(Number(pageId), {
             headings,
@@ -611,7 +686,8 @@ export default function EditPage() {
             staticSeoHeadings,
             dynamicSeoHeadings,
             staticSeoTimestamp,
-            superAdminEnabled
+            superAdminEnabled,
+            linkingEnabled
         });
         router.push('/pages');
     };
@@ -1112,6 +1188,25 @@ export default function EditPage() {
                     </label>
                 </div>
 
+                {/* Additional Linking */}
+                <div style={{
+                    flex: '1 1 160px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+                    padding: '14px 16px', background: linkingEnabled ? 'rgba(59,130,246,0.06)' : '#f8fafc',
+                    border: `1.5px solid ${linkingEnabled ? '#3b82f6' : 'var(--border)'}`,
+                    borderRadius: '12px', transition: 'all 0.2s', gap: '10px'
+                }}>
+                    <div>
+                        <div style={{ fontWeight: 700, fontSize: '13px', color: 'var(--text-primary)' }}>Additional Linking</div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '3px', lineHeight: 1.4 }}>
+                            Link from other pages
+                        </div>
+                    </div>
+                    <label className="toggle" style={{ alignSelf: 'flex-start' }}>
+                        <input type="checkbox" checked={linkingEnabled} onChange={(e) => setLinkingEnabled(e.target.checked)} />
+                        <span className="toggle-slider" style={{ backgroundColor: linkingEnabled ? '#3b82f6' : undefined }}></span>
+                    </label>
+                </div>
+
             </div>
 
             {/* Search field selector — shown below row when enabled */}
@@ -1168,6 +1263,94 @@ export default function EditPage() {
                     <div className="seo-fields-container animate-slide-down">
                         {renderDynamicStructure(dynamicSeoHeadings, setDynamicSeoHeadings, 'Dynamic SEO')}
                     </div>
+                </div>
+            )}
+
+            {/* Additional Linking Panel */}
+            {linkingEnabled && (
+                <div style={{
+                    padding: '24px', background: 'rgba(59,130,246,0.04)',
+                    border: '1.5px solid #3b82f6', borderRadius: '12px', marginBottom: '24px'
+                }}>
+                    <div style={{ marginBottom: '20px' }}>
+                        <h3 style={{ fontSize: '16px', fontWeight: 700, margin: 0 }}>🔗 Additional Linking</h3>
+                        <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                            Create fields that link to other pages. These will appear in your dynamic structure.
+                        </p>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '20px' }}>
+                        <div className="form-group">
+                            <label className="form-label" style={{ fontSize: '12px' }}>Source Page</label>
+                            <select className="form-input" value={linkSourcePageId} onChange={(e) => setLinkSourcePageId(e.target.value)}>
+                                <option value="">Select source page...</option>
+                                {otherPages.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label" style={{ fontSize: '12px' }}>Display Field</label>
+                            <select className="form-input" value={linkFieldName} onChange={(e) => setLinkFieldName(e.target.value)} disabled={!linkSourcePageId}>
+                                <option value="">Select display field...</option>
+                                {getAvailableFields(linkSourcePageId).map(f => <option key={f.label} value={f.label}>{f.label}</option>)}
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label" style={{ fontSize: '12px' }}>Custom Label</label>
+                            <input type="text" className="form-input" value={customLabel} onChange={(e) => setCustomLabel(e.target.value)} placeholder="e.g. Related Product" disabled={!linkSourcePageId} />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label" style={{ fontSize: '12px' }}>Group Name (Optional)</label>
+                            <input type="text" className="form-input" value={groupName} onChange={(e) => setGroupName(e.target.value)} placeholder="e.g. Specifications" disabled={!linkSourcePageId} />
+                        </div>
+                    </div>
+
+                    <button className="btn btn-primary btn-sm" onClick={handleAddLink} disabled={!linkSourcePageId}>
+                        + Add Linking Field
+                    </button>
+
+                    {/* Existing Links List */}
+                    {pageLinks.filter(l => l.targetPageId === Number(pageId)).length > 0 && (
+                        <div style={{ marginTop: '24px', borderTop: '1px solid rgba(59,130,246,0.1)', paddingTop: '16px' }}>
+                            <h4 style={{ fontSize: '13px', fontWeight: 700, marginBottom: '12px' }}>Existing Relationships</h4>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                                {pageLinks.filter(l => l.targetPageId === Number(pageId)).map(link => (
+                                    <div key={link.id} style={{
+                                        background: 'white', border: '1px solid #e2e8f0', borderRadius: '8px',
+                                        padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '10px',
+                                        boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                                    }}>
+                                        <div style={{ fontSize: '12px' }}>
+                                            <span style={{ fontWeight: 600 }}>{link.linkName}</span>
+                                            <span style={{ color: 'var(--text-secondary)', marginLeft: '6px' }}>
+                                                ({allPages.find(p => p.id === link.sourcePageId)?.name || 'Deleted'})
+                                            </span>
+                                        </div>
+                                        <button
+                                            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '14px', padding: '0 4px' }}
+                                            onClick={() => {
+                                                if (confirm('Delete this relationship? This will remove the field from your page structure.')) {
+                                                    deletePageLink(link.id);
+                                                    // Also remove from local headings
+                                                    setHeadings(prev => {
+                                                        const next = JSON.parse(JSON.stringify(prev));
+                                                        return next.map(h => ({
+                                                            ...h,
+                                                            subHeadings: h.subHeadings.map(sh => ({
+                                                                ...sh,
+                                                                fields: sh.fields.filter(f => f.label !== link.linkName)
+                                                            }))
+                                                        }));
+                                                    });
+                                                }
+                                            }}
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
 
