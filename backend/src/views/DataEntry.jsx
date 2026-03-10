@@ -683,79 +683,7 @@ export default function DataEntry() {
                     </div>
                 </div>
 
-                {/* Integrated Catalog List Section */}
-                {!isSettingsPage && (
-                    <div className="catalog-list-integrated animate-fade-in-up" style={{ marginTop: '48px', paddingTop: '48px', borderTop: '2px dashed var(--border)' }}>
-                        <div className="section-header" style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div>
-                                <h2 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--text-primary)' }}>{page.name} Catalog</h2>
-                                <p style={{ fontSize: '14px', color: 'var(--text-soft)' }}>View and manage existing entries</p>
-                            </div>
-                            <div className="search-input-wrapper" style={{ position: 'relative', width: '300px' }}>
-                                <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>🔍</span>
-                                <input
-                                    type="text"
-                                    className="data-entry-input"
-                                    style={{ paddingLeft: '40px', height: '40px', fontSize: '13px' }}
-                                    placeholder="Search entries..."
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                />
-                            </div>
-                        </div>
 
-                        <div className="table-container">
-                            <table className="premium-table">
-                                <thead>
-                                    <tr>
-                                        <th style={{ width: '60px' }}>SL NO.</th>
-                                        {(() => {
-                                            const firstField = page.headings?.[0]?.subHeadings?.[0]?.fields?.[0];
-                                            return firstField ? <th>{firstField.label}</th> : <th>Entry</th>;
-                                        })()}
-                                        <th style={{ textAlign: 'right' }}>ACTIONS</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {(() => {
-                                        const entries = getPageEntries(pageId);
-                                        const firstField = page.headings?.[0]?.subHeadings?.[0]?.fields?.[0];
-                                        const fieldKey = firstField ? getFieldKey(page.headings[0].id, page.headings[0].subHeadings[0].id, firstField.id) : null;
-
-                                        const filtered = entries.filter(e => {
-                                            if (!searchQuery.trim()) return true;
-                                            const val = fieldKey ? String(e.data?.[fieldKey] || '').toLowerCase() : '';
-                                            return val.includes(searchQuery.toLowerCase());
-                                        });
-
-                                        if (filtered.length === 0) {
-                                            return <tr><td colSpan={3} style={{ textAlign: 'center', padding: '32px', color: 'var(--text-muted)' }}>No entries found</td></tr>;
-                                        }
-
-                                        return filtered.map((entry, idx) => (
-                                            <tr key={entry.id}>
-                                                <td style={{ fontWeight: '600' }}>{idx + 1}</td>
-                                                <td>{fieldKey ? (entry.data?.[fieldKey] || '—') : `Entry #${entry.id}`}</td>
-                                                <td style={{ textAlign: 'right' }}>
-                                                    <div className="table-actions" style={{ justifyContent: 'flex-end' }}>
-                                                        <button className="action-icon-btn" title="View" onClick={() => setViewEntryData(entry)}>👁️</button>
-                                                        <button className="action-icon-btn" title="Edit" onClick={() => router.push(`/data-entry/${pageId}/${entry.id}`)}>✏️</button>
-                                                        <button className="action-icon-btn delete" title="Delete" onClick={() => {
-                                                            if (confirm('Are you sure you want to delete this entry?')) {
-                                                                deleteEntry(pageId, entry.id);
-                                                                setRefreshKey(k => k + 1);
-                                                            }
-                                                        }}>🗑️</button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ));
-                                    })()}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                )}
             </div>
 
             {/* View Details Modal */}

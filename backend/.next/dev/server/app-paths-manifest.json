@@ -1,16 +1,5 @@
 {
-<<<<<<< HEAD
-  "/api/[companyId]/[pageId]/route": "app/api/[companyId]/[pageId]/route.js",
   "/data-entry/[pageId]/[entryId]/page": "app/data-entry/[pageId]/[entryId]/page.js",
-  "/edit-page/[pageId]/page": "app/edit-page/[pageId]/page.js",
   "/entries/[pageId]/page": "app/entries/[pageId]/page.js",
-  "/inbound-links/[pageId]/[entryId]/page": "app/inbound-links/[pageId]/[entryId]/page.js",
-=======
-  "/data-entry/[pageId]/[entryId]/page": "app/data-entry/[pageId]/[entryId]/page.js",
-  "/data-entry/[pageId]/page": "app/data-entry/[pageId]/page.js",
-  "/edit-page/[pageId]/page": "app/edit-page/[pageId]/page.js",
-  "/entries/[pageId]/page": "app/entries/[pageId]/page.js",
-  "/page": "app/page.js",
->>>>>>> aeca85e35096baeb21c8033987114620788c588b
   "/pages/page": "app/pages/page.js"
 }
