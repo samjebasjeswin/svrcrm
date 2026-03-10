@@ -1041,6 +1041,11 @@ function EditPage() {
     const [singleEntry, setSingleEntry] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [searchEnabled, setSearchEnabled] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [searchFieldId, setSearchFieldId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
+    const [staticSeoEnabled, setStaticSeoEnabled] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [dynamicSeoEnabled, setDynamicSeoEnabled] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [staticSeoData, setStaticSeoData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({});
+    const [dynamicSeoData, setDynamicSeoData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({});
+    const [staticSeoTimestamp, setStaticSeoTimestamp] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "EditPage.useEffect": ()=>{
             if (page) {
@@ -1060,6 +1065,11 @@ function EditPage() {
                 setSingleEntry(page.singleEntry || false);
                 setSearchEnabled(page.searchEnabled || false);
                 setSearchFieldId(page.searchFieldId || '');
+                setStaticSeoEnabled(page.staticSeoEnabled || false);
+                setDynamicSeoEnabled(page.dynamicSeoEnabled || false);
+                setStaticSeoData(page.staticSeoData || {});
+                setDynamicSeoData(page.dynamicSeoData || {});
+                setStaticSeoTimestamp(page.staticSeoTimestamp || '');
             }
         }
     }["EditPage.useEffect"], [
@@ -1077,7 +1087,7 @@ function EditPage() {
                         children: "Page not found"
                     }, void 0, false, {
                         fileName: "[project]/src/views/EditPage.jsx",
-                        lineNumber: 174,
+                        lineNumber: 184,
                         columnNumber: 21
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1089,18 +1099,18 @@ function EditPage() {
                         children: "Back to Pages"
                     }, void 0, false, {
                         fileName: "[project]/src/views/EditPage.jsx",
-                        lineNumber: 175,
+                        lineNumber: 185,
                         columnNumber: 21
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/views/EditPage.jsx",
-                lineNumber: 173,
+                lineNumber: 183,
                 columnNumber: 17
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/views/EditPage.jsx",
-            lineNumber: 172,
+            lineNumber: 182,
             columnNumber: 13
         }, this);
     }
@@ -1278,7 +1288,12 @@ function EditPage() {
             headings,
             singleEntry,
             searchEnabled,
-            searchFieldId
+            searchFieldId,
+            staticSeoEnabled,
+            dynamicSeoEnabled,
+            staticSeoData,
+            dynamicSeoData,
+            staticSeoTimestamp
         });
         router.push('/pages');
     };
@@ -1316,7 +1331,7 @@ function EditPage() {
                                 children: "←"
                             }, void 0, false, {
                                 fileName: "[project]/src/views/EditPage.jsx",
-                                lineNumber: 435,
+                                lineNumber: 455,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1329,7 +1344,7 @@ function EditPage() {
                                         children: "Edit Page"
                                     }, void 0, false, {
                                         fileName: "[project]/src/views/EditPage.jsx",
-                                        lineNumber: 439,
+                                        lineNumber: 459,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1337,7 +1352,7 @@ function EditPage() {
                                         children: "›"
                                     }, void 0, false, {
                                         fileName: "[project]/src/views/EditPage.jsx",
-                                        lineNumber: 440,
+                                        lineNumber: 460,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1347,19 +1362,19 @@ function EditPage() {
                                         children: page.name
                                     }, void 0, false, {
                                         fileName: "[project]/src/views/EditPage.jsx",
-                                        lineNumber: 441,
+                                        lineNumber: 461,
                                         columnNumber: 25
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/views/EditPage.jsx",
-                                lineNumber: 438,
+                                lineNumber: 458,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/views/EditPage.jsx",
-                        lineNumber: 434,
+                        lineNumber: 454,
                         columnNumber: 17
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1371,7 +1386,7 @@ function EditPage() {
                                 children: "🗑 Delete Page"
                             }, void 0, false, {
                                 fileName: "[project]/src/views/EditPage.jsx",
-                                lineNumber: 445,
+                                lineNumber: 465,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1380,7 +1395,7 @@ function EditPage() {
                                 children: "Cancel"
                             }, void 0, false, {
                                 fileName: "[project]/src/views/EditPage.jsx",
-                                lineNumber: 448,
+                                lineNumber: 468,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1389,19 +1404,19 @@ function EditPage() {
                                 children: "Update"
                             }, void 0, false, {
                                 fileName: "[project]/src/views/EditPage.jsx",
-                                lineNumber: 451,
+                                lineNumber: 471,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/views/EditPage.jsx",
-                        lineNumber: 444,
+                        lineNumber: 464,
                         columnNumber: 17
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/views/EditPage.jsx",
-                lineNumber: 433,
+                lineNumber: 453,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1428,7 +1443,7 @@ function EditPage() {
                                 children: "Single Entry Mode"
                             }, void 0, false, {
                                 fileName: "[project]/src/views/EditPage.jsx",
-                                lineNumber: 465,
+                                lineNumber: 485,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1440,13 +1455,13 @@ function EditPage() {
                                 children: singleEntry ? 'ON — This page works like a settings page (one form, no catalog list)' : 'OFF — This page shows a catalog with multiple entries'
                             }, void 0, false, {
                                 fileName: "[project]/src/views/EditPage.jsx",
-                                lineNumber: 466,
+                                lineNumber: 486,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/views/EditPage.jsx",
-                        lineNumber: 464,
+                        lineNumber: 484,
                         columnNumber: 17
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -1461,26 +1476,26 @@ function EditPage() {
                                 onChange: (e)=>setSingleEntry(e.target.checked)
                             }, void 0, false, {
                                 fileName: "[project]/src/views/EditPage.jsx",
-                                lineNumber: 473,
+                                lineNumber: 493,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                 className: "toggle-slider"
                             }, void 0, false, {
                                 fileName: "[project]/src/views/EditPage.jsx",
-                                lineNumber: 474,
+                                lineNumber: 494,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/views/EditPage.jsx",
-                        lineNumber: 472,
+                        lineNumber: 492,
                         columnNumber: 17
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/views/EditPage.jsx",
-                lineNumber: 458,
+                lineNumber: 478,
                 columnNumber: 13
             }, this),
             !singleEntry && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1514,7 +1529,7 @@ function EditPage() {
                                         children: "Enable Search"
                                     }, void 0, false, {
                                         fileName: "[project]/src/views/EditPage.jsx",
-                                        lineNumber: 488,
+                                        lineNumber: 508,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1526,13 +1541,13 @@ function EditPage() {
                                         children: "Show a search bar in the catalog list to filter entries"
                                     }, void 0, false, {
                                         fileName: "[project]/src/views/EditPage.jsx",
-                                        lineNumber: 489,
+                                        lineNumber: 509,
                                         columnNumber: 29
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/views/EditPage.jsx",
-                                lineNumber: 487,
+                                lineNumber: 507,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -1547,7 +1562,7 @@ function EditPage() {
                                         onChange: (e)=>setSearchEnabled(e.target.checked)
                                     }, void 0, false, {
                                         fileName: "[project]/src/views/EditPage.jsx",
-                                        lineNumber: 494,
+                                        lineNumber: 514,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1557,19 +1572,19 @@ function EditPage() {
                                         }
                                     }, void 0, false, {
                                         fileName: "[project]/src/views/EditPage.jsx",
-                                        lineNumber: 495,
+                                        lineNumber: 515,
                                         columnNumber: 29
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/views/EditPage.jsx",
-                                lineNumber: 493,
+                                lineNumber: 513,
                                 columnNumber: 25
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/views/EditPage.jsx",
-                        lineNumber: 486,
+                        lineNumber: 506,
                         columnNumber: 21
                     }, this),
                     searchEnabled && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1590,7 +1605,7 @@ function EditPage() {
                                 children: "Searchable Field"
                             }, void 0, false, {
                                 fileName: "[project]/src/views/EditPage.jsx",
-                                lineNumber: 500,
+                                lineNumber: 520,
                                 columnNumber: 29
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1607,7 +1622,7 @@ function EditPage() {
                                         children: "-- All fields (Text search) --"
                                     }, void 0, false, {
                                         fileName: "[project]/src/views/EditPage.jsx",
-                                        lineNumber: 507,
+                                        lineNumber: 527,
                                         columnNumber: 33
                                     }, this),
                                     headings.flatMap((h)=>h.subHeadings?.flatMap((sh)=>sh.fields?.map((f)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1618,13 +1633,13 @@ function EditPage() {
                                                     ]
                                                 }, f.id, true, {
                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                    lineNumber: 509,
+                                                    lineNumber: 529,
                                                     columnNumber: 37
                                                 }, this)) || []) || []).map((opt)=>opt)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/views/EditPage.jsx",
-                                lineNumber: 501,
+                                lineNumber: 521,
                                 columnNumber: 29
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1636,20 +1651,782 @@ function EditPage() {
                                 children: "Select which field users can search through (e.g. Name, SKU, Email)"
                             }, void 0, false, {
                                 fileName: "[project]/src/views/EditPage.jsx",
-                                lineNumber: 512,
+                                lineNumber: 532,
                                 columnNumber: 29
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/views/EditPage.jsx",
-                        lineNumber: 499,
+                        lineNumber: 519,
                         columnNumber: 25
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/views/EditPage.jsx",
-                lineNumber: 480,
+                lineNumber: 500,
                 columnNumber: 17
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                style: {
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '12px',
+                    padding: '16px 24px',
+                    background: staticSeoEnabled ? 'rgba(79,70,229,0.06)' : '#f8fafc',
+                    border: `1.5px solid ${staticSeoEnabled ? 'var(--accent)' : 'var(--border)'}`,
+                    borderRadius: '12px',
+                    marginBottom: '24px',
+                    transition: 'all 0.2s'
+                },
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        style: {
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between'
+                        },
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        style: {
+                                            fontWeight: 700,
+                                            fontSize: '14px',
+                                            color: 'var(--text-primary)'
+                                        },
+                                        children: "Static SEO"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/views/EditPage.jsx",
+                                        lineNumber: 549,
+                                        columnNumber: 25
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        style: {
+                                            fontSize: '12px',
+                                            color: 'var(--text-secondary)',
+                                            marginTop: '2px'
+                                        },
+                                        children: "Configure standard meta tags for search engine optimization"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/views/EditPage.jsx",
+                                        lineNumber: 550,
+                                        columnNumber: 25
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/views/EditPage.jsx",
+                                lineNumber: 548,
+                                columnNumber: 21
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                className: "toggle",
+                                style: {
+                                    flexShrink: 0
+                                },
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                        type: "checkbox",
+                                        checked: staticSeoEnabled,
+                                        onChange: (e)=>setStaticSeoEnabled(e.target.checked)
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/views/EditPage.jsx",
+                                        lineNumber: 555,
+                                        columnNumber: 25
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "toggle-slider"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/views/EditPage.jsx",
+                                        lineNumber: 556,
+                                        columnNumber: 25
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/views/EditPage.jsx",
+                                lineNumber: 554,
+                                columnNumber: 21
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/views/EditPage.jsx",
+                        lineNumber: 547,
+                        columnNumber: 17
+                    }, this),
+                    staticSeoEnabled && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "seo-fields-container animate-slide-down",
+                        style: {
+                            borderTop: '1px solid rgba(0,0,0,0.05)',
+                            paddingTop: '16px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '24px'
+                        },
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
+                                        style: {
+                                            fontSize: '13px',
+                                            fontWeight: 700,
+                                            color: 'var(--accent)',
+                                            marginBottom: '12px'
+                                        },
+                                        children: "Standard Meta Tags"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/views/EditPage.jsx",
+                                        lineNumber: 564,
+                                        columnNumber: 29
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        style: {
+                                            display: 'grid',
+                                            gridTemplateColumns: '1fr 1fr',
+                                            gap: '16px'
+                                        },
+                                        children: [
+                                            {
+                                                label: 'Web Page Title (<title>)',
+                                                key: 'title'
+                                            },
+                                            {
+                                                label: 'Meta Description',
+                                                key: 'description'
+                                            },
+                                            {
+                                                label: 'Meta Keywords',
+                                                key: 'keywords'
+                                            },
+                                            {
+                                                label: 'Robots',
+                                                key: 'robots'
+                                            },
+                                            {
+                                                label: 'Website Name / Author',
+                                                key: 'author'
+                                            },
+                                            {
+                                                label: 'Refresh',
+                                                key: 'refresh'
+                                            },
+                                            {
+                                                label: 'Canonical URL',
+                                                key: 'canonical'
+                                            }
+                                        ].map((field)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "form-group",
+                                                style: {
+                                                    marginBottom: 0
+                                                },
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                        className: "form-label",
+                                                        style: {
+                                                            fontSize: '11px'
+                                                        },
+                                                        children: field.label
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/views/EditPage.jsx",
+                                                        lineNumber: 576,
+                                                        columnNumber: 41
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                        className: "form-input",
+                                                        style: {
+                                                            height: '36px',
+                                                            fontSize: '12px'
+                                                        },
+                                                        value: staticSeoData[field.key] || '',
+                                                        onChange: (e)=>{
+                                                            setStaticSeoData((prev)=>({
+                                                                    ...prev,
+                                                                    [field.key]: e.target.value
+                                                                }));
+                                                            setStaticSeoTimestamp(new Date().toLocaleString());
+                                                        },
+                                                        placeholder: `Enter ${field.key}...`
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/views/EditPage.jsx",
+                                                        lineNumber: 577,
+                                                        columnNumber: 41
+                                                    }, this)
+                                                ]
+                                            }, field.key, true, {
+                                                fileName: "[project]/src/views/EditPage.jsx",
+                                                lineNumber: 575,
+                                                columnNumber: 37
+                                            }, this))
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/views/EditPage.jsx",
+                                        lineNumber: 565,
+                                        columnNumber: 29
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/views/EditPage.jsx",
+                                lineNumber: 563,
+                                columnNumber: 25
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
+                                        style: {
+                                            fontSize: '13px',
+                                            fontWeight: 700,
+                                            color: 'var(--accent)',
+                                            marginBottom: '12px'
+                                        },
+                                        children: "Open Graph Data"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/views/EditPage.jsx",
+                                        lineNumber: 594,
+                                        columnNumber: 29
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        style: {
+                                            display: 'grid',
+                                            gridTemplateColumns: '1fr 1fr',
+                                            gap: '16px'
+                                        },
+                                        children: [
+                                            {
+                                                label: 'OG Title',
+                                                key: 'ogTitle'
+                                            },
+                                            {
+                                                label: 'OG Type',
+                                                key: 'ogType'
+                                            },
+                                            {
+                                                label: 'OG URL',
+                                                key: 'ogUrl'
+                                            },
+                                            {
+                                                label: 'OG Image',
+                                                key: 'ogImage'
+                                            },
+                                            {
+                                                label: 'OG Description',
+                                                key: 'ogDescription'
+                                            },
+                                            {
+                                                label: 'OG Locale',
+                                                key: 'ogLocale'
+                                            }
+                                        ].map((field)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "form-group",
+                                                style: {
+                                                    marginBottom: 0
+                                                },
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                        className: "form-label",
+                                                        style: {
+                                                            fontSize: '11px'
+                                                        },
+                                                        children: field.label
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/views/EditPage.jsx",
+                                                        lineNumber: 605,
+                                                        columnNumber: 41
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                        className: "form-input",
+                                                        style: {
+                                                            height: '36px',
+                                                            fontSize: '12px'
+                                                        },
+                                                        value: staticSeoData[field.key] || '',
+                                                        onChange: (e)=>{
+                                                            setStaticSeoData((prev)=>({
+                                                                    ...prev,
+                                                                    [field.key]: e.target.value
+                                                                }));
+                                                            setStaticSeoTimestamp(new Date().toLocaleString());
+                                                        },
+                                                        placeholder: `Enter ${field.label}...`
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/views/EditPage.jsx",
+                                                        lineNumber: 606,
+                                                        columnNumber: 41
+                                                    }, this)
+                                                ]
+                                            }, field.key, true, {
+                                                fileName: "[project]/src/views/EditPage.jsx",
+                                                lineNumber: 604,
+                                                columnNumber: 37
+                                            }, this))
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/views/EditPage.jsx",
+                                        lineNumber: 595,
+                                        columnNumber: 29
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/views/EditPage.jsx",
+                                lineNumber: 593,
+                                columnNumber: 25
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
+                                        style: {
+                                            fontSize: '13px',
+                                            fontWeight: 700,
+                                            color: 'var(--accent)',
+                                            marginBottom: '12px'
+                                        },
+                                        children: "Twitter Card Data"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/views/EditPage.jsx",
+                                        lineNumber: 623,
+                                        columnNumber: 29
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        style: {
+                                            display: 'grid',
+                                            gridTemplateColumns: '1fr 1fr',
+                                            gap: '16px'
+                                        },
+                                        children: [
+                                            {
+                                                label: 'Twitter Card',
+                                                key: 'twCard'
+                                            },
+                                            {
+                                                label: 'Twitter Site',
+                                                key: 'twSite'
+                                            },
+                                            {
+                                                label: 'Twitter Creator',
+                                                key: 'twCreator'
+                                            },
+                                            {
+                                                label: 'Twitter Title',
+                                                key: 'twTitle'
+                                            },
+                                            {
+                                                label: 'Twitter Description',
+                                                key: 'twDescription'
+                                            },
+                                            {
+                                                label: 'Twitter Image',
+                                                key: 'twImage'
+                                            }
+                                        ].map((field)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "form-group",
+                                                style: {
+                                                    marginBottom: 0
+                                                },
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                        className: "form-label",
+                                                        style: {
+                                                            fontSize: '11px'
+                                                        },
+                                                        children: field.label
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/views/EditPage.jsx",
+                                                        lineNumber: 634,
+                                                        columnNumber: 41
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                        className: "form-input",
+                                                        style: {
+                                                            height: '36px',
+                                                            fontSize: '12px'
+                                                        },
+                                                        value: staticSeoData[field.key] || '',
+                                                        onChange: (e)=>{
+                                                            setStaticSeoData((prev)=>({
+                                                                    ...prev,
+                                                                    [field.key]: e.target.value
+                                                                }));
+                                                            setStaticSeoTimestamp(new Date().toLocaleString());
+                                                        },
+                                                        placeholder: `Enter ${field.label}...`
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/views/EditPage.jsx",
+                                                        lineNumber: 635,
+                                                        columnNumber: 41
+                                                    }, this)
+                                                ]
+                                            }, field.key, true, {
+                                                fileName: "[project]/src/views/EditPage.jsx",
+                                                lineNumber: 633,
+                                                columnNumber: 37
+                                            }, this))
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/views/EditPage.jsx",
+                                        lineNumber: 624,
+                                        columnNumber: 29
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/views/EditPage.jsx",
+                                lineNumber: 622,
+                                columnNumber: 25
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
+                                        style: {
+                                            fontSize: '13px',
+                                            fontWeight: 700,
+                                            color: 'var(--accent)',
+                                            marginBottom: '12px'
+                                        },
+                                        children: "Dublin Core Metadata"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/views/EditPage.jsx",
+                                        lineNumber: 652,
+                                        columnNumber: 29
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        style: {
+                                            display: 'grid',
+                                            gridTemplateColumns: '1fr 1fr',
+                                            gap: '16px'
+                                        },
+                                        children: [
+                                            {
+                                                label: 'DC.Title',
+                                                key: 'dcTitle'
+                                            },
+                                            {
+                                                label: 'DC.Creator',
+                                                key: 'dcCreator'
+                                            },
+                                            {
+                                                label: 'DC.Subject',
+                                                key: 'dcSubject'
+                                            },
+                                            {
+                                                label: 'DC.Description',
+                                                key: 'dcDescription'
+                                            },
+                                            {
+                                                label: 'DC.Publisher',
+                                                key: 'dcPublisher'
+                                            },
+                                            {
+                                                label: 'DC.Contributor',
+                                                key: 'dcContributor'
+                                            },
+                                            {
+                                                label: 'DC.Date',
+                                                key: 'dcDate'
+                                            },
+                                            {
+                                                label: 'DC.Type',
+                                                key: 'dcType'
+                                            },
+                                            {
+                                                label: 'DC.Format',
+                                                key: 'dcFormat'
+                                            },
+                                            {
+                                                label: 'DC.Identifier',
+                                                key: 'dcIdentifier'
+                                            },
+                                            {
+                                                label: 'DC.Source',
+                                                key: 'dcSource'
+                                            },
+                                            {
+                                                label: 'DC.Language',
+                                                key: 'dcLanguage'
+                                            },
+                                            {
+                                                label: 'DC.Relation',
+                                                key: 'dcRelation'
+                                            },
+                                            {
+                                                label: 'DC.Coverage',
+                                                key: 'dcCoverage'
+                                            },
+                                            {
+                                                label: 'DC.Rights',
+                                                key: 'dcRights'
+                                            }
+                                        ].map((field)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "form-group",
+                                                style: {
+                                                    marginBottom: 0
+                                                },
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                        className: "form-label",
+                                                        style: {
+                                                            fontSize: '11px'
+                                                        },
+                                                        children: field.label
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/views/EditPage.jsx",
+                                                        lineNumber: 672,
+                                                        columnNumber: 41
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                        className: "form-input",
+                                                        style: {
+                                                            height: '36px',
+                                                            fontSize: '12px'
+                                                        },
+                                                        value: staticSeoData[field.key] || '',
+                                                        onChange: (e)=>{
+                                                            setStaticSeoData((prev)=>({
+                                                                    ...prev,
+                                                                    [field.key]: e.target.value
+                                                                }));
+                                                            setStaticSeoTimestamp(new Date().toLocaleString());
+                                                        },
+                                                        placeholder: `Enter ${field.label}...`
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/views/EditPage.jsx",
+                                                        lineNumber: 673,
+                                                        columnNumber: 41
+                                                    }, this)
+                                                ]
+                                            }, field.key, true, {
+                                                fileName: "[project]/src/views/EditPage.jsx",
+                                                lineNumber: 671,
+                                                columnNumber: 37
+                                            }, this))
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/views/EditPage.jsx",
+                                        lineNumber: 653,
+                                        columnNumber: 29
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/views/EditPage.jsx",
+                                lineNumber: 651,
+                                columnNumber: 25
+                            }, this),
+                            staticSeoTimestamp && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                style: {
+                                    borderTop: '1px solid rgba(0,0,0,0.05)',
+                                    paddingTop: '12px',
+                                    fontSize: '11px',
+                                    color: 'var(--text-secondary)',
+                                    textAlign: 'right'
+                                },
+                                children: [
+                                    "🕒 Last updated: ",
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        style: {
+                                            fontWeight: 600,
+                                            color: 'var(--accent)'
+                                        },
+                                        children: staticSeoTimestamp
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/views/EditPage.jsx",
+                                        lineNumber: 690,
+                                        columnNumber: 50
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/views/EditPage.jsx",
+                                lineNumber: 689,
+                                columnNumber: 29
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/views/EditPage.jsx",
+                        lineNumber: 560,
+                        columnNumber: 21
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/views/EditPage.jsx",
+                lineNumber: 541,
+                columnNumber: 13
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                style: {
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '12px',
+                    padding: '16px 24px',
+                    background: dynamicSeoEnabled ? 'rgba(79,70,229,0.06)' : '#f8fafc',
+                    border: `1.5px solid ${dynamicSeoEnabled ? 'var(--accent)' : 'var(--border)'}`,
+                    borderRadius: '12px',
+                    marginBottom: '24px',
+                    transition: 'all 0.2s'
+                },
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        style: {
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between'
+                        },
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        style: {
+                                            fontWeight: 700,
+                                            fontSize: '14px',
+                                            color: 'var(--text-primary)'
+                                        },
+                                        children: "Dynamic SEO"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/views/EditPage.jsx",
+                                        lineNumber: 706,
+                                        columnNumber: 25
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        style: {
+                                            fontSize: '12px',
+                                            color: 'var(--text-secondary)',
+                                            marginTop: '2px'
+                                        },
+                                        children: "Configure social media meta tags for better link sharing"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/views/EditPage.jsx",
+                                        lineNumber: 707,
+                                        columnNumber: 25
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/views/EditPage.jsx",
+                                lineNumber: 705,
+                                columnNumber: 21
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                className: "toggle",
+                                style: {
+                                    flexShrink: 0
+                                },
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                        type: "checkbox",
+                                        checked: dynamicSeoEnabled,
+                                        onChange: (e)=>setDynamicSeoEnabled(e.target.checked)
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/views/EditPage.jsx",
+                                        lineNumber: 712,
+                                        columnNumber: 25
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "toggle-slider"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/views/EditPage.jsx",
+                                        lineNumber: 713,
+                                        columnNumber: 25
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/views/EditPage.jsx",
+                                lineNumber: 711,
+                                columnNumber: 21
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/views/EditPage.jsx",
+                        lineNumber: 704,
+                        columnNumber: 17
+                    }, this),
+                    dynamicSeoEnabled && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "seo-fields-container animate-slide-down",
+                        style: {
+                            borderTop: '1px solid rgba(0,0,0,0.05)',
+                            paddingTop: '16px',
+                            display: 'grid',
+                            gridTemplateColumns: '1fr 1fr',
+                            gap: '16px'
+                        },
+                        children: [
+                            {
+                                label: 'OG Title',
+                                key: 'ogTitle'
+                            },
+                            {
+                                label: 'OG Description',
+                                key: 'ogDescription'
+                            },
+                            {
+                                label: 'OG Image',
+                                key: 'ogImage'
+                            },
+                            {
+                                label: 'OG Alt Text',
+                                key: 'ogAlt'
+                            },
+                            {
+                                label: 'Facebook Title',
+                                key: 'fbTitle'
+                            },
+                            {
+                                label: 'Facebook Description',
+                                key: 'fbDescription'
+                            },
+                            {
+                                label: 'Facebook Image',
+                                key: 'fbImage'
+                            },
+                            {
+                                label: 'Twitter Title',
+                                key: 'twTitle'
+                            },
+                            {
+                                label: 'Twitter Description',
+                                key: 'twDescription'
+                            },
+                            {
+                                label: 'Twitter Image',
+                                key: 'twImage'
+                            }
+                        ].map((field)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "form-group",
+                                style: {
+                                    marginBottom: 0
+                                },
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                        className: "form-label",
+                                        style: {
+                                            fontSize: '11px'
+                                        },
+                                        children: field.label
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/views/EditPage.jsx",
+                                        lineNumber: 731,
+                                        columnNumber: 33
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                        className: "form-input",
+                                        style: {
+                                            height: '36px',
+                                            fontSize: '12px'
+                                        },
+                                        value: dynamicSeoData[field.key] || '',
+                                        onChange: (e)=>setDynamicSeoData((prev)=>({
+                                                    ...prev,
+                                                    [field.key]: e.target.value
+                                                })),
+                                        placeholder: `Enter ${field.label}...`
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/views/EditPage.jsx",
+                                        lineNumber: 732,
+                                        columnNumber: 33
+                                    }, this)
+                                ]
+                            }, field.key, true, {
+                                fileName: "[project]/src/views/EditPage.jsx",
+                                lineNumber: 730,
+                                columnNumber: 29
+                            }, this))
+                    }, void 0, false, {
+                        fileName: "[project]/src/views/EditPage.jsx",
+                        lineNumber: 717,
+                        columnNumber: 21
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/views/EditPage.jsx",
+                lineNumber: 698,
+                columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "edit-page-body",
@@ -1674,13 +2451,13 @@ function EditPage() {
                                                             children: "*"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                            lineNumber: 528,
+                                                            lineNumber: 753,
                                                             columnNumber: 58
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                    lineNumber: 527,
+                                                    lineNumber: 752,
                                                     columnNumber: 33
                                                 }, this),
                                                 headings.length > 1 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1693,13 +2470,13 @@ function EditPage() {
                                                     children: "✕ Remove"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                    lineNumber: 531,
+                                                    lineNumber: 756,
                                                     columnNumber: 37
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/views/EditPage.jsx",
-                                            lineNumber: 526,
+                                            lineNumber: 751,
                                             columnNumber: 29
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1709,7 +2486,7 @@ function EditPage() {
                                             placeholder: "Main heading for this page section"
                                         }, void 0, false, {
                                             fileName: "[project]/src/views/EditPage.jsx",
-                                            lineNumber: 540,
+                                            lineNumber: 765,
                                             columnNumber: 29
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1717,13 +2494,13 @@ function EditPage() {
                                             children: "Main heading for this page section"
                                         }, void 0, false, {
                                             fileName: "[project]/src/views/EditPage.jsx",
-                                            lineNumber: 546,
+                                            lineNumber: 771,
                                             columnNumber: 29
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/views/EditPage.jsx",
-                                    lineNumber: 525,
+                                    lineNumber: 750,
                                     columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1753,13 +2530,13 @@ function EditPage() {
                                                                             children: "✕"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                                            lineNumber: 558,
+                                                                            lineNumber: 783,
                                                                             columnNumber: 53
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                    lineNumber: 555,
+                                                                    lineNumber: 780,
                                                                     columnNumber: 45
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1769,18 +2546,18 @@ function EditPage() {
                                                                     placeholder: "Sub heading title"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                    lineNumber: 567,
+                                                                    lineNumber: 792,
                                                                     columnNumber: 45
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                            lineNumber: 554,
+                                                            lineNumber: 779,
                                                             columnNumber: 41
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/views/EditPage.jsx",
-                                                        lineNumber: 553,
+                                                        lineNumber: 778,
                                                         columnNumber: 37
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1795,20 +2572,20 @@ function EditPage() {
                                                                                 children: "Page Fields"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/views/EditPage.jsx",
-                                                                                lineNumber: 580,
+                                                                                lineNumber: 805,
                                                                                 columnNumber: 49
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                                                 children: "Add labels and select value types"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/views/EditPage.jsx",
-                                                                                lineNumber: 581,
+                                                                                lineNumber: 806,
                                                                                 columnNumber: 49
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/views/EditPage.jsx",
-                                                                        lineNumber: 579,
+                                                                        lineNumber: 804,
                                                                         columnNumber: 45
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1828,7 +2605,7 @@ function EditPage() {
                                                                                 children: "+ Grid"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/views/EditPage.jsx",
-                                                                                lineNumber: 584,
+                                                                                lineNumber: 809,
                                                                                 columnNumber: 49
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1837,19 +2614,19 @@ function EditPage() {
                                                                                 children: "+ Add New Field"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/views/EditPage.jsx",
-                                                                                lineNumber: 587,
+                                                                                lineNumber: 812,
                                                                                 columnNumber: 49
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/views/EditPage.jsx",
-                                                                        lineNumber: 583,
+                                                                        lineNumber: 808,
                                                                         columnNumber: 45
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/views/EditPage.jsx",
-                                                                lineNumber: 578,
+                                                                lineNumber: 803,
                                                                 columnNumber: 41
                                                             }, this),
                                                             sub.fields.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -1861,41 +2638,41 @@ function EditPage() {
                                                                                 children: "Label / Grid Config"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/views/EditPage.jsx",
-                                                                                lineNumber: 596,
+                                                                                lineNumber: 821,
                                                                                 columnNumber: 53
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                                 children: "Value Type *"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/views/EditPage.jsx",
-                                                                                lineNumber: 597,
+                                                                                lineNumber: 822,
                                                                                 columnNumber: 53
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                                 children: "Required"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/views/EditPage.jsx",
-                                                                                lineNumber: 598,
+                                                                                lineNumber: 823,
                                                                                 columnNumber: 53
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                                 children: "Infinity / Max"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/views/EditPage.jsx",
-                                                                                lineNumber: 599,
+                                                                                lineNumber: 824,
                                                                                 columnNumber: 53
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                                 children: "Actions"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/views/EditPage.jsx",
-                                                                                lineNumber: 600,
+                                                                                lineNumber: 825,
                                                                                 columnNumber: 53
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/views/EditPage.jsx",
-                                                                        lineNumber: 595,
+                                                                        lineNumber: 820,
                                                                         columnNumber: 49
                                                                     }, this),
                                                                     sub.fields.map((field)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1908,7 +2685,7 @@ function EditPage() {
                                                                                     placeholder: "Field name"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                                    lineNumber: 605,
+                                                                                    lineNumber: 830,
                                                                                     columnNumber: 57
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1930,12 +2707,12 @@ function EditPage() {
                                                                                                     children: type === 'Link' ? '🔗 Link' : type
                                                                                                 }, type, false, {
                                                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                    lineNumber: 616,
+                                                                                                    lineNumber: 841,
                                                                                                     columnNumber: 69
                                                                                                 }, this))
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                                                            lineNumber: 614,
+                                                                                            lineNumber: 839,
                                                                                             columnNumber: 61
                                                                                         }, this),
                                                                                         field.valueType === 'Link' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1951,7 +2728,7 @@ function EditPage() {
                                                                                                             children: "Select page to link..."
                                                                                                         }, void 0, false, {
                                                                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                            lineNumber: 642,
+                                                                                                            lineNumber: 867,
                                                                                                             columnNumber: 73
                                                                                                         }, this),
                                                                                                         otherPages.map((p)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1962,13 +2739,13 @@ function EditPage() {
                                                                                                                 ]
                                                                                                             }, p.id, true, {
                                                                                                                 fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                                lineNumber: 644,
+                                                                                                                lineNumber: 869,
                                                                                                                 columnNumber: 77
                                                                                                             }, this))
                                                                                                     ]
                                                                                                 }, void 0, true, {
                                                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                    lineNumber: 635,
+                                                                                                    lineNumber: 860,
                                                                                                     columnNumber: 69
                                                                                                 }, this),
                                                                                                 field.linkedPageId && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1979,13 +2756,13 @@ function EditPage() {
                                                                                                     ]
                                                                                                 }, void 0, true, {
                                                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                    lineNumber: 650,
+                                                                                                    lineNumber: 875,
                                                                                                     columnNumber: 73
                                                                                                 }, this)
                                                                                             ]
                                                                                         }, void 0, true, {
                                                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                                                            lineNumber: 634,
+                                                                                            lineNumber: 859,
                                                                                             columnNumber: 65
                                                                                         }, this),
                                                                                         field.valueType === 'Slug' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2007,7 +2784,7 @@ function EditPage() {
                                                                                                             children: "Select source field..."
                                                                                                         }, void 0, false, {
                                                                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                            lineNumber: 667,
+                                                                                                            lineNumber: 892,
                                                                                                             columnNumber: 73
                                                                                                         }, this),
                                                                                                         page.headings?.flatMap((h)=>h.subHeadings?.flatMap((sh)=>sh.fields?.filter((f)=>f.id !== field.id && f.valueType !== 'Slug').map((f)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2015,13 +2792,13 @@ function EditPage() {
                                                                                                                         children: f.label || `Field ${f.id}`
                                                                                                                     }, f.id, false, {
                                                                                                                         fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                                        lineNumber: 671,
+                                                                                                                        lineNumber: 896,
                                                                                                                         columnNumber: 85
                                                                                                                     }, this)) || []) || []) || []
                                                                                                     ]
                                                                                                 }, void 0, true, {
                                                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                    lineNumber: 659,
+                                                                                                    lineNumber: 884,
                                                                                                     columnNumber: 69
                                                                                                 }, this),
                                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2036,7 +2813,7 @@ function EditPage() {
                                                                                                     children: "🔗"
                                                                                                 }, void 0, false, {
                                                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                    lineNumber: 676,
+                                                                                                    lineNumber: 901,
                                                                                                     columnNumber: 69
                                                                                                 }, this),
                                                                                                 field.slugSourceFieldId && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2052,13 +2829,13 @@ function EditPage() {
                                                                                                     ]
                                                                                                 }, void 0, true, {
                                                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                    lineNumber: 678,
+                                                                                                    lineNumber: 903,
                                                                                                     columnNumber: 73
                                                                                                 }, this)
                                                                                             ]
                                                                                         }, void 0, true, {
                                                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                                                            lineNumber: 658,
+                                                                                            lineNumber: 883,
                                                                                             columnNumber: 65
                                                                                         }, this),
                                                                                         field.valueType === 'Permalink' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2080,7 +2857,7 @@ function EditPage() {
                                                                                                             children: "Select source field..."
                                                                                                         }, void 0, false, {
                                                                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                            lineNumber: 697,
+                                                                                                            lineNumber: 922,
                                                                                                             columnNumber: 73
                                                                                                         }, this),
                                                                                                         page.headings?.flatMap((h)=>h.subHeadings?.flatMap((sh)=>sh.fields?.filter((f)=>f.id !== field.id && f.valueType !== 'Permalink').map((f)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2088,13 +2865,13 @@ function EditPage() {
                                                                                                                         children: f.label || `Field ${f.id}`
                                                                                                                     }, f.id, false, {
                                                                                                                         fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                                        lineNumber: 701,
+                                                                                                                        lineNumber: 926,
                                                                                                                         columnNumber: 85
                                                                                                                     }, this)) || []) || []) || []
                                                                                                     ]
                                                                                                 }, void 0, true, {
                                                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                    lineNumber: 689,
+                                                                                                    lineNumber: 914,
                                                                                                     columnNumber: 69
                                                                                                 }, this),
                                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2109,7 +2886,7 @@ function EditPage() {
                                                                                                     children: "🔗"
                                                                                                 }, void 0, false, {
                                                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                    lineNumber: 706,
+                                                                                                    lineNumber: 931,
                                                                                                     columnNumber: 69
                                                                                                 }, this),
                                                                                                 field.permalinkSourceFieldId && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2125,19 +2902,19 @@ function EditPage() {
                                                                                                     ]
                                                                                                 }, void 0, true, {
                                                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                    lineNumber: 708,
+                                                                                                    lineNumber: 933,
                                                                                                     columnNumber: 73
                                                                                                 }, this)
                                                                                             ]
                                                                                         }, void 0, true, {
                                                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                                                            lineNumber: 688,
+                                                                                            lineNumber: 913,
                                                                                             columnNumber: 65
                                                                                         }, this)
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                                    lineNumber: 613,
+                                                                                    lineNumber: 838,
                                                                                     columnNumber: 57
                                                                                 }, this),
                                                                                 field.valueType === 'Grid' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2171,7 +2948,7 @@ function EditPage() {
                                                                                                     ]
                                                                                                 }, void 0, true, {
                                                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                    lineNumber: 721,
+                                                                                                    lineNumber: 946,
                                                                                                     columnNumber: 69
                                                                                                 }, this),
                                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2189,7 +2966,7 @@ function EditPage() {
                                                                                                     children: "- Col"
                                                                                                 }, void 0, false, {
                                                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                    lineNumber: 722,
+                                                                                                    lineNumber: 947,
                                                                                                     columnNumber: 69
                                                                                                 }, this),
                                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2211,13 +2988,13 @@ function EditPage() {
                                                                                                     children: "+ Col"
                                                                                                 }, void 0, false, {
                                                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                    lineNumber: 733,
+                                                                                                    lineNumber: 958,
                                                                                                     columnNumber: 69
                                                                                                 }, this)
                                                                                             ]
                                                                                         }, void 0, true, {
                                                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                                                            lineNumber: 720,
+                                                                                            lineNumber: 945,
                                                                                             columnNumber: 65
                                                                                         }, this),
                                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2245,7 +3022,7 @@ function EditPage() {
                                                                                                             ]
                                                                                                         }, void 0, true, {
                                                                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                            lineNumber: 748,
+                                                                                                            lineNumber: 973,
                                                                                                             columnNumber: 77
                                                                                                         }, this),
                                                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2264,7 +3041,7 @@ function EditPage() {
                                                                                                             }
                                                                                                         }, void 0, false, {
                                                                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                            lineNumber: 749,
+                                                                                                            lineNumber: 974,
                                                                                                             columnNumber: 77
                                                                                                         }, this),
                                                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2283,24 +3060,24 @@ function EditPage() {
                                                                                                             }
                                                                                                         }, void 0, false, {
                                                                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                            lineNumber: 760,
+                                                                                                            lineNumber: 985,
                                                                                                             columnNumber: 77
                                                                                                         }, this)
                                                                                                     ]
                                                                                                 }, col.id || cIdx, true, {
                                                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                    lineNumber: 747,
+                                                                                                    lineNumber: 972,
                                                                                                     columnNumber: 73
                                                                                                 }, this))
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                                                            lineNumber: 745,
+                                                                                            lineNumber: 970,
                                                                                             columnNumber: 65
                                                                                         }, this)
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                                    lineNumber: 719,
+                                                                                    lineNumber: 944,
                                                                                     columnNumber: 61
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -2312,20 +3089,20 @@ function EditPage() {
                                                                                             onChange: (e)=>updateFieldInline(heading.id, sub.id, field.id, 'required', e.target.checked)
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                                                            lineNumber: 778,
+                                                                                            lineNumber: 1003,
                                                                                             columnNumber: 61
                                                                                         }, this),
                                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                                             className: "toggle-slider"
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                                                            lineNumber: 785,
+                                                                                            lineNumber: 1010,
                                                                                             columnNumber: 61
                                                                                         }, this)
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                                    lineNumber: 777,
+                                                                                    lineNumber: 1002,
                                                                                     columnNumber: 57
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2344,20 +3121,20 @@ function EditPage() {
                                                                                                     onChange: (e)=>updateFieldInline(heading.id, sub.id, field.id, 'infinity', e.target.checked)
                                                                                                 }, void 0, false, {
                                                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                    lineNumber: 790,
+                                                                                                    lineNumber: 1015,
                                                                                                     columnNumber: 65
                                                                                                 }, this),
                                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                                                     className: "toggle-slider infinity-slider"
                                                                                                 }, void 0, false, {
                                                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                                                    lineNumber: 797,
+                                                                                                    lineNumber: 1022,
                                                                                                     columnNumber: 65
                                                                                                 }, this)
                                                                                             ]
                                                                                         }, void 0, true, {
                                                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                                                            lineNumber: 789,
+                                                                                            lineNumber: 1014,
                                                                                             columnNumber: 61
                                                                                         }, this),
                                                                                         field.infinity && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2376,13 +3153,13 @@ function EditPage() {
                                                                                             title: "Max repeating rows (blank = infinity)"
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                                                            lineNumber: 800,
+                                                                                            lineNumber: 1025,
                                                                                             columnNumber: 65
                                                                                         }, this)
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                                    lineNumber: 788,
+                                                                                    lineNumber: 1013,
                                                                                     columnNumber: 57
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2394,7 +3171,7 @@ function EditPage() {
                                                                                             children: "✏️ Edit"
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                                                            lineNumber: 812,
+                                                                                            lineNumber: 1037,
                                                                                             columnNumber: 61
                                                                                         }, this),
                                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2403,19 +3180,19 @@ function EditPage() {
                                                                                             children: "🗑 Delete"
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                                                            lineNumber: 818,
+                                                                                            lineNumber: 1043,
                                                                                             columnNumber: 61
                                                                                         }, this)
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/src/views/EditPage.jsx",
-                                                                                    lineNumber: 811,
+                                                                                    lineNumber: 1036,
                                                                                     columnNumber: 57
                                                                                 }, this)
                                                                             ]
                                                                         }, field.id, true, {
                                                                             fileName: "[project]/src/views/EditPage.jsx",
-                                                                            lineNumber: 604,
+                                                                            lineNumber: 829,
                                                                             columnNumber: 53
                                                                         }, this))
                                                                 ]
@@ -2426,19 +3203,19 @@ function EditPage() {
                                                                 children: "+ Add New Field"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/views/EditPage.jsx",
-                                                                lineNumber: 830,
+                                                                lineNumber: 1055,
                                                                 columnNumber: 41
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/views/EditPage.jsx",
-                                                        lineNumber: 577,
+                                                        lineNumber: 802,
                                                         columnNumber: 37
                                                     }, this)
                                                 ]
                                             }, sub.id, true, {
                                                 fileName: "[project]/src/views/EditPage.jsx",
-                                                lineNumber: 552,
+                                                lineNumber: 777,
                                                 columnNumber: 33
                                             }, this)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2447,19 +3224,19 @@ function EditPage() {
                                             children: "+ Add Sub Heading"
                                         }, void 0, false, {
                                             fileName: "[project]/src/views/EditPage.jsx",
-                                            lineNumber: 837,
+                                            lineNumber: 1062,
                                             columnNumber: 29
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/views/EditPage.jsx",
-                                    lineNumber: 550,
+                                    lineNumber: 775,
                                     columnNumber: 25
                                 }, this)
                             ]
                         }, heading.id, true, {
                             fileName: "[project]/src/views/EditPage.jsx",
-                            lineNumber: 523,
+                            lineNumber: 748,
                             columnNumber: 21
                         }, this)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2468,7 +3245,7 @@ function EditPage() {
                         children: "+ Add Heading"
                     }, void 0, false, {
                         fileName: "[project]/src/views/EditPage.jsx",
-                        lineNumber: 844,
+                        lineNumber: 1069,
                         columnNumber: 17
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2480,7 +3257,7 @@ function EditPage() {
                                 children: "Cancel"
                             }, void 0, false, {
                                 fileName: "[project]/src/views/EditPage.jsx",
-                                lineNumber: 849,
+                                lineNumber: 1074,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2489,19 +3266,19 @@ function EditPage() {
                                 children: "Save Changes"
                             }, void 0, false, {
                                 fileName: "[project]/src/views/EditPage.jsx",
-                                lineNumber: 852,
+                                lineNumber: 1077,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/views/EditPage.jsx",
-                        lineNumber: 848,
+                        lineNumber: 1073,
                         columnNumber: 17
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/views/EditPage.jsx",
-                lineNumber: 521,
+                lineNumber: 746,
                 columnNumber: 13
             }, this),
             editingField && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(FieldEditModal, {
@@ -2512,13 +3289,13 @@ function EditPage() {
                 currentPageId: pageId
             }, void 0, false, {
                 fileName: "[project]/src/views/EditPage.jsx",
-                lineNumber: 860,
+                lineNumber: 1085,
                 columnNumber: 17
             }, this)
         ]
     }, void 0, true);
 }
-_s1(EditPage, "Pm1QDwgYN7i8PMGC6GOnO+vx8R8=", false, function() {
+_s1(EditPage, "Kq3aTAo8cRkRyk1DVNroPmGeIY8=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useParams"],
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"],

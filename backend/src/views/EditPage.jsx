@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useApp } from '../context/AppContext';
+import ImageUpload from '../components/ImageUpload';
 
 const VALUE_TYPES = ['Number', 'Text', 'Symbol', 'Number & Text', 'Symbol & Text', 'Link', 'Rich Editor', '120 Char', '160 Char', 'Image', 'Grid', 'Slug', 'Permalink'];
 
@@ -151,6 +152,11 @@ export default function EditPage() {
     const [singleEntry, setSingleEntry] = useState(false);
     const [searchEnabled, setSearchEnabled] = useState(false);
     const [searchFieldId, setSearchFieldId] = useState('');
+    const [staticSeoEnabled, setStaticSeoEnabled] = useState(false);
+    const [dynamicSeoEnabled, setDynamicSeoEnabled] = useState(false);
+    const [staticSeoData, setStaticSeoData] = useState({});
+    const [dynamicSeoData, setDynamicSeoData] = useState({});
+    const [staticSeoTimestamp, setStaticSeoTimestamp] = useState('');
 
     useEffect(() => {
         if (page) {
@@ -164,6 +170,11 @@ export default function EditPage() {
             setSingleEntry(page.singleEntry || false);
             setSearchEnabled(page.searchEnabled || false);
             setSearchFieldId(page.searchFieldId || '');
+            setStaticSeoEnabled(page.staticSeoEnabled || false);
+            setDynamicSeoEnabled(page.dynamicSeoEnabled || false);
+            setStaticSeoData(page.staticSeoData || {});
+            setDynamicSeoData(page.dynamicSeoData || {});
+            setStaticSeoTimestamp(page.staticSeoTimestamp || '');
         }
     }, [page?.id]);
 
@@ -398,7 +409,17 @@ export default function EditPage() {
     };
 
     const handleUpdate = () => {
-        updatePage(Number(pageId), { headings, singleEntry, searchEnabled, searchFieldId });
+        updatePage(Number(pageId), {
+            headings,
+            singleEntry,
+            searchEnabled,
+            searchFieldId,
+            staticSeoEnabled,
+            dynamicSeoEnabled,
+            staticSeoData,
+            dynamicSeoData,
+            staticSeoTimestamp
+        });
         router.push('/pages');
     };
 
@@ -516,6 +537,322 @@ export default function EditPage() {
                     )}
                 </div>
             )}
+
+            {/* Static SEO Configuration */}
+            <div style={{
+                display: 'flex', flexDirection: 'column', gap: '12px',
+                padding: '16px 24px', background: staticSeoEnabled ? 'rgba(79,70,229,0.06)' : '#f8fafc',
+                border: `1.5px solid ${staticSeoEnabled ? 'var(--accent)' : 'var(--border)'}`,
+                borderRadius: '12px', marginBottom: '24px', transition: 'all 0.2s'
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div>
+                        <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--text-primary)' }}>Static SEO</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                            Configure standard meta tags for search engine optimization
+                        </div>
+                    </div>
+                    <label className="toggle" style={{ flexShrink: 0 }}>
+                        <input type="checkbox" checked={staticSeoEnabled} onChange={(e) => setStaticSeoEnabled(e.target.checked)} />
+                        <span className="toggle-slider"></span>
+                    </label>
+                </div>
+                {staticSeoEnabled && (
+                    <div className="seo-fields-container animate-slide-down" style={{ borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '16px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+
+                        {/* Standard Meta Tags */}
+                        <div>
+                            <h4 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--accent)', marginBottom: '12px' }}>Standard Meta Tags</h4>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                                {[
+                                    { label: 'Web Page Title (<title>)', key: 'title' },
+                                    { label: 'Meta Description', key: 'description' },
+                                    { label: 'Meta Keywords', key: 'keywords' },
+                                    { label: 'Robots', key: 'robots' },
+                                    { label: 'Website Name / Author', key: 'author' },
+                                    { label: 'Refresh', key: 'refresh' },
+                                    { label: 'Canonical URL', key: 'canonical' }
+                                ].map((field) => (
+                                    <div key={field.key} className="form-group" style={{ marginBottom: 0 }}>
+                                        <label className="form-label" style={{ fontSize: '11px' }}>{field.label}</label>
+                                        <input
+                                            className="form-input"
+                                            style={{ height: '36px', fontSize: '12px' }}
+                                            value={staticSeoData[field.key] || ''}
+                                            onChange={(e) => {
+                                                setStaticSeoData(prev => ({ ...prev, [field.key]: e.target.value }));
+                                                setStaticSeoTimestamp(new Date().toLocaleString());
+                                            }}
+                                            placeholder={`Enter ${field.key}...`}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Open Graph Data */}
+                        <div>
+                            <h4 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--accent)', marginBottom: '12px' }}>Open Graph Data</h4>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                                <div className="form-group" style={{ gridColumn: '1 / 2' }}>
+                                    <label className="form-label" style={{ fontSize: '11px' }}>OG Image</label>
+                                    <ImageUpload
+                                        value={staticSeoData.ogImage}
+                                        onChange={(val) => {
+                                            setStaticSeoData(prev => ({ ...prev, ogImage: val }));
+                                            setStaticSeoTimestamp(new Date().toLocaleString());
+                                        }}
+                                    />
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
+                                    {[
+                                        { label: 'OG Title', key: 'ogTitle' },
+                                        { label: 'OG Type', key: 'ogType' },
+                                        { label: 'OG URL', key: 'ogUrl' }
+                                    ].map((field) => (
+                                        <div key={field.key} className="form-group" style={{ marginBottom: 0 }}>
+                                            <label className="form-label" style={{ fontSize: '11px' }}>{field.label}</label>
+                                            <input
+                                                className="form-input"
+                                                style={{ height: '36px', fontSize: '12px' }}
+                                                value={staticSeoData[field.key] || ''}
+                                                onChange={(e) => {
+                                                    setStaticSeoData(prev => ({ ...prev, [field.key]: e.target.value }));
+                                                    setStaticSeoTimestamp(new Date().toLocaleString());
+                                                }}
+                                                placeholder={`Enter ${field.label}...`}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                                {[
+                                    { label: 'OG Description', key: 'ogDescription' },
+                                    { label: 'OG Locale', key: 'ogLocale' },
+                                    { label: 'OG Site Name', key: 'ogSiteName' },
+                                    { label: 'Article Published Time', key: 'articlePublishedTime' },
+                                    { label: 'Article Modified Time', key: 'articleModifiedTime' },
+                                    { label: 'Article Author', key: 'articleAuthor' }
+                                ].map((field) => (
+                                    <div key={field.key} className="form-group" style={{ marginBottom: 0 }}>
+                                        <label className="form-label" style={{ fontSize: '11px' }}>{field.label}</label>
+                                        <input
+                                            className="form-input"
+                                            style={{ height: '36px', fontSize: '12px' }}
+                                            value={staticSeoData[field.key] || ''}
+                                            onChange={(e) => {
+                                                setStaticSeoData(prev => ({ ...prev, [field.key]: e.target.value }));
+                                                setStaticSeoTimestamp(new Date().toLocaleString());
+                                            }}
+                                            placeholder={`Enter ${field.label}...`}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Twitter Card Data */}
+                        <div>
+                            <h4 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--accent)', marginBottom: '12px' }}>Twitter Card Data</h4>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                                <div className="form-group" style={{ gridColumn: '1 / 2' }}>
+                                    <label className="form-label" style={{ fontSize: '11px' }}>Twitter Image</label>
+                                    <ImageUpload
+                                        value={staticSeoData.twImage}
+                                        onChange={(val) => {
+                                            setStaticSeoData(prev => ({ ...prev, twImage: val }));
+                                            setStaticSeoTimestamp(new Date().toLocaleString());
+                                        }}
+                                    />
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
+                                    {[
+                                        { label: 'Twitter Card', key: 'twCard' },
+                                        { label: 'Twitter Site', key: 'twSite' },
+                                        { label: 'Twitter Title', key: 'twTitle' }
+                                    ].map((field) => (
+                                        <div key={field.key} className="form-group" style={{ marginBottom: 0 }}>
+                                            <label className="form-label" style={{ fontSize: '11px' }}>{field.label}</label>
+                                            <input
+                                                className="form-input"
+                                                style={{ height: '36px', fontSize: '12px' }}
+                                                value={staticSeoData[field.key] || ''}
+                                                onChange={(e) => {
+                                                    setStaticSeoData(prev => ({ ...prev, [field.key]: e.target.value }));
+                                                    setStaticSeoTimestamp(new Date().toLocaleString());
+                                                }}
+                                                placeholder={`Enter ${field.label}...`}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                                {[
+                                    { label: 'Twitter Description', key: 'twDescription' },
+                                    { label: 'Twitter Creator', key: 'twCreator' }
+                                ].map((field) => (
+                                    <div key={field.key} className="form-group" style={{ marginBottom: 0 }}>
+                                        <label className="form-label" style={{ fontSize: '11px' }}>{field.label}</label>
+                                        <input
+                                            className="form-input"
+                                            style={{ height: '36px', fontSize: '12px' }}
+                                            value={staticSeoData[field.key] || ''}
+                                            onChange={(e) => {
+                                                setStaticSeoData(prev => ({ ...prev, [field.key]: e.target.value }));
+                                                setStaticSeoTimestamp(new Date().toLocaleString());
+                                            }}
+                                            placeholder={`Enter ${field.label}...`}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Dublin Core Metadata */}
+                        <div>
+                            <h4 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--accent)', marginBottom: '12px' }}>Dublin Core Metadata</h4>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                                {[
+                                    { label: 'DC Title', key: 'dcTitle' },
+                                    { label: 'DC Description', key: 'dcDescription' },
+                                    { label: 'DC Subject', key: 'dcSubject' },
+                                    { label: 'DC Created', key: 'dcCreated' },
+                                    { label: 'DC Modified', key: 'dcModified' },
+                                    { label: 'DC Language', key: 'dcLanguage' }
+                                ].map((field) => (
+                                    <div key={field.key} className="form-group" style={{ marginBottom: 0 }}>
+                                        <label className="form-label" style={{ fontSize: '11px' }}>{field.label}</label>
+                                        <input
+                                            className="form-input"
+                                            style={{ height: '36px', fontSize: '12px' }}
+                                            value={staticSeoData[field.key] || ''}
+                                            onChange={(e) => {
+                                                setStaticSeoData(prev => ({ ...prev, [field.key]: e.target.value }));
+                                                setStaticSeoTimestamp(new Date().toLocaleString());
+                                            }}
+                                            placeholder={`Enter ${field.label}...`}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {staticSeoTimestamp && (
+                            <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '12px', fontSize: '11px', color: 'var(--text-secondary)', textAlign: 'right' }}>
+                                🕒 Last updated: <span style={{ fontWeight: 600, color: 'var(--accent)' }}>{staticSeoTimestamp}</span>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+
+            {/* Dynamic SEO Configuration */}
+            <div style={{
+                display: 'flex', flexDirection: 'column', gap: '12px',
+                padding: '16px 24px', background: dynamicSeoEnabled ? 'rgba(79,70,229,0.06)' : '#f8fafc',
+                border: `1.5px solid ${dynamicSeoEnabled ? 'var(--accent)' : 'var(--border)'}`,
+                borderRadius: '12px', marginBottom: '24px', transition: 'all 0.2s'
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div>
+                        <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--text-primary)' }}>Dynamic SEO</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                            Configure social media meta tags for better link sharing
+                        </div>
+                    </div>
+                    <label className="toggle" style={{ flexShrink: 0 }}>
+                        <input type="checkbox" checked={dynamicSeoEnabled} onChange={(e) => setDynamicSeoEnabled(e.target.checked)} />
+                        <span className="toggle-slider"></span>
+                    </label>
+                </div>
+                {dynamicSeoEnabled && (
+                    <div className="seo-fields-container animate-slide-down" style={{ borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '16px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+
+                        {/* OG Section */}
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                            <div className="form-group">
+                                <label className="form-label" style={{ fontSize: '11px' }}>OG Image</label>
+                                <ImageUpload
+                                    value={dynamicSeoData.ogImage}
+                                    onChange={(val) => setDynamicSeoData(prev => ({ ...prev, ogImage: val }))}
+                                />
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
+                                {[
+                                    { label: 'OG Title', key: 'ogTitle' },
+                                    { label: 'OG Description', key: 'ogDescription' },
+                                    { label: 'OG Alt Text', key: 'ogAlt' }
+                                ].map((field) => (
+                                    <div key={field.key} className="form-group" style={{ marginBottom: 0 }}>
+                                        <label className="form-label" style={{ fontSize: '11px' }}>{field.label}</label>
+                                        <input
+                                            className="form-input"
+                                            style={{ height: '36px', fontSize: '12px' }}
+                                            value={dynamicSeoData[field.key] || ''}
+                                            onChange={(e) => setDynamicSeoData(prev => ({ ...prev, [field.key]: e.target.value }))}
+                                            placeholder={`Enter ${field.label}...`}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Facebook Section */}
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                            <div className="form-group">
+                                <label className="form-label" style={{ fontSize: '11px' }}>Facebook Image</label>
+                                <ImageUpload
+                                    value={dynamicSeoData.fbImage}
+                                    onChange={(val) => setDynamicSeoData(prev => ({ ...prev, fbImage: val }))}
+                                />
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
+                                {[
+                                    { label: 'Facebook Title', key: 'fbTitle' },
+                                    { label: 'Facebook Description', key: 'fbDescription' }
+                                ].map((field) => (
+                                    <div key={field.key} className="form-group" style={{ marginBottom: 0 }}>
+                                        <label className="form-label" style={{ fontSize: '11px' }}>{field.label}</label>
+                                        <input
+                                            className="form-input"
+                                            style={{ height: '36px', fontSize: '12px' }}
+                                            value={dynamicSeoData[field.key] || ''}
+                                            onChange={(e) => setDynamicSeoData(prev => ({ ...prev, [field.key]: e.target.value }))}
+                                            placeholder={`Enter ${field.label}...`}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Twitter Section */}
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                            <div className="form-group">
+                                <label className="form-label" style={{ fontSize: '11px' }}>Twitter Image</label>
+                                <ImageUpload
+                                    value={dynamicSeoData.twImage}
+                                    onChange={(val) => setDynamicSeoData(prev => ({ ...prev, twImage: val }))}
+                                />
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
+                                {[
+                                    { label: 'Twitter Title', key: 'twTitle' },
+                                    { label: 'Twitter Description', key: 'twDescription' }
+                                ].map((field) => (
+                                    <div key={field.key} className="form-group" style={{ marginBottom: 0 }}>
+                                        <label className="form-label" style={{ fontSize: '11px' }}>{field.label}</label>
+                                        <input
+                                            className="form-input"
+                                            style={{ height: '36px', fontSize: '12px' }}
+                                            value={dynamicSeoData[field.key] || ''}
+                                            onChange={(e) => setDynamicSeoData(prev => ({ ...prev, [field.key]: e.target.value }))}
+                                            placeholder={`Enter ${field.label}...`}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
 
             {/* Body */}
             <div className="edit-page-body">
