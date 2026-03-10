@@ -1,5 +1,3 @@
 {
-  "/data-entry/[pageId]/[entryId]/page": "app/data-entry/[pageId]/[entryId]/page.js",
-  "/entries/[pageId]/page": "app/entries/[pageId]/page.js",
-  "/pages/page": "app/pages/page.js"
+  "/edit-page/[pageId]/page": "app/edit-page/[pageId]/page.js"
 }

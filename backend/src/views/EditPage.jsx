@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useApp } from '../context/AppContext';
 import ImageUpload from '../components/ImageUpload';
 
-const VALUE_TYPES = ['Number', 'Text', 'Symbol', 'Number & Text', 'Symbol & Text', 'Link', 'Rich Editor', '120 Char', '160 Char', 'Image', 'Grid', 'Slug', 'Permalink'];
+const VALUE_TYPES = ['Number', 'Text', 'Link', 'Rich Editor', '120 Char', '160 Char', 'Image', 'Grid', 'Slug', 'Permalink', 'limit'];
 
 function FieldEditModal({ field, onSave, onClose, pages, currentPageId }) {
     const [label, setLabel] = useState(field?.label || '');
@@ -57,17 +57,52 @@ function FieldEditModal({ field, onSave, onClose, pages, currentPageId }) {
                 <div className="form-group">
                     <label className="form-label">Value Type <span className="required">*</span></label>
                     <div className="pill-group">
-                        {VALUE_TYPES.map((type) => (
-                            <button
-                                key={type}
-                                type="button"
-                                className={`pill ${valueType === type ? (type === 'Link' ? 'active-link' : 'active') : ''}`}
-                                onClick={() => setValueType(type)}
-                            >
-                                {type === 'Link' ? '🔗 Link' : type}
-                            </button>
-                        ))}
+                        {(() => {
+                            const textRelatedTypes = ['Text', 'Number', 'limit', 'Slug', 'Permalink'];
+                            const isTextRelated = textRelatedTypes.includes(valueType);
+                            const otherTypes = ['Link', 'Rich Editor', 'Image', 'Grid'];
+
+                            return (
+                                <>
+                                    <button
+                                        type="button"
+                                        className={`pill ${isTextRelated ? 'active' : ''}`}
+                                        onClick={() => {
+                                            if (!isTextRelated) setValueType('Text');
+                                        }}
+                                    >
+                                        Text Fields
+                                    </button>
+                                    {otherTypes.map((type) => (
+                                        <button
+                                            key={type}
+                                            type="button"
+                                            className={`pill ${valueType === type ? (type === 'Link' ? 'active-link' : 'active') : ''}`}
+                                            onClick={() => setValueType(type)}
+                                        >
+                                            {type === 'Link' ? '🔗 Link' : type}
+                                        </button>
+                                    ))}
+                                </>
+                            );
+                        })()}
                     </div>
+                    {/* Sub-options for Text Related Types in Modal */}
+                    {['Text', 'Number', 'limit', 'Slug', 'Permalink'].includes(valueType) && (
+                        <div className="sub-pill-group" style={{ marginTop: '12px', display: 'flex', gap: '6px', padding: '6px', background: 'var(--bg)', borderRadius: 'var(--radius-sm)' }}>
+                            {['Text', 'Number', 'limit', 'Slug', 'Permalink'].map((subType) => (
+                                <button
+                                    key={subType}
+                                    type="button"
+                                    className={`pill pill-sm ${valueType === subType ? getValueTypeClass(subType) : ''}`}
+                                    style={{ fontSize: '11px', padding: '4px 10px' }}
+                                    onClick={() => setValueType(subType)}
+                                >
+                                    {subType}
+                                </button>
+                            ))}
+                        </div>
+                    )}
                 </div>
                 {valueType === 'Link' && (
                     <div className="form-group">
@@ -354,6 +389,7 @@ export default function EditPage() {
             case 'Grid': return 'active-grid';
             case 'Slug': return 'active-slug';
             case 'Permalink': return 'active-permalink';
+            case 'limit': return 'active-limit';
             default: return 'active';
         }
     };
@@ -698,24 +734,77 @@ export default function EditPage() {
                                                         </div>
                                                         <div className="pill-group-wrapper">
                                                             <div className="pill-group">
-                                                                {VALUE_TYPES.map((type) => (
-                                                                    <button
-                                                                        key={type}
-                                                                        type="button"
-                                                                        className={`pill ${field.valueType === type ? getValueTypeClass(type) : ''}`}
-                                                                        onClick={() => {
-                                                                            if (type === 'Link') {
-                                                                                updateFieldLink(heading.id, sub.id, field.id, null, setter); // defaults to Link page picker
-                                                                            } else {
-                                                                                updateFieldInline(heading.id, sub.id, field.id, 'valueType', type, setter);
-                                                                                updateFieldInline(heading.id, sub.id, field.id, 'linkedPageId', null, setter);
-                                                                            }
-                                                                        }}
-                                                                    >
-                                                                        {type === 'Link' ? '🔗 Link' : type}
-                                                                    </button>
-                                                                ))}
+                                                                {/* New Grouped UI */}
+                                                                {(() => {
+                                                                    const textRelatedTypes = ['Text', 'Number', 'limit', 'Slug', 'Permalink'];
+                                                                    const isTextRelated = textRelatedTypes.includes(field.valueType);
+                                                                    const otherTypes = ['Link', 'Rich Editor', 'Image', 'Grid'];
+
+                                                                    return (
+                                                                        <>
+                                                                            <button
+                                                                                type="button"
+                                                                                className={`pill ${isTextRelated ? 'active' : ''}`}
+                                                                                onClick={() => {
+                                                                                    if (!isTextRelated) {
+                                                                                        updateFieldInline(heading.id, sub.id, field.id, 'valueType', 'Text', setter);
+                                                                                    }
+                                                                                }}
+                                                                            >
+                                                                                Text Fields
+                                                                            </button>
+                                                                            {otherTypes.map((type) => (
+                                                                                <button
+                                                                                    key={type}
+                                                                                    type="button"
+                                                                                    className={`pill ${field.valueType === type ? getValueTypeClass(type) : ''}`}
+                                                                                    onClick={() => {
+                                                                                        if (type === 'Link') {
+                                                                                            updateFieldLink(heading.id, sub.id, field.id, null, setter);
+                                                                                        } else {
+                                                                                            updateFieldInline(heading.id, sub.id, field.id, 'valueType', type, setter);
+                                                                                            updateFieldInline(heading.id, sub.id, field.id, 'linkedPageId', null, setter);
+                                                                                        }
+                                                                                    }}
+                                                                                >
+                                                                                    {type === 'Link' ? '🔗 Link' : type}
+                                                                                </button>
+                                                                            ))}
+                                                                        </>
+                                                                    );
+                                                                })()}
                                                             </div>
+
+                                                            {/* Sub-options for Text Related Types */}
+                                                            {['Text', 'Number', 'limit', 'Slug', 'Permalink'].includes(field.valueType) && (
+                                                                <div className="sub-pill-group" style={{ marginTop: '8px', display: 'flex', gap: '4px', padding: '4px', background: 'var(--bg)', borderRadius: 'var(--radius-sm)' }}>
+                                                                    {['Text', 'Number', 'limit', 'Slug', 'Permalink'].map((subType) => (
+                                                                        <button
+                                                                            key={subType}
+                                                                            type="button"
+                                                                            className={`pill pill-sm ${field.valueType === subType ? getValueTypeClass(subType) : ''}`}
+                                                                            style={{ fontSize: '11px', padding: '2px 8px' }}
+                                                                            onClick={() => updateFieldInline(heading.id, sub.id, field.id, 'valueType', subType, setter)}
+                                                                        >
+                                                                            {subType}
+                                                                        </button>
+                                                                    ))}
+
+                                                                    {field.valueType === 'limit' && (
+                                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginLeft: '8px' }}>
+                                                                            <span style={{ fontSize: '10px', fontWeight: '600' }}>Limit:</span>
+                                                                            <input
+                                                                                type="number"
+                                                                                className="field-label-input"
+                                                                                style={{ width: '45px', height: '22px', fontSize: '11px', padding: '2px 4px' }}
+                                                                                placeholder="Chars"
+                                                                                value={field.maxChars || ''}
+                                                                                onChange={(e) => updateFieldInline(heading.id, sub.id, field.id, 'maxChars', Number(e.target.value) || 0, setter)}
+                                                                            />
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            )}
                                                             {field.valueType === 'Link' && (
                                                                 <div className="link-page-selector">
                                                                     <select
