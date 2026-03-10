@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///Users/samjebas/Desktop/crm%20demo/backend/src/app/data-entry/%5BpageId%5D/%5BentryId%5D/page.jsx"],"sourcesContent":["\"use client\";\nimport React, { Suspense } from 'react';\nimport AppLayout from '../../../components/AppLayout';\nimport DataEntry from '../../../views/DataEntry';\n\nexport default function DataEntryWithEntryPage(props) {\n    return (\n        <Suspense fallback={<div style={{ padding: '2rem' }}>Loading...</div>}>\n            <AppLayout>\n                <DataEntry {...props} />\n            </AppLayout>\n        </Suspense>\n    );\n}\n"],"names":[],"mappings":";;;;;AACA;;;;;;;;;;;AADA;;;;;AAKe,SAAS,uBAAuB,KAAK;IAChD,qBACI,gOAAC,4MAAQ;QAAC,wBAAU,gOAAC;YAAI,OAAO;gBAAE,SAAS;YAAO;sBAAG;;;;;;kBACjD,cAAA,gOAAC;sBACG,cAAA,gOAAC;gBAAW,GAAG,KAAK;;;;;;;;;;;;;;;;AAIpC;KARwB"}}]
-}

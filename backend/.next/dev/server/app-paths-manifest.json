@@ -1,6 +1,11 @@
 {
+  "/api-ide/page": "app/api-ide/page.js",
+  "/api/[companyId]/[pageId]/route": "app/api/[companyId]/[pageId]/route.js",
+  "/data-entry/[pageId]/[entryId]/page": "app/data-entry/[pageId]/[entryId]/page.js",
   "/data-entry/[pageId]/page": "app/data-entry/[pageId]/page.js",
   "/edit-hierarchy/[id]/page": "app/edit-hierarchy/[id]/page.js",
+  "/edit-page/[pageId]/page": "app/edit-page/[pageId]/page.js",
   "/entries/[pageId]/page": "app/entries/[pageId]/page.js",
+  "/page": "app/page.js",
   "/pages/page": "app/pages/page.js"
 }

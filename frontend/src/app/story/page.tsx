@@ -14,16 +14,17 @@ export default function StoryPage() {
             description
           }
         }`;
-                // Using the exact companyId and pageId provided
-                const companyId = '1772623665731';
-                const pageId = '1772686000215';
+                // Using the exact companyId and pageId provided by the user
+                const companyId = '1772689794109';
+                const pageId = '1773113847811';
                 const url = `http://localhost:4000/api/${companyId}/${pageId}?query=${encodeURIComponent(query)}`;
 
                 const res = await fetch(url);
                 const json = await res.json();
 
-                const pageData = json.data[pageId] || Object.values(json.data)[0];
+                const pageData = json.data[pageId] || (json.data ? Object.values(json.data)[0] : null);
                 if (pageData?.nodes?.length > 0) {
+                    // Extracting the description as per the query
                     setStory(pageData.nodes[0].description || '');
                 }
             } catch (error) {
@@ -89,18 +90,14 @@ export default function StoryPage() {
                                 </div>
                             ) : (
                                 <div className="prose prose-invert prose-lg max-w-none">
-                                    <p className="text-slate-300 text-xl md:text-2xl leading-relaxed font-light italic border-l-4 border-indigo-500 pl-8 py-2">
-                                        {story || "Once upon a time, we dreamed of a world where data wasn't just numbers, but a narrative. A world where every connection told a story of innovation and growth. That dream became Antigravity CRM."}
-                                    </p>
-
-                                    <div className="mt-12 space-y-8 text-slate-400 text-lg leading-relaxed">
-                                        <p>
-                                            We started in a small room with nothing but a few laptops and a vision. Our goal was to simplify the complex, to make the impossible feel intuitive. We wanted to build a bridge between backends and frontends that felt like magic.
-                                        </p>
-                                        <p>
-                                            Today, we continue that journey, pushing the boundaries of what's possible with dynamic architecture and premium design. Our story is just beginning, and we are excited to have you as part of it.
-                                        </p>
-                                    </div>
+                                    {story ? (
+                                        <div
+                                            className="text-slate-300 text-xl md:text-2xl leading-relaxed font-light italic border-l-4 border-indigo-500 pl-8 py-2 whitespace-pre-wrap"
+                                            dangerouslySetInnerHTML={{ __html: story }}
+                                        />
+                                    ) : (
+                                        <div className="text-slate-500 italic">No story data found.</div>
+                                    )}
                                 </div>
                             )}
                         </div>
