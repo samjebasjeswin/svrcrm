@@ -2003,7 +2003,7 @@ function DataEntry() {
             if (isSettingsPage) {
                 setRefreshKey((k)=>k + 1);
             } else {
-                router.push(`/data-entry/${pageId}`);
+                router.push(`/entries/${pageId}`);
             }
         }
     };
@@ -2022,7 +2022,7 @@ function DataEntry() {
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 className: "back-btn",
-                                onClick: ()=>router.push(isSettingsPage ? '/pages' : `/data-entry/${pageId}`),
+                                onClick: ()=>router.push(isSettingsPage ? '/pages' : `/entries/${pageId}`),
                                 children: "←"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
@@ -2076,7 +2076,7 @@ function DataEntry() {
                         className: "data-entry-header-right",
                         children: !isSettingsPage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                             className: "btn btn-outline btn-sm",
-                            onClick: ()=>router.push(`/data-entry/${pageId}`),
+                            onClick: ()=>router.push(`/entries/${pageId}`),
                             children: "Back to List"
                         }, void 0, false, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",

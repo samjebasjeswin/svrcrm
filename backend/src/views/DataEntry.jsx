@@ -625,7 +625,7 @@ export default function DataEntry() {
             if (isSettingsPage) {
                 setRefreshKey((k) => k + 1);
             } else {
-                router.push(`/data-entry/${pageId}`);
+                router.push(`/entries/${pageId}`);
             }
         }
     };
@@ -642,7 +642,7 @@ export default function DataEntry() {
             {/* Header */}
             <div className="data-entry-header">
                 <div className="data-entry-header-left">
-                    <button className="back-btn" onClick={() => router.push(isSettingsPage ? '/pages' : `/data-entry/${pageId}`)}>
+                    <button className="back-btn" onClick={() => router.push(isSettingsPage ? '/pages' : `/entries/${pageId}`)}>
                         ←
                     </button>
                     <div className="breadcrumb">
@@ -655,7 +655,7 @@ export default function DataEntry() {
                 </div>
                 <div className="data-entry-header-right">
                     {!isSettingsPage && (
-                        <button className="btn btn-outline btn-sm" onClick={() => router.push(`/data-entry/${pageId}`)}>
+                        <button className="btn btn-outline btn-sm" onClick={() => router.push(`/entries/${pageId}`)}>
                             Back to List
                         </button>
                     )}
