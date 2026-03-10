@@ -24,3 +24,9 @@ dist-ssr
 *.sw?
 .gemini/
 .DS_Store
+
+# Next.js
+.next/
+out/
+build/
+node_modules/
