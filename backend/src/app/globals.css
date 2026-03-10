@@ -1077,44 +1077,42 @@ body {
   z-index: 10;
 }
 
-.field-resize-controls {
+.field-drag-resizer {
   position: absolute;
-  top: -8px;
+  bottom: 0;
   right: 0;
-  display: flex;
-  gap: 2px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  padding: 2px;
-  border-radius: 4px;
-  opacity: 0;
-  transition: opacity 0.2s;
+  width: 16px;
+  height: 16px;
+  cursor: nwse-resize;
   z-index: 10;
+  opacity: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 2px;
 }
 
-.admin-field-hover:hover .field-drag-handle,
-.admin-field-hover:hover .field-resize-controls {
+.field-drag-resizer::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.admin-field-hover:hover .field-drag-resizer {
   opacity: 1;
 }
 
-.field-resize-btn {
-  background: none;
-  border: none;
-  font-size: 10px;
-  cursor: pointer;
-  padding: 2px 4px;
-  border-radius: 2px;
-  color: var(--text-secondary);
+.field-drag-resizer:hover::after,
+.field-drag-resizer:active::after {
+  opacity: 1;
 }
 
-.field-resize-btn:hover {
-  background: var(--bg);
-  color: var(--text-primary);
-}
-
-.field-resize-btn.active {
-  background: var(--accent);
-  color: white;
+.admin-field-hover:hover .field-drag-handle {
+  opacity: 1;
 }
 
 .data-entry-label {
@@ -1860,8 +1858,8 @@ input:checked+.infinity-slider:after {
 .image-preview-wrapper {
   position: relative;
   width: 100%;
-  max-width: 320px;
-  aspect-ratio: 16 / 9;
+  height: 100%;
+  min-height: 120px;
   border-radius: 12px;
   overflow: hidden;
   border: 1.5px solid var(--border);
@@ -1872,7 +1870,7 @@ input:checked+.infinity-slider:after {
 .image-preview {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .image-clear-btn {

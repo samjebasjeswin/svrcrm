@@ -1044,43 +1044,33 @@ body {
   left: 0;
 }
 
-.field-resize-controls {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  opacity: 0;
+.field-drag-resizer {
+  cursor: nwse-resize;
   z-index: 10;
-  border-radius: 4px;
-  gap: 2px;
+  opacity: 0;
+  justify-content: flex-end;
+  align-items: flex-end;
+  width: 16px;
+  height: 16px;
   padding: 2px;
-  transition: opacity .2s;
   display: flex;
   position: absolute;
-  top: -8px;
+  bottom: 0;
   right: 0;
 }
 
-.admin-field-hover:hover .field-drag-handle, .admin-field-hover:hover .field-resize-controls {
+.field-drag-resizer:after {
+  content: "";
+  border-right: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  opacity: .5;
+  width: 8px;
+  height: 8px;
+  transition: opacity .2s;
+}
+
+.admin-field-hover:hover .field-drag-resizer, .field-drag-resizer:hover:after, .field-drag-resizer:active:after, .admin-field-hover:hover .field-drag-handle {
   opacity: 1;
-}
-
-.field-resize-btn {
-  cursor: pointer;
-  color: var(--text-secondary);
-  background: none;
-  border: none;
-  border-radius: 2px;
-  padding: 2px 4px;
-  font-size: 10px;
-}
-
-.field-resize-btn:hover {
-  background: var(--bg);
-  color: var(--text-primary);
-}
-
-.field-resize-btn.active {
-  background: var(--accent);
-  color: #fff;
 }
 
 .data-entry-label {
@@ -1788,10 +1778,10 @@ input:checked + .infinity-slider:after {
 }
 
 .image-preview-wrapper {
-  aspect-ratio: 16 / 9;
   border: 1.5px solid var(--border);
   width: 100%;
-  max-width: 320px;
+  height: 100%;
+  min-height: 120px;
   box-shadow: var(--shadow-md);
   background: #f8fafc;
   border-radius: 12px;
@@ -1800,7 +1790,7 @@ input:checked + .infinity-slider:after {
 }
 
 .image-preview {
-  object-fit: contain;
+  object-fit: cover;
   width: 100%;
   height: 100%;
 }

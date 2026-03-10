@@ -26,12 +26,15 @@ export default function DataEntry() {
     const [draggedField, setDraggedField] = useState(null);
     const [dragTarget, setDragTarget] = useState(null);
 
+    // Resize State for Admin
+    const [resizingField, setResizingField] = useState(null);
+
     // Save field layout changes immediately to page config
     const persistLayoutChange = (newHeadings) => {
         updatePage(page.id, { ...page, headings: newHeadings });
     };
 
-    const handleResizeField = (headingId, subId, fieldId, newSpan) => {
+    const handleResizeField = (headingId, subId, fieldId, newSpan, newHeight) => {
         const newHeadings = [...page.headings];
         const h = newHeadings.find(h => h.id === headingId);
         if (h) {
@@ -39,11 +42,85 @@ export default function DataEntry() {
             if (sh) {
                 const f = sh.fields.find(f => f.id === fieldId);
                 if (f) {
-                    f.span = newSpan;
-                    persistLayoutChange(newHeadings);
+                    let changed = false;
+                    if (newSpan && f.span !== newSpan) { f.span = newSpan; changed = true; }
+                    if (newHeight && f.height !== newHeight) { f.height = newHeight; changed = true; }
+                    if (changed) persistLayoutChange(newHeadings);
                 }
             }
         }
+    };
+
+    const handleResizeStart = (e, headingId, subId, fieldId, currentSpan, currentHeight) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const gridEl = e.target.closest('.data-entry-fields-grid');
+        const fieldEl = document.getElementById(`field-group-${fieldId}`);
+        if (!gridEl || !fieldEl) return;
+
+        const gridWidth = gridEl.getBoundingClientRect().width;
+        const colWidth = gridWidth / 12;
+        const startFieldHeight = fieldEl.getBoundingClientRect().height;
+
+        setResizingField({
+            headingId, subId, fieldId,
+            startX: e.clientX,
+            startY: e.clientY,
+            startSpan: currentSpan || 6,
+            startHeight: currentHeight || Math.round(startFieldHeight)
+        });
+
+        const handleMouseMove = (moveEv) => {
+            setResizingField(prev => {
+                if (!prev) return null;
+
+                // Width: calculate span from X movement
+                const dx = moveEv.clientX - prev.startX;
+                const spanDiff = Math.round(dx / colWidth);
+                let newSpan = prev.startSpan + spanDiff;
+                if (newSpan < 3) newSpan = 3;
+                if (newSpan > 12) newSpan = 12;
+
+                // Height: calculate from Y movement, snap to 20px increments, min 60px
+                const dy = moveEv.clientY - prev.startY;
+                let newHeight = prev.startHeight + dy;
+                newHeight = Math.round(newHeight / 20) * 20; // snap to 20px
+                if (newHeight < 60) newHeight = 60;
+                if (newHeight > 800) newHeight = 800;
+
+                // Live DOM preview for speed
+                const el = document.getElementById(`field-group-${fieldId}`);
+                if (el) {
+                    el.className = el.className.replace(/col-span-\d+/g, '');
+                    el.classList.add(`col-span-${newSpan}`);
+                    el.style.height = `${newHeight}px`;
+                }
+
+                return { ...prev, previewSpan: newSpan, previewHeight: newHeight };
+            });
+        };
+
+        const handleMouseUp = () => {
+            setResizingField(prev => {
+                if (prev) {
+                    handleResizeField(
+                        prev.headingId, prev.subId, prev.fieldId,
+                        prev.previewSpan || prev.startSpan,
+                        prev.previewHeight || prev.startHeight
+                    );
+                    // Clean up inline height so React takes back over
+                    const el = document.getElementById(`field-group-${fieldId}`);
+                    if (el) el.style.height = '';
+                }
+                return null;
+            });
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mouseup', handleMouseUp);
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mouseup', handleMouseUp);
     };
 
     const handleDragStart = (e, headingId, subId, fieldId) => {
@@ -771,11 +848,14 @@ export default function DataEntry() {
 
                                                     return (
                                                         <div
+                                                            id={`field-group-${field.id}`}
                                                             key={field.id}
                                                             className={`data-entry-field-group ${spanClass} ${isAdminEdit ? 'admin-field-hover' : ''}`}
                                                             style={{
                                                                 borderTop: dragTarget === field.id && draggedField?.fieldId !== field.id ? '2px solid var(--accent)' : 'none',
-                                                                padding: isAdminEdit ? '8px' : '0'
+                                                                padding: isAdminEdit ? '8px' : '0',
+                                                                height: field.height ? `${field.height}px` : 'auto',
+                                                                overflow: field.height ? 'hidden' : undefined
                                                             }}
                                                             draggable={isAdminEdit}
                                                             onDragStart={(e) => isAdminEdit && handleDragStart(e, heading.id, sub.id, field.id)}
@@ -786,12 +866,10 @@ export default function DataEntry() {
                                                             {isAdminEdit && (
                                                                 <>
                                                                     <div className="field-drag-handle">≡ Drag</div>
-                                                                    <div className="field-resize-controls">
-                                                                        <button className={`field-resize-btn ${field.span === 3 ? 'active' : ''}`} onClick={() => handleResizeField(heading.id, sub.id, field.id, 3)}>25%</button>
-                                                                        <button className={`field-resize-btn ${field.span === 4 ? 'active' : ''}`} onClick={() => handleResizeField(heading.id, sub.id, field.id, 4)}>33%</button>
-                                                                        <button className={`field-resize-btn ${(!field.span && field.maxChars <= 120) || field.span === 6 ? 'active' : ''}`} onClick={() => handleResizeField(heading.id, sub.id, field.id, 6)}>50%</button>
-                                                                        <button className={`field-resize-btn ${(!field.span && field.maxChars > 120) || field.span === 12 ? 'active' : ''}`} onClick={() => handleResizeField(heading.id, sub.id, field.id, 12)}>100%</button>
-                                                                    </div>
+                                                                    <div
+                                                                        className="field-drag-resizer"
+                                                                        onMouseDown={(e) => handleResizeStart(e, heading.id, sub.id, field.id, field.span || (field.maxChars > 120 ? 12 : 6), field.height)}
+                                                                    />
                                                                 </>
                                                             )}
                                                             <label className="data-entry-label">
