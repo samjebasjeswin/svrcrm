@@ -15,6 +15,9 @@ function FieldEditModal({ field, onSave, onClose, pages, currentPageId }) {
     const [linkedPageId, setLinkedPageId] = useState(field?.linkedPageId || '');
     const [slugSourceFieldId, setSlugSourceFieldId] = useState(field?.slugSourceFieldId || '');
     const [permalinkSourceFieldId, setPermalinkSourceFieldId] = useState(field?.permalinkSourceFieldId || '');
+    const [infinity, setInfinity] = useState(field?.infinity || false);
+    const [maxItems, setMaxItems] = useState(field?.maxItems || '');
+    const [gridCols, setGridCols] = useState(field?.gridCols || [{ label: '', placeholder: '' }]);
 
     const otherPages = pages.filter((p) => p.id !== Number(currentPageId));
 
@@ -29,7 +32,18 @@ function FieldEditModal({ field, onSave, onClose, pages, currentPageId }) {
             linkedPageId: valueType === 'Link' ? Number(linkedPageId) || null : null,
             slugSourceFieldId: valueType === 'Slug' ? slugSourceFieldId : null,
             permalinkSourceFieldId: valueType === 'Permalink' ? permalinkSourceFieldId : null,
+            infinity: (valueType !== 'Grid' && valueType !== 'Slug' && valueType !== 'Permalink') ? infinity : false,
+            maxItems: (valueType !== 'Grid' && valueType !== 'Slug' && valueType !== 'Permalink') ? Number(maxItems) || 0 : 0,
+            gridCols: valueType === 'Grid' ? gridCols : null,
         });
+    };
+
+    const addGridCol = () => setGridCols([...gridCols, { label: '', placeholder: '' }]);
+    const removeGridCol = (idx) => setGridCols(gridCols.filter((_, i) => i !== idx));
+    const updateGridCol = (idx, key, val) => {
+        const newCols = [...gridCols];
+        newCols[idx] = { ...newCols[idx], [key]: val };
+        setGridCols(newCols);
     };
 
     return (
@@ -123,13 +137,69 @@ function FieldEditModal({ field, onSave, onClose, pages, currentPageId }) {
                         </div>
                     </div>
                 )}
+                {(valueType !== 'Grid' && valueType !== 'Slug' && valueType !== 'Permalink') && (
+                    <div className="form-group">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                            <label className="toggle" style={{ display: 'flex', alignItems: 'center', gap: 10, width: 'auto' }}>
+                                <input type="checkbox" checked={infinity || false} onChange={(e) => setInfinity(e.target.checked)} />
+                                <span className="toggle-slider"></span>
+                                <span style={{ fontSize: 13, fontWeight: 500 }}>Infinity (Multi-row)</span>
+                            </label>
+                            {infinity && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <span style={{ fontSize: '12px', fontWeight: 600 }}>Max Items:</span>
+                                    <input
+                                        type="number"
+                                        className="form-input"
+                                        style={{ width: '60px', height: '32px', padding: '4px 8px' }}
+                                        value={maxItems}
+                                        onChange={(e) => setMaxItems(e.target.value)}
+                                        placeholder="∞"
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {valueType === 'Grid' && (
+                    <div className="form-group">
+                        <label className="form-label">Grid Columns <span className="required">*</span></label>
+                        <div className="grid-cols-config">
+                            {gridCols.map((col, idx) => (
+                                <div key={idx} className="grid-col-setup-row" style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                                    <input
+                                        className="form-input"
+                                        style={{ flex: 1 }}
+                                        placeholder="Col Label"
+                                        value={col.label}
+                                        onChange={(e) => updateGridCol(idx, 'label', e.target.value)}
+                                    />
+                                    <input
+                                        className="form-input"
+                                        style={{ flex: 1 }}
+                                        placeholder="Placeholder"
+                                        value={col.placeholder}
+                                        onChange={(e) => updateGridCol(idx, 'placeholder', e.target.value)}
+                                    />
+                                    {gridCols.length > 1 && (
+                                        <button className="btn btn-ghost btn-danger-text" onClick={() => removeGridCol(idx)}>✕</button>
+                                    )}
+                                </div>
+                            ))}
+                            <button className="btn btn-outline btn-sm" onClick={addGridCol}>+ Add Column</button>
+                        </div>
+                    </div>
+                )}
+
                 <div className="form-group">
                     <label className="toggle" style={{ display: 'flex', alignItems: 'center', gap: 10, width: 'auto' }}>
-                        <input type="checkbox" checked={required} onChange={(e) => setRequired(e.target.checked)} />
+                        <input type="checkbox" checked={required || false} onChange={(e) => setRequired(e.target.checked)} />
                         <span className="toggle-slider"></span>
                         <span style={{ fontSize: 13, fontWeight: 500 }}>Required</span>
                     </label>
                 </div>
+
                 <div className="modal-actions">
                     <button className="btn btn-outline" onClick={onClose}>Cancel</button>
                     <button className="btn btn-primary" onClick={handleSave}>Save</button>
@@ -160,6 +230,7 @@ export default function EditPage() {
     const [dynamicSeoHeadings, setDynamicSeoHeadings] = useState([]);
     const [staticSeoTimestamp, setStaticSeoTimestamp] = useState('');
     const [superAdminEnabled, setSuperAdminEnabled] = useState(true);
+    const [activeSetter, setActiveSetter] = useState(null);
 
     useEffect(() => {
         if (page) {
@@ -357,6 +428,8 @@ export default function EditPage() {
                                             label: 'Grid Field',
                                             valueType: 'Grid',
                                             required: false,
+                                            infinity: false,
+                                            maxItems: 0,
                                             gridCols
                                         },
                                     ],
@@ -386,6 +459,8 @@ export default function EditPage() {
                                             label: '',
                                             valueType: 'Text',
                                             required: false,
+                                            infinity: false,
+                                            maxItems: 0,
                                         },
                                     ],
                                 }
@@ -511,7 +586,8 @@ export default function EditPage() {
     };
 
     const handleEditFieldSave = (updatedField) => {
-        setHeadings((prev) =>
+        const targetSetter = activeSetter || setHeadings;
+        targetSetter((prev) =>
             prev.map((h) => ({
                 ...h,
                 subHeadings: h.subHeadings.map((sh) => ({
@@ -521,6 +597,7 @@ export default function EditPage() {
             }))
         );
         setEditingField(null);
+        setActiveSetter(null);
     };
 
     const getLinkedPageName = (linkedPageId) => {
@@ -593,23 +670,32 @@ export default function EditPage() {
 
                                         {sub.fields.length > 0 && (
                                             <>
-                                                <div className="fields-table-header">
+                                                <div className="fields-table-header" style={{ gridTemplateColumns: 'minmax(150px, 1.5fr) minmax(300px, 3fr) 80px 80px 80px 80px' }}>
                                                     <span>Label / Grid Config</span>
                                                     <span>Value Type *</span>
-                                                    <span>Required</span>
-                                                    <span>Actions</span>
+                                                    <span style={{ textAlign: 'center' }}>Req</span>
+                                                    <span style={{ textAlign: 'center' }}>Inf</span>
+                                                    <span style={{ textAlign: 'center' }}>Max</span>
+                                                    <span style={{ textAlign: 'center' }}>Actions</span>
                                                 </div>
 
                                                 {sub.fields.map((field) => (
-                                                    <div key={field.id} className="field-row">
-                                                        <input
-                                                            className="field-label-input"
-                                                            value={field.label}
-                                                            onChange={(e) =>
-                                                                updateFieldInline(heading.id, sub.id, field.id, 'label', e.target.value, setter)
-                                                            }
-                                                            placeholder="Field name"
-                                                        />
+                                                    <div key={field.id} className="field-row" style={{ gridTemplateColumns: 'minmax(150px, 1.5fr) minmax(300px, 3fr) 80px 80px 80px 80px' }}>
+                                                        <div className="field-label-cell">
+                                                            <input
+                                                                className="field-label-input"
+                                                                value={field.label}
+                                                                onChange={(e) =>
+                                                                    updateFieldInline(heading.id, sub.id, field.id, 'label', e.target.value, setter)
+                                                                }
+                                                                placeholder="Field name"
+                                                            />
+                                                            {field.valueType === 'Grid' && (
+                                                                <div className="grid-config-hint" style={{ fontSize: '10px', color: 'var(--accent)', marginTop: '4px', fontWeight: '600' }}>
+                                                                    Grid: {field.gridCols?.length || 0} columns
+                                                                </div>
+                                                            )}
+                                                        </div>
                                                         <div className="pill-group-wrapper">
                                                             <div className="pill-group">
                                                                 {VALUE_TYPES.map((type) => (
@@ -619,7 +705,7 @@ export default function EditPage() {
                                                                         className={`pill ${field.valueType === type ? getValueTypeClass(type) : ''}`}
                                                                         onClick={() => {
                                                                             if (type === 'Link') {
-                                                                                updateFieldInline(heading.id, sub.id, field.id, 'valueType', 'Link', setter);
+                                                                                updateFieldLink(heading.id, sub.id, field.id, null, setter); // defaults to Link page picker
                                                                             } else {
                                                                                 updateFieldInline(heading.id, sub.id, field.id, 'valueType', type, setter);
                                                                                 updateFieldInline(heading.id, sub.id, field.id, 'linkedPageId', null, setter);
@@ -647,7 +733,7 @@ export default function EditPage() {
                                                                 </div>
                                                             )}
                                                             {field.valueType === 'Slug' && (
-                                                                <div className="link-page-selector">
+                                                                <div className="link-page-selector" title="Slug Source">
                                                                     <select
                                                                         className="link-page-select"
                                                                         value={field.slugSourceFieldId || ''}
@@ -656,14 +742,69 @@ export default function EditPage() {
                                                                         }
                                                                     >
                                                                         <option value="">Select source...</option>
-                                                                        {structureHeadings.flatMap(h => h.subHeadings?.flatMap(sh => sh.fields?.filter(f => f.id !== field.id).map(f => (
+                                                                        {[...headings, ...staticSeoHeadings, ...dynamicSeoHeadings].flatMap(h => h.subHeadings?.flatMap(sh => sh.fields?.filter(f => f.id !== field.id).map(f => (
+                                                                            <option key={f.id} value={f.id}>{f.label || `Field ${f.id}`}</option>
+                                                                        )) || []) || [])}
+                                                                    </select>
+                                                                </div>
+                                                            )}
+                                                            {field.valueType === 'Permalink' && (
+                                                                <div className="link-page-selector" title="Permalink Source">
+                                                                    <select
+                                                                        className="link-page-select"
+                                                                        style={{ borderColor: '#00695c', color: '#00695c' }}
+                                                                        value={field.permalinkSourceFieldId || ''}
+                                                                        onChange={(e) =>
+                                                                            updateFieldInline(heading.id, sub.id, field.id, 'permalinkSourceFieldId', e.target.value, setter)
+                                                                        }
+                                                                    >
+                                                                        <option value="">Select source...</option>
+                                                                        {[...headings, ...staticSeoHeadings, ...dynamicSeoHeadings].flatMap(h => h.subHeadings?.flatMap(sh => sh.fields?.filter(f => f.id !== field.id).map(f => (
                                                                             <option key={f.id} value={f.id}>{f.label || `Field ${f.id}`}</option>
                                                                         )) || []) || [])}
                                                                     </select>
                                                                 </div>
                                                             )}
                                                         </div>
-                                                        <div className="field-actions">
+                                                        <div className="field-checkbox-cell" style={{ display: 'flex', justifyContent: 'center' }}>
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={field.required || false}
+                                                                onChange={(e) => updateFieldInline(heading.id, sub.id, field.id, 'required', e.target.checked, setter)}
+                                                            />
+                                                        </div>
+                                                        <div className="field-checkbox-cell" style={{ display: 'flex', justifyContent: 'center' }}>
+                                                            <input
+                                                                type="checkbox"
+                                                                disabled={field.valueType === 'Grid' || field.valueType === 'Slug' || field.valueType === 'Permalink'}
+                                                                checked={field.infinity || false}
+                                                                onChange={(e) => updateFieldInline(heading.id, sub.id, field.id, 'infinity', e.target.checked, setter)}
+                                                            />
+                                                        </div>
+                                                        <div className="field-value-cell" style={{ textAlign: 'center' }}>
+                                                            {!(field.valueType === 'Grid' || field.valueType === 'Slug' || field.valueType === 'Permalink') ? (
+                                                                <input
+                                                                    type="number"
+                                                                    className="field-label-input"
+                                                                    style={{ width: '50px', textAlign: 'center', height: '30px' }}
+                                                                    value={field.maxItems ?? 0}
+                                                                    onChange={(e) => updateFieldInline(heading.id, sub.id, field.id, 'maxItems', Number(e.target.value) || 0, setter)}
+                                                                />
+                                                            ) : (
+                                                                <span style={{ color: 'var(--text-soft)' }}>—</span>
+                                                            )}
+                                                        </div>
+                                                        <div className="field-actions" style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                                            <button
+                                                                className="btn btn-ghost"
+                                                                title="Edit advanced settings"
+                                                                onClick={() => {
+                                                                    setActiveSetter(() => setter);
+                                                                    setEditingField(field);
+                                                                }}
+                                                            >
+                                                                ✏️
+                                                            </button>
                                                             <button className="btn btn-ghost btn-danger-text" onClick={() => deleteField(heading.id, sub.id, field.id, setter)}>🗑</button>
                                                         </div>
                                                     </div>
@@ -764,9 +905,15 @@ export default function EditPage() {
                                 onChange={(e) => setSearchFieldId(e.target.value)}
                             >
                                 <option value="">-- All fields (Text search) --</option>
-                                {headings.flatMap(h => h.subHeadings?.flatMap(sh => sh.fields?.map(f => (
-                                    <option key={f.id} value={f.id}>🔍 {f.label || `Field ${f.id}`}</option>
-                                )) || []) || []).map(opt => opt)}
+                                {
+                                    [
+                                        ...headings,
+                                        ...(staticSeoEnabled ? staticSeoHeadings : []),
+                                        ...(dynamicSeoEnabled ? dynamicSeoHeadings : [])
+                                    ].flatMap(h => h.subHeadings?.flatMap(sh => sh.fields?.map(f => (
+                                        <option key={f.id} value={f.id}>🔍 {f.label || `Field ${f.id}`}</option>
+                                    )) || []) || [])
+                                }
                             </select>
                             <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '6px' }}>
                                 Select which field users can search through (e.g. Name, SKU, Email)

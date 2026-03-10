@@ -30,7 +30,6 @@ export default function DataEntry() {
             if (entry) {
                 setFormData(entry.data);
 
-                // Initialize repeaterRows if entry has repeating data
                 const initialRepeaters = {};
                 Object.keys(entry.data).forEach(key => {
                     if (key.includes('_row')) {
@@ -42,8 +41,35 @@ export default function DataEntry() {
                         }
                     }
                 });
+
+                // Also ensure fields with maxItems have at least that many rows initialized
+                page.headings?.forEach(h => h.subHeadings?.forEach(sh => sh.fields?.forEach(f => {
+                    if (f.maxItems > 0) {
+                        const fieldKey = getFieldKey(h.id, sh.id, f.id);
+                        if (!initialRepeaters[fieldKey] || initialRepeaters[fieldKey].length < f.maxItems) {
+                            const currentRows = initialRepeaters[fieldKey] || [];
+                            const needed = f.maxItems - currentRows.length;
+                            for (let i = 0; i < needed; i++) {
+                                const nextId = currentRows.length > 0 ? Math.max(...currentRows) + 1 : i;
+                                currentRows.push(nextId);
+                            }
+                            initialRepeaters[fieldKey] = currentRows;
+                        }
+                    }
+                })));
+
                 setRepeaterRows(initialRepeaters);
             }
+        } else if (isNew && page) {
+            // Pre-initialize rows for new entries if maxItems > 0
+            const initialRepeaters = {};
+            page.headings?.forEach(h => h.subHeadings?.forEach(sh => sh.fields?.forEach(f => {
+                if (f.maxItems > 0) {
+                    const fieldKey = getFieldKey(h.id, sh.id, f.id);
+                    initialRepeaters[fieldKey] = Array.from({ length: f.maxItems }, (_, i) => i);
+                }
+            })));
+            setRepeaterRows(initialRepeaters);
         }
     }, [entryId, pageId, isNew, page]);
 
@@ -88,23 +114,44 @@ export default function DataEntry() {
                 .replace(/\s+/g, '-')
                 .replace(/[^a-z0-9-]/g, '');
 
+            // Helper to get all fields from all enabled sections
+            const getAllAvailableHeadings = () => [
+                ...(page.headings || []),
+                ...(page.staticSeoEnabled ? (page.staticSeoHeadings || []) : []),
+                ...(page.dynamicSeoEnabled ? (page.dynamicSeoHeadings || []) : [])
+            ];
+
+            const allActiveHeadings = getAllAvailableHeadings();
+
             // Find current field to check if it's a Permalink or Slug
             let currentField = null;
-            page?.headings?.forEach(h => h.subHeadings?.forEach(sh => sh.fields?.forEach(f => {
+            allActiveHeadings.forEach(h => h.subHeadings?.forEach(sh => sh.fields?.forEach(f => {
                 if (String(f.id).trim() === String(fieldId).trim()) currentField = f;
             })));
 
             // Bi-directional logic: If Permalink is edited, update its Slug source
             if (currentField?.valueType === 'Permalink' && currentField.permalinkSourceFieldId) {
                 const slugSourceFieldId = currentField.permalinkSourceFieldId;
-                const slugKey = rowIdx !== null
-                    ? `${getFieldKey(headingId, subId, slugSourceFieldId)}_row${rowIdx}`
-                    : getFieldKey(headingId, subId, slugSourceFieldId);
-                newData[slugKey] = formatAsSlug(value);
+                // We need to find the heading and subHeading of the slugSourceFieldId
+                let sourceHeadingId = null;
+                let sourceSubId = null;
+                allActiveHeadings.forEach(h => h.subHeadings?.forEach(sh => sh.fields?.forEach(f => {
+                    if (String(f.id).trim() === String(slugSourceFieldId).trim()) {
+                        sourceHeadingId = h.id;
+                        sourceSubId = sh.id;
+                    }
+                })));
+
+                if (sourceHeadingId && sourceSubId) {
+                    const slugKey = rowIdx !== null
+                        ? `${getFieldKey(sourceHeadingId, sourceSubId, slugSourceFieldId)}_row${rowIdx}`
+                        : getFieldKey(sourceHeadingId, sourceSubId, slugSourceFieldId);
+                    newData[slugKey] = formatAsSlug(value);
+                }
             }
 
             // Forward logic: If Name/Any is edited, update Slugs/Permalinks that link to it
-            page?.headings?.forEach(h => {
+            allActiveHeadings.forEach(h => {
                 h.subHeadings?.forEach(sh => {
                     sh.fields?.forEach(f => {
                         const isSlugSource = f.valueType === 'Slug' && f.slugSourceFieldId && String(f.slugSourceFieldId).trim() === String(fieldId).trim();
@@ -120,7 +167,7 @@ export default function DataEntry() {
 
                             // Chaining: If Slug is updated, also update any Permalink that links to IT
                             if (f.valueType === 'Slug') {
-                                page?.headings?.forEach(h2 => {
+                                allActiveHeadings.forEach(h2 => {
                                     h2.subHeadings?.forEach(sh2 => {
                                         sh2.fields?.forEach(f2 => {
                                             if (f2.valueType === 'Permalink' && String(f2.permalinkSourceFieldId).trim() === String(f.id).trim()) {
@@ -148,9 +195,10 @@ export default function DataEntry() {
         return formData[finalKey] || '';
     };
 
-    const addRepeaterRow = (fieldKey) => {
+    const addRepeaterRow = (fieldKey, maxItems = 0) => {
         setRepeaterRows(prev => {
-            const currentRows = prev[fieldKey] || [0]; // Start with row 0 if none
+            const currentRows = prev[fieldKey] || [0];
+            if (maxItems > 0 && currentRows.length >= maxItems) return prev;
             const nextId = Math.max(...currentRows, -1) + 1;
             return { ...prev, [fieldKey]: [...currentRows, nextId] };
         });
@@ -279,7 +327,7 @@ export default function DataEntry() {
                 return (
                     <RichTextEditor
                         value={value}
-                        onChange={(val) => handleChange(heading.id, sub.id, field.id, val, field.maxChars, rowIdx)}
+                        onChange={(val) => handleChange(heading.id, sub.id, field.id, val, 0, rowIdx)}
                         placeholder={field.label}
                     />
                 );
@@ -317,8 +365,13 @@ export default function DataEntry() {
                     />
                 );
             case 'Slug':
-                const slugSourceField = page.headings?.flatMap(h => h.subHeadings?.flatMap(sh => sh.fields))
-                    .find(f => String(f?.id) === String(field.slugSourceFieldId));
+                const allAHeadings = [
+                    ...(page.headings || []),
+                    ...(page.staticSeoEnabled ? (page.staticSeoHeadings || []) : []),
+                    ...(page.dynamicSeoEnabled ? (page.dynamicSeoHeadings || []) : [])
+                ];
+                const slugSourceField = allAHeadings.flatMap(h => h.subHeadings?.flatMap(sh => sh.fields))
+                    .find(f => String(f?.id).trim() === String(field.slugSourceFieldId).trim());
                 return (
                     <div className="data-entry-field-input-wrapper">
                         <input
@@ -334,8 +387,13 @@ export default function DataEntry() {
                     </div>
                 );
             case 'Permalink':
-                const permSourceField = page.headings?.flatMap(h => h.subHeadings?.flatMap(sh => sh.fields))
-                    .find(f => String(f?.id) === String(field.permalinkSourceFieldId));
+                const allAHeadingsPerm = [
+                    ...(page.headings || []),
+                    ...(page.staticSeoEnabled ? (page.staticSeoHeadings || []) : []),
+                    ...(page.dynamicSeoEnabled ? (page.dynamicSeoHeadings || []) : [])
+                ];
+                const permSourceField = allAHeadingsPerm.flatMap(h => h.subHeadings?.flatMap(sh => sh.fields))
+                    .find(f => String(f?.id).trim() === String(field.permalinkSourceFieldId).trim());
                 return (
                     <div className="data-entry-field-input-wrapper">
                         <input
@@ -434,9 +492,22 @@ export default function DataEntry() {
             for (const sub of heading.subHeadings || []) {
                 for (const field of sub.fields || []) {
                     const key = getFieldKey(heading.id, sub.id, field.id);
-                    if (field.required && !formData[key]?.toString().trim()) {
-                        alert(`"${field.label}" is required`);
-                        return;
+
+                    if (field.infinity) {
+                        const rowIds = repeaterRows[key] || [0];
+                        for (let i = 0; i < rowIds.length; i++) {
+                            const rowKey = `${key}_row${i}`;
+                            const val = formData[rowKey];
+                            if (field.required && (!val || !val.toString().trim())) {
+                                alert(`"${field.label}" (Row ${i + 1}) is required`);
+                                return;
+                            }
+                        }
+                    } else {
+                        if (field.required && !formData[key]?.toString().trim()) {
+                            alert(`"${field.label}" is required`);
+                            return;
+                        }
                     }
                 }
             }
@@ -538,27 +609,31 @@ export default function DataEntry() {
                                                             )}
                                                         </label>
 
-                                                        {field.infinity ? (
+                                                        {(field.infinity || field.maxItems > 0) ? (
                                                             <div className="repeater-container">
                                                                 {(repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [0]).map((rowId, idx) => (
                                                                     <div key={rowId} className="repeater-row animate-fade-in-up">
                                                                         <div className="repeater-row-content">
                                                                             {renderFieldInput(heading, sub, field, idx)}
                                                                         </div>
-                                                                        <button
-                                                                            className="repeater-delete-btn"
-                                                                            onClick={() => removeRepeaterRow(getFieldKey(heading.id, sub.id, field.id), rowId)}
-                                                                        >
-                                                                            ✕
-                                                                        </button>
+                                                                        {field.infinity && (
+                                                                            <button
+                                                                                className="repeater-delete-btn"
+                                                                                onClick={() => removeRepeaterRow(getFieldKey(heading.id, sub.id, field.id), rowId)}
+                                                                            >
+                                                                                ✕
+                                                                            </button>
+                                                                        )}
                                                                     </div>
                                                                 ))}
-                                                                {(!field.maxItems || (repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [0]).length < Number(field.maxItems)) && (
+                                                                {field.infinity && (
                                                                     <button
-                                                                        className="btn btn-primary btn-sm repeater-add-btn"
-                                                                        onClick={() => addRepeaterRow(getFieldKey(heading.id, sub.id, field.id))}
+                                                                        className="repeater-add-btn"
+                                                                        onClick={() => addRepeaterRow(getFieldKey(heading.id, sub.id, field.id), field.maxItems)}
+                                                                        disabled={field.maxItems > 0 && (repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [0]).length >= field.maxItems}
+                                                                        style={{ marginTop: '8px' }}
                                                                     >
-                                                                        + Add
+                                                                        + Add {field.label || 'Row'}
                                                                     </button>
                                                                 )}
                                                             </div>
