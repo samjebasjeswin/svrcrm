@@ -1,19 +1,7 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/api-ide/page": "app/api-ide/page.js",
-  "/api/[companyId]/[pageId]/route": "app/api/[companyId]/[pageId]/route.js",
-  "/data-entry/[pageId]/[entryId]/page": "app/data-entry/[pageId]/[entryId]/page.js",
   "/data-entry/[pageId]/page": "app/data-entry/[pageId]/page.js",
   "/edit-hierarchy/[id]/page": "app/edit-hierarchy/[id]/page.js",
-<<<<<<< HEAD
-  "/edit-hierarchy/[mappingId]/page": "app/edit-hierarchy/[mappingId]/page.js",
-  "/edit-page/[pageId]/page": "app/edit-page/[pageId]/page.js",
-  "/entries/[pageId]/page": "app/entries/[pageId]/page.js",
-  "/login/page": "app/login/page.js",
-=======
-  "/edit-page/[pageId]/page": "app/edit-page/[pageId]/page.js",
-  "/entries/[pageId]/page": "app/entries/[pageId]/page.js",
->>>>>>> db9a60ba5da15dfc310b3152b3458592a56113e6
   "/page": "app/page.js",
-  "/pages/page": "app/pages/page.js"
+  "/pages/page": "app/pages/page.js",
+  "/view-mapping/[id]/page": "app/view-mapping/[id]/page.js"
 }

@@ -1,11 +1,7 @@
 {
   "pages": {},
   "app": {
-<<<<<<< HEAD
     "[project]/src/app/edit-hierarchy/[id]/page": [
-=======
-    "[project]/Desktop/crm demo/backend/src/app/edit-hierarchy/[id]/page": [
->>>>>>> db9a60ba5da15dfc310b3152b3458592a56113e6
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ]
   },
