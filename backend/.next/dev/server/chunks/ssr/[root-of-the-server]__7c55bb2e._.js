@@ -44,12 +44,12 @@ function AppLayout({ children }) {
     const sidebarSections = [
         {
             label: 'HUB ADMIN',
-            items: pages.map((page)=>{
+            items: pages.filter((page)=>page.superAdminEnabled !== false).map((page)=>{
                 const count = getPageEntries(page.id).length;
                 const lowerName = page.name.toLowerCase().trim();
                 const isForm = lowerName === 'form';
                 const isSettingsPage = page.singleEntry || lowerName === 'static seo' || lowerName === 'mailer settings';
-                let targetPath = `/data-entry/${page.id}`;
+                let targetPath = `/entries/${page.id}`;
                 if (isSettingsPage) {
                     const entries = getPageEntries(page.id);
                     if (entries.length > 0) {
