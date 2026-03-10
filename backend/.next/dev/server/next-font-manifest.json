@@ -1,6 +1,15 @@
 {
   "app": {
+    "[project]/Desktop/crm demo/backend/src/app/data-entry/[pageId]/[entryId]/page": [
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
+    ],
     "[project]/Desktop/crm demo/backend/src/app/edit-page/[pageId]/page": [
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
+    ],
+    "[project]/Desktop/crm demo/backend/src/app/entries/[pageId]/page": [
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
+    ],
+    "[project]/Desktop/crm demo/backend/src/app/pages/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ]
   },

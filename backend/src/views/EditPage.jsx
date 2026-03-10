@@ -870,24 +870,19 @@ export default function EditPage() {
                                                             <button
                                                                 className={`pill pill-sm ${field.infinity ? 'active' : ''}`}
                                                                 style={{ fontSize: '10px', padding: '2px 8px', minWidth: '40px' }}
-                                                                disabled={field.valueType === 'Grid' || field.valueType === 'Slug' || field.valueType === 'Permalink'}
                                                                 onClick={() => updateFieldInline(heading.id, sub.id, field.id, 'infinity', !field.infinity, setter)}
                                                             >
                                                                 {field.infinity ? 'ON' : 'OFF'}
                                                             </button>
                                                         </div>
                                                         <div className="field-value-cell" style={{ textAlign: 'center' }}>
-                                                            {!(field.valueType === 'Grid' || field.valueType === 'Slug' || field.valueType === 'Permalink') ? (
-                                                                <input
-                                                                    type="number"
-                                                                    className="field-label-input"
-                                                                    style={{ width: '50px', textAlign: 'center', height: '30px' }}
-                                                                    value={field.maxItems ?? 0}
-                                                                    onChange={(e) => updateFieldInline(heading.id, sub.id, field.id, 'maxItems', Number(e.target.value) || 0, setter)}
-                                                                />
-                                                            ) : (
-                                                                <span style={{ color: 'var(--text-soft)' }}>—</span>
-                                                            )}
+                                                            <input
+                                                                type="number"
+                                                                className="field-label-input"
+                                                                style={{ width: '50px', textAlign: 'center', height: '30px' }}
+                                                                value={field.maxItems ?? 0}
+                                                                onChange={(e) => updateFieldInline(heading.id, sub.id, field.id, 'maxItems', Number(e.target.value) || 0, setter)}
+                                                            />
                                                         </div>
                                                         <div className="field-checkbox-cell" style={{ display: 'flex', justifyContent: 'center' }}>
                                                             <button
