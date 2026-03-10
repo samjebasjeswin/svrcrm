@@ -17,7 +17,7 @@ export default function AppLayout({ children }) {
 
     const sidebarSections = [
         {
-            label: 'HUB ADMIN',
+            label: 'SUPER ADMIN',
             items: pages.filter(page => page.superAdminEnabled !== false).map(page => {
                 const count = getPageEntries(page.id).length;
                 const lowerName = page.name.toLowerCase().trim();
@@ -44,23 +44,23 @@ export default function AppLayout({ children }) {
                     path: targetPath,
                 };
             }),
-            footer: user?.role === 'System Admin' ? {
-                icon: '+',
-                label: 'Add Page',
-                path: '/pages',
-            } : null
         },
         ...((user?.role === 'System Admin' || user?.role === 'Super Admin') ? [{
-            label: 'SYSTEM ADMIN',
+            label: 'MAPPING ADMIN',
             hideLabel: true,
             items: [
                 { icon: '🗺️', label: 'Mapping', path: '/pages?tab=mapping' },
-                ...(user?.role === 'System Admin' ? [
-                    { icon: '📄', label: 'Pages', path: '/pages' },
-                    { icon: '🔗', label: 'Linking', path: '/pages?tab=linking' },
-                    { icon: '📡', label: 'API Report', path: '/pages?tab=api' },
-                    { icon: '🧪', label: 'API IDE', path: '/api-ide' },
-                ] : []),
+            ]
+        }] : []),
+        ...(user?.role === 'System Admin' ? [{
+            label: 'SYSTEM ADMIN',
+            hideLabel: false,
+            items: [
+                { icon: '+', label: 'Add Page', path: '/pages' },
+                { icon: '📄', label: 'Pages', path: '/pages' },
+                { icon: '🔗', label: 'Linking', path: '/pages?tab=linking' },
+                { icon: '📡', label: 'API Report', path: '/pages?tab=api' },
+                { icon: '🧪', label: 'API IDE', path: '/api-ide' },
             ]
         }] : []),
     ];
@@ -98,21 +98,23 @@ export default function AppLayout({ children }) {
                 </div>
 
                 {/* Create button */}
-                <div style={{ padding: '12px 14px 8px' }}>
-                    <button
-                        onClick={() => router.push('/pages')}
-                        style={{
-                            width: '100%', padding: '9px 14px', background: '#1e293b',
-                            border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px',
-                            color: 'white', fontSize: '13px', fontWeight: '600', cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '8px', transition: 'background 0.15s'
-                        }}
-                        onMouseEnter={e => e.currentTarget.style.background = '#334155'}
-                        onMouseLeave={e => e.currentTarget.style.background = '#1e293b'}
-                    >
-                        <span style={{ fontSize: '16px', fontWeight: '300' }}>+</span> Create
-                    </button>
-                </div>
+                {user?.role !== 'Super Admin' && (
+                    <div style={{ padding: '12px 14px 8px' }}>
+                        <button
+                            onClick={() => router.push('/pages')}
+                            style={{
+                                width: '100%', padding: '9px 14px', background: '#1e293b',
+                                border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px',
+                                color: 'white', fontSize: '13px', fontWeight: '600', cursor: 'pointer',
+                                display: 'flex', alignItems: 'center', gap: '8px', transition: 'background 0.15s'
+                            }}
+                            onMouseEnter={e => e.currentTarget.style.background = '#334155'}
+                            onMouseLeave={e => e.currentTarget.style.background = '#1e293b'}
+                        >
+                            <span style={{ fontSize: '16px', fontWeight: '300' }}>+</span> Create
+                        </button>
+                    </div>
+                )}
 
                 {/* Nav Sections */}
                 <div style={{ flex: 1, overflowY: 'auto', padding: '4px 0', scrollbarWidth: 'none' }}>

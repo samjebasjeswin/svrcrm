@@ -1,22 +1,21 @@
 {
   "app": {
-<<<<<<< HEAD
-    "[project]/Desktop/crm demo/backend/src/app/data-entry/[pageId]/[entryId]/page": [
-=======
-    "[project]/src/app/api-ide/page": [
+    "[project]/Desktop/crm demo/backend/src/app/api-ide/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ],
-    "[project]/src/app/data-entry/[pageId]/[entryId]/page": [
->>>>>>> d4fd182759ebc17d92aae8180eeb50d3188f1bf6
+    "[project]/Desktop/crm demo/backend/src/app/data-entry/[pageId]/[entryId]/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ],
     "[project]/Desktop/crm demo/backend/src/app/data-entry/[pageId]/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ],
-    "[project]/Desktop/crm demo/backend/src/app/edit-page/[pageId]/page": [
+    "[project]/Desktop/crm demo/backend/src/app/entries/[pageId]/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ],
-    "[project]/Desktop/crm demo/backend/src/app/entries/[pageId]/page": [
+    "[project]/Desktop/crm demo/backend/src/app/login/page": [
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
+    ],
+    "[project]/Desktop/crm demo/backend/src/app/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ],
     "[project]/Desktop/crm demo/backend/src/app/pages/page": [
