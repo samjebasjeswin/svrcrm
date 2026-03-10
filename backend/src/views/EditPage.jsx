@@ -266,6 +266,7 @@ export default function EditPage() {
     const [staticSeoTimestamp, setStaticSeoTimestamp] = useState('');
     const [superAdminEnabled, setSuperAdminEnabled] = useState(true);
     const [activeSetter, setActiveSetter] = useState(null);
+    const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
 
     useEffect(() => {
         if (page) {
@@ -699,7 +700,13 @@ export default function EditPage() {
                                                 <p>Configure fields for this subsection</p>
                                             </div>
                                             <div className="fields-header-actions" style={{ display: 'flex', gap: '10px' }}>
-
+                                                <button
+                                                    className="btn btn-ghost btn-sm"
+                                                    style={{ border: '1.5px solid var(--border)', color: 'var(--text-secondary)' }}
+                                                    onClick={() => setIsRulesModalOpen(true)}
+                                                >
+                                                    Rule
+                                                </button>
                                                 <button className="btn btn-accent btn-sm" onClick={() => addField(heading.id, sub.id, setter)}>
                                                     + Add New Field
                                                 </button>
@@ -1187,6 +1194,79 @@ export default function EditPage() {
                     pages={allPages}
                     currentPageId={pageId}
                 />
+            )}
+            {/* Rules Modal */}
+            {isRulesModalOpen && (
+                <div className="modal-overlay animate-fade-in" style={{ zIndex: 9999 }}>
+                    <div className="modal-content" style={{ maxWidth: '800px', width: '90%', padding: '0', overflow: 'hidden', borderRadius: '16px' }}>
+                        <div style={{ padding: '24px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-secondary)' }}>
+                            <h2 style={{ margin: 0, fontSize: '20px', fontWeight: '800', color: 'var(--accent)' }}>System Features & Rules</h2>
+                            <button className="btn btn-ghost" onClick={() => setIsRulesModalOpen(false)} style={{ fontSize: '20px' }}>✕</button>
+                        </div>
+
+                        <div style={{ padding: '32px', maxHeight: '70vh', overflowY: 'auto' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' }}>
+
+                                <section>
+                                    <h3 style={{ fontSize: '16px', marginBottom: '16px', borderLeft: '4px solid var(--accent)', paddingLeft: '12px' }}>Field Types</h3>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                        <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px' }}>
+                                            <strong style={{ color: 'var(--accent)', display: 'block', marginBottom: '4px' }}>Text Fields</strong>
+                                            <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)' }}>Standard inputs. Includes <strong>Slug</strong> (URL handle) and <strong>Permalink</strong> (Full SEO path).</p>
+                                        </div>
+                                        <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px' }}>
+                                            <strong style={{ color: 'var(--accent)', display: 'block', marginBottom: '4px' }}>Link</strong>
+                                            <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)' }}>Connects to another page. Allows searching and selecting entries from other collections.</p>
+                                        </div>
+                                        <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px' }}>
+                                            <strong style={{ color: 'var(--accent)', display: 'block', marginBottom: '4px' }}>Rich Editor</strong>
+                                            <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)' }}>A full WYSIWYG editor for formatted content (Bold, Italic, Lists, etc.).</p>
+                                        </div>
+                                        <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px' }}>
+                                            <strong style={{ color: 'var(--accent)', display: 'block', marginBottom: '4px' }}>Grid</strong>
+                                            <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)' }}>Multi-column input. Perfect for tables or grouped data (e.g., Specs: Label + Value).</p>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section>
+                                    <h3 style={{ fontSize: '16px', marginBottom: '16px', borderLeft: '4px solid #10b981', paddingLeft: '12px' }}>Field Toggles</h3>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                        <div style={{ padding: '12px', background: '#f0fdf4', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                                            <strong style={{ color: '#059669', display: 'block', marginBottom: '4px' }}>REQUIRED</strong>
+                                            <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)' }}>Forces the user to provide a value before saving the entry.</p>
+                                        </div>
+                                        <div style={{ padding: '12px', background: '#f0fdf4', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                                            <strong style={{ color: '#059669', display: 'block', marginBottom: '4px' }}>INFINITE (Repeater)</strong>
+                                            <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)' }}>Allows the user to add multiple values for this field (e.g., list of features).</p>
+                                        </div>
+                                        <div style={{ padding: '12px', background: '#f0fdf4', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                                            <strong style={{ color: '#059669', display: 'block', marginBottom: '4px' }}>UNIQUE</strong>
+                                            <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)' }}>Prevents duplicate values across different entries in this page.</p>
+                                        </div>
+                                        <div style={{ padding: '12px', background: '#f0fdf4', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                                            <strong style={{ color: '#059669', display: 'block', marginBottom: '4px' }}>MAX</strong>
+                                            <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)' }}>Sets a character limit. UI will show a counter for these fields.</p>
+                                        </div>
+                                    </div>
+                                </section>
+
+                            </div>
+
+                            <div style={{ marginTop: '32px', padding: '20px', background: 'var(--accent)', borderRadius: '12px', color: 'white' }}>
+                                <h4 style={{ margin: '0 0 8px 0', fontSize: '15px' }}>Pro Tip: SEO Configuration</h4>
+                                <p style={{ margin: 0, fontSize: '13px', opacity: 0.9 }}>
+                                    Use the <strong>Static SEO</strong> and <strong>Dynamic SEO</strong> toggles at the top of the page to automatically add Meta Tag fields to your sections.
+                                    Link your Slugs and Permalinks for automated URL management.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div style={{ padding: '20px 32px', background: '#f8fafc', borderTop: '1px solid var(--border)', textAlign: 'right' }}>
+                            <button className="btn btn-accent" onClick={() => setIsRulesModalOpen(false)}>Got it!</button>
+                        </div>
+                    </div>
+                </div>
             )}
         </>
     );
