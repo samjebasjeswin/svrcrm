@@ -567,7 +567,7 @@ function EntriesList() {
     _s();
     const { pageId } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useParams"])();
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
-    const { getPage, getPageEntries, currentCompanyId, deleteEntry, inquiries, deleteInquiry, companies, getInboundLinks, getLinkedEntryDisplayValue } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$src$2f$context$2f$AppContext$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useApp"])();
+    const { getPage, getPageEntries, currentCompanyId, deleteEntry, inquiries, deleteInquiry, updateInquiryStatus, companies, getInboundLinks, getLinkedEntryDisplayValue } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$src$2f$context$2f$AppContext$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useApp"])();
     const [expandedInquiryId, setExpandedInquiryId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [searchQuery, setSearchQuery] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [viewEntryData, setViewEntryData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
@@ -681,12 +681,54 @@ function EntriesList() {
         currentCompanyId
     ]);
     const isFormPage = page?.name?.toLowerCase() === 'form';
+    // For form page, also grab entries from savedEntries (submitted via API) and normalize them
+    const formPageEntries = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
+        "EntriesList.useMemo[formPageEntries]": ()=>{
+            if (!isFormPage) return [];
+            return entries.map({
+                "EntriesList.useMemo[formPageEntries]": (entry)=>{
+                    // Try to extract values using field composite keys first, then fall back to plain keys
+                    let name = null, email = null, message = null;
+                    for (const h of page?.headings || []){
+                        for (const sh of h.subHeadings || []){
+                            for (const f of sh.fields || []){
+                                const compositeKey = `${h.id}_${sh.id}_${f.id}`;
+                                const val = entry.data?.[compositeKey];
+                                const label = f.label?.toLowerCase() || '';
+                                if (!name && (label.includes('full name') || label.includes('name'))) name = val;
+                                if (!email && label.includes('email')) email = val;
+                                if (!message && label.includes('message')) message = val;
+                            }
+                        }
+                    }
+                    // Also check for plain keys (from direct API submissions)
+                    if (!name) name = entry.data?.['Full Name'] || entry.data?.['full_name'] || entry.data?.name;
+                    if (!email) email = entry.data?.['Email Address'] || entry.data?.['email_address'] || entry.data?.email;
+                    if (!message) message = entry.data?.['Message'] || entry.data?.['message'];
+                    return {
+                        id: entry.id,
+                        name,
+                        email,
+                        message,
+                        submittedAt: entry.savedAt,
+                        status: 'New',
+                        type: 'contact',
+                        _isEntry: true
+                    };
+                }
+            }["EntriesList.useMemo[formPageEntries]"]);
+        }
+    }["EntriesList.useMemo[formPageEntries]"], [
+        isFormPage,
+        entries,
+        page
+    ]);
     if (!page) return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "dashboard-page",
         children: "Page not found"
     }, void 0, false, {
         fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-        lineNumber: 90,
+        lineNumber: 117,
         columnNumber: 23
     }, this);
     const handleDelete = (entryId)=>{
@@ -713,7 +755,7 @@ function EntriesList() {
                                 children: "← Back to Admin"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                lineNumber: 103,
+                                lineNumber: 130,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -723,7 +765,7 @@ function EntriesList() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                lineNumber: 106,
+                                lineNumber: 133,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -734,13 +776,13 @@ function EntriesList() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                lineNumber: 107,
+                                lineNumber: 134,
                                 columnNumber: 25
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                        lineNumber: 102,
+                        lineNumber: 129,
                         columnNumber: 21
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -755,7 +797,7 @@ function EntriesList() {
                                 children: "+"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                lineNumber: 113,
+                                lineNumber: 140,
                                 columnNumber: 25
                             }, this),
                             " Add New ",
@@ -763,13 +805,13 @@ function EntriesList() {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                        lineNumber: 109,
+                        lineNumber: 136,
                         columnNumber: 21
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                lineNumber: 101,
+                lineNumber: 128,
                 columnNumber: 17
             }, this),
             !isFormPage && page.searchEnabled && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -797,7 +839,7 @@ function EntriesList() {
                                 children: "🔍"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                lineNumber: 121,
+                                lineNumber: 148,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -818,7 +860,7 @@ function EntriesList() {
                                 onChange: (e)=>setSearchQuery(e.target.value)
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                lineNumber: 122,
+                                lineNumber: 149,
                                 columnNumber: 25
                             }, this),
                             searchQuery && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -838,13 +880,13 @@ function EntriesList() {
                                 children: "✕"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                lineNumber: 143,
+                                lineNumber: 170,
                                 columnNumber: 29
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                        lineNumber: 120,
+                        lineNumber: 147,
                         columnNumber: 21
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -863,13 +905,13 @@ function EntriesList() {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                        lineNumber: 162,
+                        lineNumber: 189,
                         columnNumber: 21
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                lineNumber: 119,
+                lineNumber: 146,
                 columnNumber: 17
             }, this),
             isFormPage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -882,7 +924,7 @@ function EntriesList() {
                 children: "← Back to Admin"
             }, void 0, false, {
                 fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                lineNumber: 169,
+                lineNumber: 196,
                 columnNumber: 17
             }, this),
             !isFormPage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -900,14 +942,14 @@ function EntriesList() {
                                         children: "SL NO."
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                        lineNumber: 180,
+                                        lineNumber: 207,
                                         columnNumber: 33
                                     }, this),
                                     tableColumns.map((col)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
                                             children: col.label
                                         }, col.id, false, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                            lineNumber: 182,
+                                            lineNumber: 209,
                                             columnNumber: 37
                                         }, this)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -917,18 +959,18 @@ function EntriesList() {
                                         children: "ACTIONS"
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                        lineNumber: 184,
+                                        lineNumber: 211,
                                         columnNumber: 33
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                lineNumber: 179,
+                                lineNumber: 206,
                                 columnNumber: 29
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                            lineNumber: 178,
+                            lineNumber: 205,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -942,7 +984,7 @@ function EntriesList() {
                                             children: idx + 1
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                            lineNumber: 190,
+                                            lineNumber: 217,
                                             columnNumber: 37
                                         }, this),
                                         tableColumns.map((col)=>{
@@ -951,7 +993,7 @@ function EntriesList() {
                                                 children: val || '—'
                                             }, col.id, false, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                lineNumber: 193,
+                                                lineNumber: 220,
                                                 columnNumber: 48
                                             }, this);
                                         }),
@@ -972,7 +1014,7 @@ function EntriesList() {
                                                         children: "👁️"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                        lineNumber: 197,
+                                                        lineNumber: 224,
                                                         columnNumber: 45
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1001,13 +1043,13 @@ function EntriesList() {
                                                                 children: entryLinksMap[entry.id].length
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                                lineNumber: 212,
+                                                                lineNumber: 239,
                                                                 columnNumber: 53
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                        lineNumber: 204,
+                                                        lineNumber: 231,
                                                         columnNumber: 45
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1017,7 +1059,7 @@ function EntriesList() {
                                                         children: "✏️"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                        lineNumber: 229,
+                                                        lineNumber: 256,
                                                         columnNumber: 45
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1027,24 +1069,24 @@ function EntriesList() {
                                                         children: "🗑️"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                        lineNumber: 236,
+                                                        lineNumber: 263,
                                                         columnNumber: 45
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                lineNumber: 196,
+                                                lineNumber: 223,
                                                 columnNumber: 41
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                            lineNumber: 195,
+                                            lineNumber: 222,
                                             columnNumber: 37
                                         }, this)
                                     ]
                                 }, entry.id || idx, true, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                    lineNumber: 189,
+                                    lineNumber: 216,
                                     columnNumber: 33
                                 }, this)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1057,403 +1099,414 @@ function EntriesList() {
                                     children: "No entries found."
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                    lineNumber: 248,
+                                    lineNumber: 275,
                                     columnNumber: 37
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                lineNumber: 247,
+                                lineNumber: 274,
                                 columnNumber: 33
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                            lineNumber: 187,
+                            lineNumber: 214,
                             columnNumber: 25
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                    lineNumber: 177,
+                    lineNumber: 204,
                     columnNumber: 21
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                lineNumber: 176,
+                lineNumber: 203,
                 columnNumber: 17
             }, this),
-            isFormPage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                style: {
-                    marginTop: '0'
-                },
-                children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "linking-header",
-                        style: {
-                            borderLeftColor: 'var(--primary)',
-                            marginBottom: '32px'
-                        },
-                        children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                                children: "Inquiries & Messages"
-                            }, void 0, false, {
-                                fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                lineNumber: 262,
-                                columnNumber: 25
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+            isFormPage && (()=>{
+                const allFormData = [
+                    ...filteredInquiries,
+                    ...formPageEntries.filter((fe)=>!filteredInquiries.some((fi)=>fi.id === fe.id))
+                ];
+                return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    style: {
+                        marginTop: '0'
+                    },
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "linking-header",
+                            style: {
+                                borderLeftColor: 'var(--primary)',
+                                marginBottom: '32px'
+                            },
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                    children: "Inquiries & Messages"
+                                }, void 0, false, {
+                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                    lineNumber: 295,
+                                    columnNumber: 29
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                    children: [
+                                        "Manage contact form submissions and product inquiries for ",
+                                        currentCompany?.name
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                    lineNumber: 296,
+                                    columnNumber: 29
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                            lineNumber: 294,
+                            columnNumber: 25
+                        }, this),
+                        allFormData && allFormData.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "table-container animate-fade-in-up",
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("table", {
+                                className: "premium-table",
                                 children: [
-                                    "Manage contact form submissions and product inquiries for ",
-                                    currentCompany?.name
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("thead", {
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                    style: {
+                                                        width: '60px'
+                                                    },
+                                                    children: "SL NO"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                    lineNumber: 304,
+                                                    columnNumber: 45
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                    children: "SENDER"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                    lineNumber: 305,
+                                                    columnNumber: 45
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                    children: "SUBJECT / TYPE"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                    lineNumber: 306,
+                                                    columnNumber: 45
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                    children: "SUBMITTED AT"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                    lineNumber: 307,
+                                                    columnNumber: 45
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                    children: "STATUS"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                    lineNumber: 308,
+                                                    columnNumber: 45
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                    style: {
+                                                        textAlign: 'right',
+                                                        width: '120px'
+                                                    },
+                                                    children: "ACTIONS"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                    lineNumber: 309,
+                                                    columnNumber: 45
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                            lineNumber: 303,
+                                            columnNumber: 41
+                                        }, this)
+                                    }, void 0, false, {
+                                        fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                        lineNumber: 302,
+                                        columnNumber: 37
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
+                                        children: allFormData.map((inquiry, idx)=>{
+                                            const status = inquiry.status || 'New';
+                                            return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                        children: idx + 1
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                        lineNumber: 317,
+                                                        columnNumber: 53
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                style: {
+                                                                    fontWeight: '700',
+                                                                    color: 'var(--text-primary)'
+                                                                },
+                                                                children: inquiry.type === 'product' ? inquiry.product || '—' : inquiry.name || inquiry.fullName || '—'
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                                lineNumber: 319,
+                                                                columnNumber: 57
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                style: {
+                                                                    fontSize: '12px',
+                                                                    color: 'var(--text-muted)'
+                                                                },
+                                                                children: inquiry.email || inquiry.contact_email || '—'
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                                lineNumber: 322,
+                                                                columnNumber: 57
+                                                            }, this)
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                        lineNumber: 318,
+                                                        columnNumber: 53
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                            style: {
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                gap: '8px'
+                                                            },
+                                                            children: [
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                                    style: {
+                                                                        padding: '2px 8px',
+                                                                        borderRadius: '4px',
+                                                                        fontSize: '10px',
+                                                                        fontWeight: '700',
+                                                                        textTransform: 'uppercase',
+                                                                        background: inquiry.type === 'product' ? 'rgba(236, 72, 153, 0.1)' : 'rgba(79, 70, 229, 0.1)',
+                                                                        color: inquiry.type === 'product' ? '#ec4899' : 'var(--primary)'
+                                                                    },
+                                                                    children: inquiry.type === 'product' ? 'Product' : 'Contact'
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                                    lineNumber: 328,
+                                                                    columnNumber: 61
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                                    style: {
+                                                                        fontWeight: '600',
+                                                                        fontSize: '13px'
+                                                                    },
+                                                                    children: inquiry.type === 'product' ? `Qty: ${inquiry.quantity || '—'}` : inquiry.message || 'No Message'
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                                    lineNumber: 339,
+                                                                    columnNumber: 61
+                                                                }, this)
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                            lineNumber: 327,
+                                                            columnNumber: 57
+                                                        }, this)
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                        lineNumber: 326,
+                                                        columnNumber: 53
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                        style: {
+                                                            fontSize: '13px',
+                                                            color: 'var(--text-secondary)'
+                                                        },
+                                                        children: inquiry.submittedAt
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                        lineNumber: 346,
+                                                        columnNumber: 53
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
+                                                            style: {
+                                                                padding: '4px 8px',
+                                                                borderRadius: '6px',
+                                                                fontSize: '12px',
+                                                                fontWeight: '700',
+                                                                border: '1px solid var(--border)',
+                                                                background: status === 'New' ? 'rgba(239, 68, 68, 0.05)' : status === 'Seen' ? 'rgba(245, 158, 11, 0.05)' : 'rgba(16, 185, 129, 0.05)',
+                                                                color: status === 'New' ? '#ef4444' : status === 'Seen' ? '#f59e0b' : '#10b981'
+                                                            },
+                                                            value: status,
+                                                            onChange: (e)=>{
+                                                                if (!inquiry._isEntry) updateInquiryStatus(inquiry.id, e.target.value);
+                                                            },
+                                                            children: [
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                                    value: "New",
+                                                                    children: "New"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                                    lineNumber: 363,
+                                                                    columnNumber: 61
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                                    value: "Seen",
+                                                                    children: "Seen"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                                    lineNumber: 364,
+                                                                    columnNumber: 61
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                                    value: "Closed",
+                                                                    children: "Closed"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                                    lineNumber: 365,
+                                                                    columnNumber: 61
+                                                                }, this)
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                            lineNumber: 348,
+                                                            columnNumber: 57
+                                                        }, this)
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                        lineNumber: 347,
+                                                        columnNumber: 53
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                        style: {
+                                                            textAlign: 'right'
+                                                        },
+                                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                            className: "table-actions",
+                                                            style: {
+                                                                justifyContent: 'flex-end',
+                                                                display: 'flex',
+                                                                gap: '8px'
+                                                            },
+                                                            children: [
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                                    className: "action-icon-btn",
+                                                                    title: "View Details",
+                                                                    onClick: ()=>inquiry._isEntry ? setViewEntryData(entries.find((e)=>e.id === inquiry.id)) : router.push(`/inquiry/${inquiry.id}`),
+                                                                    style: {
+                                                                        fontSize: '14px'
+                                                                    },
+                                                                    children: "👁️ View"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                                    lineNumber: 370,
+                                                                    columnNumber: 61
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                                    className: "action-icon-btn delete",
+                                                                    title: "Delete",
+                                                                    onClick: ()=>{
+                                                                        if (confirm('Delete inquiry?')) {
+                                                                            if (inquiry._isEntry) deleteEntry(pageId, inquiry.id);
+                                                                            else deleteInquiry(inquiry.id);
+                                                                        }
+                                                                    },
+                                                                    children: "🗑️"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                                    lineNumber: 381,
+                                                                    columnNumber: 61
+                                                                }, this)
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                            lineNumber: 369,
+                                                            columnNumber: 57
+                                                        }, this)
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                        lineNumber: 368,
+                                                        columnNumber: 53
+                                                    }, this)
+                                                ]
+                                            }, inquiry.id, true, {
+                                                fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                                lineNumber: 316,
+                                                columnNumber: 49
+                                            }, this);
+                                        })
+                                    }, void 0, false, {
+                                        fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                        lineNumber: 312,
+                                        columnNumber: 37
+                                    }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                lineNumber: 263,
-                                columnNumber: 25
+                                lineNumber: 301,
+                                columnNumber: 33
                             }, this)
-                        ]
-                    }, void 0, true, {
-                        fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                        lineNumber: 261,
-                        columnNumber: 21
-                    }, this),
-                    filteredInquiries && filteredInquiries.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "table-container animate-fade-in-up",
-                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("table", {
-                            className: "premium-table",
+                        }, void 0, false, {
+                            fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                            lineNumber: 300,
+                            columnNumber: 29
+                        }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            style: {
+                                textAlign: 'center',
+                                padding: '60px',
+                                background: '#f8fafc',
+                                borderRadius: '24px',
+                                border: '2px dashed var(--border)'
+                            },
                             children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("thead", {
-                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                style: {
-                                                    width: '60px'
-                                                },
-                                                children: "SL NO"
-                                            }, void 0, false, {
-                                                fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                lineNumber: 271,
-                                                columnNumber: 41
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                children: "SENDER"
-                                            }, void 0, false, {
-                                                fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                lineNumber: 272,
-                                                columnNumber: 41
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                children: "SUBJECT / TYPE"
-                                            }, void 0, false, {
-                                                fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                lineNumber: 273,
-                                                columnNumber: 41
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                children: "SUBMITTED AT"
-                                            }, void 0, false, {
-                                                fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                lineNumber: 274,
-                                                columnNumber: 41
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                children: "STATUS"
-                                            }, void 0, false, {
-                                                fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                lineNumber: 275,
-                                                columnNumber: 41
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                style: {
-                                                    textAlign: 'right',
-                                                    width: '120px'
-                                                },
-                                                children: "ACTIONS"
-                                            }, void 0, false, {
-                                                fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                lineNumber: 276,
-                                                columnNumber: 41
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                        lineNumber: 270,
-                                        columnNumber: 37
-                                    }, this)
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    style: {
+                                        fontSize: '40px',
+                                        marginBottom: '16px'
+                                    },
+                                    children: "📭"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                    lineNumber: 269,
+                                    lineNumber: 403,
                                     columnNumber: 33
                                 }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
-                                    children: filteredInquiries.map((inquiry, idx)=>{
-                                        const status = inquiry.status || 'New';
-                                        return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
-                                            children: [
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    children: idx + 1
-                                                }, void 0, false, {
-                                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                    lineNumber: 284,
-                                                    columnNumber: 49
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                            style: {
-                                                                fontWeight: '700',
-                                                                color: 'var(--text-primary)'
-                                                            },
-                                                            children: inquiry.type === 'product' ? inquiry.product || '—' : inquiry.name || inquiry.fullName || '—'
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                            lineNumber: 286,
-                                                            columnNumber: 53
-                                                        }, this),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                            style: {
-                                                                fontSize: '12px',
-                                                                color: 'var(--text-muted)'
-                                                            },
-                                                            children: inquiry.email || inquiry.contact_email || '—'
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                            lineNumber: 289,
-                                                            columnNumber: 53
-                                                        }, this)
-                                                    ]
-                                                }, void 0, true, {
-                                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                    lineNumber: 285,
-                                                    columnNumber: 49
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                        style: {
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            gap: '8px'
-                                                        },
-                                                        children: [
-                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                                style: {
-                                                                    padding: '2px 8px',
-                                                                    borderRadius: '4px',
-                                                                    fontSize: '10px',
-                                                                    fontWeight: '700',
-                                                                    textTransform: 'uppercase',
-                                                                    background: inquiry.type === 'product' ? 'rgba(236, 72, 153, 0.1)' : 'rgba(79, 70, 229, 0.1)',
-                                                                    color: inquiry.type === 'product' ? '#ec4899' : 'var(--primary)'
-                                                                },
-                                                                children: inquiry.type === 'product' ? 'Product' : 'Contact'
-                                                            }, void 0, false, {
-                                                                fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                                lineNumber: 295,
-                                                                columnNumber: 57
-                                                            }, this),
-                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                                style: {
-                                                                    fontWeight: '600',
-                                                                    fontSize: '13px'
-                                                                },
-                                                                children: inquiry.type === 'product' ? `Qty: ${inquiry.quantity || '—'}` : inquiry.message || 'No Message'
-                                                            }, void 0, false, {
-                                                                fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                                lineNumber: 306,
-                                                                columnNumber: 57
-                                                            }, this)
-                                                        ]
-                                                    }, void 0, true, {
-                                                        fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                        lineNumber: 294,
-                                                        columnNumber: 53
-                                                    }, this)
-                                                }, void 0, false, {
-                                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                    lineNumber: 293,
-                                                    columnNumber: 49
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    style: {
-                                                        fontSize: '13px',
-                                                        color: 'var(--text-secondary)'
-                                                    },
-                                                    children: inquiry.submittedAt
-                                                }, void 0, false, {
-                                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                    lineNumber: 313,
-                                                    columnNumber: 49
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
-                                                        style: {
-                                                            padding: '4px 8px',
-                                                            borderRadius: '6px',
-                                                            fontSize: '12px',
-                                                            fontWeight: '700',
-                                                            border: '1px solid var(--border)',
-                                                            background: status === 'New' ? 'rgba(239, 68, 68, 0.05)' : status === 'Seen' ? 'rgba(245, 158, 11, 0.05)' : 'rgba(16, 185, 129, 0.05)',
-                                                            color: status === 'New' ? '#ef4444' : status === 'Seen' ? '#f59e0b' : '#10b981'
-                                                        },
-                                                        value: status,
-                                                        onChange: (e)=>updateInquiryStatus(inquiry.id, e.target.value),
-                                                        children: [
-                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                                                value: "New",
-                                                                children: "New"
-                                                            }, void 0, false, {
-                                                                fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                                lineNumber: 328,
-                                                                columnNumber: 57
-                                                            }, this),
-                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                                                value: "Seen",
-                                                                children: "Seen"
-                                                            }, void 0, false, {
-                                                                fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                                lineNumber: 329,
-                                                                columnNumber: 57
-                                                            }, this),
-                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                                                value: "Closed",
-                                                                children: "Closed"
-                                                            }, void 0, false, {
-                                                                fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                                lineNumber: 330,
-                                                                columnNumber: 57
-                                                            }, this)
-                                                        ]
-                                                    }, void 0, true, {
-                                                        fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                        lineNumber: 315,
-                                                        columnNumber: 53
-                                                    }, this)
-                                                }, void 0, false, {
-                                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                    lineNumber: 314,
-                                                    columnNumber: 49
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    style: {
-                                                        textAlign: 'right'
-                                                    },
-                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                        className: "table-actions",
-                                                        style: {
-                                                            justifyContent: 'flex-end',
-                                                            display: 'flex',
-                                                            gap: '8px'
-                                                        },
-                                                        children: [
-                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                                                className: "action-icon-btn",
-                                                                title: "View Details",
-                                                                onClick: ()=>router.push(`/inquiry/${inquiry.id}`),
-                                                                style: {
-                                                                    fontSize: '14px'
-                                                                },
-                                                                children: "👁️ View"
-                                                            }, void 0, false, {
-                                                                fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                                lineNumber: 335,
-                                                                columnNumber: 57
-                                                            }, this),
-                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                                                className: "action-icon-btn delete",
-                                                                title: "Delete",
-                                                                onClick: ()=>{
-                                                                    if (confirm('Delete inquiry?')) deleteInquiry(inquiry.id);
-                                                                },
-                                                                children: "🗑️"
-                                                            }, void 0, false, {
-                                                                fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                                lineNumber: 343,
-                                                                columnNumber: 57
-                                                            }, this)
-                                                        ]
-                                                    }, void 0, true, {
-                                                        fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                        lineNumber: 334,
-                                                        columnNumber: 53
-                                                    }, this)
-                                                }, void 0, false, {
-                                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                    lineNumber: 333,
-                                                    columnNumber: 49
-                                                }, this)
-                                            ]
-                                        }, inquiry.id, true, {
-                                            fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                            lineNumber: 283,
-                                            columnNumber: 45
-                                        }, this);
-                                    })
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                    children: [
+                                        "No Inquiries & Messages for ",
+                                        currentCompany?.name
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                                    lineNumber: 404,
+                                    columnNumber: 33
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                    style: {
+                                        color: 'var(--text-muted)'
+                                    },
+                                    children: "Messages submitted via your public forms will appear here."
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                    lineNumber: 279,
+                                    lineNumber: 405,
                                     columnNumber: 33
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                            lineNumber: 268,
+                            lineNumber: 402,
                             columnNumber: 29
                         }, this)
-                    }, void 0, false, {
-                        fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                        lineNumber: 267,
-                        columnNumber: 25
-                    }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        style: {
-                            textAlign: 'center',
-                            padding: '60px',
-                            background: '#f8fafc',
-                            borderRadius: '24px',
-                            border: '2px dashed var(--border)'
-                        },
-                        children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                style: {
-                                    fontSize: '40px',
-                                    marginBottom: '16px'
-                                },
-                                children: "📭"
-                            }, void 0, false, {
-                                fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                lineNumber: 360,
-                                columnNumber: 29
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                                children: [
-                                    "No Inquiries & Messages for ",
-                                    currentCompany?.name
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                lineNumber: 361,
-                                columnNumber: 29
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                style: {
-                                    color: 'var(--text-muted)'
-                                },
-                                children: "Messages submitted via your public forms will appear here."
-                            }, void 0, false, {
-                                fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                lineNumber: 362,
-                                columnNumber: 29
-                            }, this)
-                        ]
-                    }, void 0, true, {
-                        fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                        lineNumber: 359,
-                        columnNumber: 25
-                    }, this)
-                ]
-            }, void 0, true, {
-                fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                lineNumber: 260,
-                columnNumber: 17
-            }, this),
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
+                    lineNumber: 293,
+                    columnNumber: 21
+                }, this);
+            })(),
             viewEntryData && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 style: {
                     position: 'fixed',
@@ -1509,12 +1562,12 @@ function EntriesList() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                        lineNumber: 383,
+                                        lineNumber: 427,
                                         columnNumber: 33
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                    lineNumber: 382,
+                                    lineNumber: 426,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1526,13 +1579,13 @@ function EntriesList() {
                                     children: "✕"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                    lineNumber: 385,
+                                    lineNumber: 429,
                                     columnNumber: 29
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                            lineNumber: 381,
+                            lineNumber: 425,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1561,7 +1614,7 @@ function EntriesList() {
                                             children: "General Information"
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                            lineNumber: 390,
+                                            lineNumber: 434,
                                             columnNumber: 33
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1580,7 +1633,7 @@ function EntriesList() {
                                                     children: "ID"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                    lineNumber: 394,
+                                                    lineNumber: 438,
                                                     columnNumber: 37
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1595,7 +1648,7 @@ function EntriesList() {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                    lineNumber: 395,
+                                                    lineNumber: 439,
                                                     columnNumber: 37
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1607,7 +1660,7 @@ function EntriesList() {
                                                     children: "Name"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                    lineNumber: 397,
+                                                    lineNumber: 441,
                                                     columnNumber: 37
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1619,19 +1672,19 @@ function EntriesList() {
                                                     children: getLinkedEntryDisplayValue(pageId, viewEntryData.id)
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                    lineNumber: 398,
+                                                    lineNumber: 442,
                                                     columnNumber: 37
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                            lineNumber: 393,
+                                            lineNumber: 437,
                                             columnNumber: 33
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                    lineNumber: 389,
+                                    lineNumber: 433,
                                     columnNumber: 29
                                 }, this),
                                 page?.headings?.map((heading)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1653,7 +1706,7 @@ function EntriesList() {
                                                 children: heading.title || 'Data Fields'
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                lineNumber: 404,
+                                                lineNumber: 448,
                                                 columnNumber: 37
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1684,7 +1737,7 @@ function EntriesList() {
                                                                             children: field.label
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                                            lineNumber: 417,
+                                                                            lineNumber: 461,
                                                                             columnNumber: 65
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1712,7 +1765,7 @@ function EntriesList() {
                                                                                             ]
                                                                                         }, void 0, true, {
                                                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                                                            lineNumber: 421,
+                                                                                            lineNumber: 465,
                                                                                             columnNumber: 77
                                                                                         }, this),
                                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1722,24 +1775,24 @@ function EntriesList() {
                                                                                             children: viewEntryData.data?.[`${key}_col${cIdx}`] || '—'
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                                                            lineNumber: 422,
+                                                                                            lineNumber: 466,
                                                                                             columnNumber: 77
                                                                                         }, this)
                                                                                     ]
                                                                                 }, cIdx, true, {
                                                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                                                    lineNumber: 420,
+                                                                                    lineNumber: 464,
                                                                                     columnNumber: 73
                                                                                 }, this))
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                                            lineNumber: 418,
+                                                                            lineNumber: 462,
                                                                             columnNumber: 65
                                                                         }, this)
                                                                     ]
                                                                 }, field.id, true, {
                                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                                    lineNumber: 416,
+                                                                    lineNumber: 460,
                                                                     columnNumber: 61
                                                                 }, this);
                                                             }
@@ -1759,7 +1812,7 @@ function EntriesList() {
                                                                         children: field.label
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                                        lineNumber: 432,
+                                                                        lineNumber: 476,
                                                                         columnNumber: 61
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1776,41 +1829,41 @@ function EntriesList() {
                                                                             children: getLinkedEntryDisplayValue(field.linkedPageId, val) || '—'
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                                            lineNumber: 435,
+                                                                            lineNumber: 479,
                                                                             columnNumber: 69
                                                                         }, this) : val || '—'
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                                        lineNumber: 433,
+                                                                        lineNumber: 477,
                                                                         columnNumber: 61
                                                                     }, this)
                                                                 ]
                                                             }, field.id, true, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                                lineNumber: 431,
+                                                                lineNumber: 475,
                                                                 columnNumber: 57
                                                             }, this);
                                                         })
                                                     }, sub.id, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                        lineNumber: 409,
+                                                        lineNumber: 453,
                                                         columnNumber: 45
                                                     }, this))
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                                lineNumber: 407,
+                                                lineNumber: 451,
                                                 columnNumber: 37
                                             }, this)
                                         ]
                                     }, heading.id, true, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                        lineNumber: 403,
+                                        lineNumber: 447,
                                         columnNumber: 33
                                     }, this))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                            lineNumber: 388,
+                            lineNumber: 432,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1829,7 +1882,7 @@ function EntriesList() {
                                     children: "Close"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                    lineNumber: 451,
+                                    lineNumber: 495,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1841,34 +1894,34 @@ function EntriesList() {
                                     children: "Edit Entry"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                                    lineNumber: 452,
+                                    lineNumber: 496,
                                     columnNumber: 29
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                            lineNumber: 450,
+                            lineNumber: 494,
                             columnNumber: 25
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                    lineNumber: 375,
+                    lineNumber: 419,
                     columnNumber: 21
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-                lineNumber: 370,
+                lineNumber: 414,
                 columnNumber: 17
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/Desktop/crm demo/backend/src/views/EntriesList.jsx",
-        lineNumber: 99,
+        lineNumber: 126,
         columnNumber: 9
     }, this);
 }
-_s(EntriesList, "Umg3/UD2d6iaBnKZC/UtKT9IKLA=", false, function() {
+_s(EntriesList, "gcDJ8Y9fqbNpx/gxfUBZ+D5/RM0=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useParams"],
         __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"],

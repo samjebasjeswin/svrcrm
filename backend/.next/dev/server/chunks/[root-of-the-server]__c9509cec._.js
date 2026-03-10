@@ -78,7 +78,14 @@ async function GET(request, { params }) {
         if (!stateRes.ok) throw new Error('Failed to fetch state');
         const state = await stateRes.json();
         const pages = state.pages[companyId] || [];
-        const selectedPage = pages.find((p)=>String(p.id) === String(pageId));
+        let selectedPage = pages.find((p)=>String(p.id) === String(pageId));
+        if (!selectedPage) {
+            selectedPage = pages.find((p)=>{
+                const lowerName = p.name?.toLowerCase() || '';
+                const queryStr = String(pageId).toLowerCase();
+                return lowerName === queryStr || lowerName.replace(/\s+/g, '-') === queryStr || lowerName === 'form' && queryStr === 'contact';
+            });
+        }
         if (!selectedPage) {
             console.error('Page not found:', companyId, pageId);
             return __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
@@ -94,7 +101,7 @@ async function GET(request, { params }) {
             });
         }
         const entriesMap = state.savedEntries || {};
-        const entries = entriesMap[`${companyId}_${pageId}`] || [];
+        const entries = entriesMap[`${companyId}_${selectedPage.id}`] || [];
         // extract available fields
         const availableFields = [];
         (selectedPage.headings || selectedPage.schema_json || []).forEach((h)=>{
@@ -177,7 +184,14 @@ async function POST(request, { params }) {
         if (!stateRes.ok) throw new Error('Failed to fetch state');
         const state = await stateRes.json();
         const pages = state.pages[companyId] || [];
-        const selectedPage = pages.find((p)=>String(p.id) === String(pageId));
+        let selectedPage = pages.find((p)=>String(p.id) === String(pageId));
+        if (!selectedPage) {
+            selectedPage = pages.find((p)=>{
+                const lowerName = p.name?.toLowerCase() || '';
+                const queryStr = String(pageId).toLowerCase();
+                return lowerName === queryStr || lowerName.replace(/\s+/g, '-') === queryStr || lowerName === 'form' && queryStr === 'contact';
+            });
+        }
         if (!selectedPage) {
             return __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
                 error: 'Page not found'
@@ -215,7 +229,7 @@ async function POST(request, { params }) {
             savedAt: new Date().toISOString()
         };
         // Append to state.savedEntries
-        const entriesKey = `${companyId}_${pageId}`;
+        const entriesKey = `${companyId}_${selectedPage.id}`;
         if (!state.savedEntries) state.savedEntries = {};
         if (!state.savedEntries[entriesKey]) state.savedEntries[entriesKey] = [];
         state.savedEntries[entriesKey].push(newEntry);
