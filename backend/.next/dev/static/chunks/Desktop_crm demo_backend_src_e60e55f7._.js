@@ -1000,6 +1000,80 @@ function DataEntry() {
     const [repeaterRows, setRepeaterRows] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({}); // { [fieldKey]: [rowId1, rowId2, ...] }
     const [searchQuery, setSearchQuery] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [viewEntryData, setViewEntryData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    // DnD State for Admin
+    const [draggedField, setDraggedField] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [dragTarget, setDragTarget] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    // Save field layout changes immediately to page config
+    const persistLayoutChange = (newHeadings)=>{
+        updatePage(page.id, {
+            ...page,
+            headings: newHeadings
+        });
+    };
+    const handleResizeField = (headingId, subId, fieldId, newSpan)=>{
+        const newHeadings = [
+            ...page.headings
+        ];
+        const h = newHeadings.find((h)=>h.id === headingId);
+        if (h) {
+            const sh = h.subHeadings.find((s)=>s.id === subId);
+            if (sh) {
+                const f = sh.fields.find((f)=>f.id === fieldId);
+                if (f) {
+                    f.span = newSpan;
+                    persistLayoutChange(newHeadings);
+                }
+            }
+        }
+    };
+    const handleDragStart = (e, headingId, subId, fieldId)=>{
+        setDraggedField({
+            headingId,
+            subId,
+            fieldId
+        });
+        e.dataTransfer.effectAllowed = 'move';
+        // Hack to hide HTML5 drag image outline
+        const el = e.target;
+        setTimeout(()=>{
+            el.style.opacity = '0.5';
+        }, 0);
+    };
+    const handleDragEnd = (e)=>{
+        e.target.style.opacity = '1';
+        setDraggedField(null);
+        setDragTarget(null);
+    };
+    const handleDragOver = (e, headingId, subId, fieldId)=>{
+        e.preventDefault();
+        if (draggedField && draggedField.headingId === headingId && draggedField.subId === subId) {
+            setDragTarget(fieldId);
+        }
+    };
+    const handleDrop = (e, headingId, subId, targetFieldId)=>{
+        e.preventDefault();
+        setDragTarget(null);
+        if (!draggedField || draggedField.headingId !== headingId || draggedField.subId !== subId) return;
+        if (draggedField.fieldId === targetFieldId) return;
+        const newHeadings = [
+            ...page.headings
+        ];
+        const h = newHeadings.find((h)=>h.id === headingId);
+        if (h) {
+            const sh = h.subHeadings.find((s)=>s.id === subId);
+            if (sh) {
+                const fields = [
+                    ...sh.fields
+                ];
+                const draggedIdx = fields.findIndex((f)=>f.id === draggedField.fieldId);
+                const targetIdx = fields.findIndex((f)=>f.id === targetFieldId);
+                const [movedField] = fields.splice(draggedIdx, 1);
+                fields.splice(targetIdx, 0, movedField);
+                sh.fields = fields;
+                persistLayoutChange(newHeadings);
+            }
+        }
+    };
     // Load entry for editing
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "DataEntry.useEffect": ()=>{
@@ -1104,7 +1178,7 @@ function DataEntry() {
                         children: "Page not found"
                     }, void 0, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                        lineNumber: 90,
+                        lineNumber: 160,
                         columnNumber: 21
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1116,18 +1190,18 @@ function DataEntry() {
                         children: "Back to Pages"
                     }, void 0, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                        lineNumber: 91,
+                        lineNumber: 161,
                         columnNumber: 21
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                lineNumber: 89,
+                lineNumber: 159,
                 columnNumber: 17
             }, this)
         }, void 0, false, {
             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-            lineNumber: 88,
+            lineNumber: 158,
             columnNumber: 13
         }, this);
     }
@@ -1286,7 +1360,7 @@ function DataEntry() {
                                         children: value ? selectedDisplay : `-- Select ${linkedPage?.name || 'item'} --`
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                        lineNumber: 245,
+                                        lineNumber: 315,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1296,13 +1370,13 @@ function DataEntry() {
                                         children: "▼"
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                        lineNumber: 248,
+                                        lineNumber: 318,
                                         columnNumber: 29
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                lineNumber: 230,
+                                lineNumber: 300,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1352,12 +1426,12 @@ function DataEntry() {
                                             }
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                            lineNumber: 257,
+                                            lineNumber: 327,
                                             columnNumber: 33
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                        lineNumber: 256,
+                                        lineNumber: 326,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1387,7 +1461,7 @@ function DataEntry() {
                                                 children: "-- Clear Selection --"
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                lineNumber: 275,
+                                                lineNumber: 345,
                                                 columnNumber: 33
                                             }, this),
                                             linkedEntries.map((entry)=>{
@@ -1415,26 +1489,26 @@ function DataEntry() {
                                                     children: displayVal
                                                 }, entry.id, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                    lineNumber: 292,
+                                                    lineNumber: 362,
                                                     columnNumber: 41
                                                 }, this);
                                             })
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                        lineNumber: 274,
+                                        lineNumber: 344,
                                         columnNumber: 29
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                lineNumber: 250,
+                                lineNumber: 320,
                                 columnNumber: 25
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                        lineNumber: 229,
+                        lineNumber: 299,
                         columnNumber: 21
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1452,7 +1526,7 @@ function DataEntry() {
                         children: "+"
                     }, void 0, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                        lineNumber: 319,
+                        lineNumber: 389,
                         columnNumber: 21
                     }, this),
                     linkedEntries.length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1470,19 +1544,19 @@ function DataEntry() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                lineNumber: 331,
+                                lineNumber: 401,
                                 columnNumber: 29
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                        lineNumber: 329,
+                        lineNumber: 399,
                         columnNumber: 25
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                lineNumber: 228,
+                lineNumber: 298,
                 columnNumber: 17
             }, this);
         }
@@ -1502,7 +1576,7 @@ function DataEntry() {
                             type: "number"
                         }, void 0, false, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 354,
+                            lineNumber: 424,
                             columnNumber: 25
                         }, this),
                         field.maxChars > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1514,13 +1588,13 @@ function DataEntry() {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 356,
+                            lineNumber: 426,
                             columnNumber: 29
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                    lineNumber: 353,
+                    lineNumber: 423,
                     columnNumber: 21
                 }, this);
             case 'Text':
@@ -1533,14 +1607,14 @@ function DataEntry() {
                             className: "data-entry-textarea"
                         }, void 0, false, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 364,
+                            lineNumber: 434,
                             columnNumber: 29
                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                             ...inputProps,
                             type: "text"
                         }, void 0, false, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 366,
+                            lineNumber: 436,
                             columnNumber: 29
                         }, this),
                         field.maxChars > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1552,13 +1626,13 @@ function DataEntry() {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 369,
+                            lineNumber: 439,
                             columnNumber: 29
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                    lineNumber: 362,
+                    lineNumber: 432,
                     columnNumber: 21
                 }, this);
             case 'Symbol':
@@ -1569,12 +1643,12 @@ function DataEntry() {
                         type: "text"
                     }, void 0, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                        lineNumber: 376,
+                        lineNumber: 446,
                         columnNumber: 25
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                    lineNumber: 375,
+                    lineNumber: 445,
                     columnNumber: 21
                 }, this);
             case 'Password':
@@ -1585,12 +1659,12 @@ function DataEntry() {
                         type: "password"
                     }, void 0, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                        lineNumber: 382,
+                        lineNumber: 452,
                         columnNumber: 25
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                    lineNumber: 381,
+                    lineNumber: 451,
                     columnNumber: 21
                 }, this);
             case 'Number & Text':
@@ -1603,7 +1677,7 @@ function DataEntry() {
                             placeholder: `Enter number & text for ${field.label}`
                         }, void 0, false, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 388,
+                            lineNumber: 458,
                             columnNumber: 25
                         }, this),
                         field.maxChars > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1615,13 +1689,13 @@ function DataEntry() {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 390,
+                            lineNumber: 460,
                             columnNumber: 29
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                    lineNumber: 387,
+                    lineNumber: 457,
                     columnNumber: 21
                 }, this);
             case 'Symbol & Text':
@@ -1634,7 +1708,7 @@ function DataEntry() {
                             placeholder: `Enter symbol & text for ${field.label}`
                         }, void 0, false, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 397,
+                            lineNumber: 467,
                             columnNumber: 25
                         }, this),
                         field.maxChars > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1646,13 +1720,13 @@ function DataEntry() {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 399,
+                            lineNumber: 469,
                             columnNumber: 29
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                    lineNumber: 396,
+                    lineNumber: 466,
                     columnNumber: 21
                 }, this);
             case 'Rich Editor':
@@ -1662,7 +1736,7 @@ function DataEntry() {
                     placeholder: field.label
                 }, void 0, false, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                    lineNumber: 405,
+                    lineNumber: 475,
                     columnNumber: 21
                 }, this);
             case '120 Char':
@@ -1677,7 +1751,7 @@ function DataEntry() {
                             placeholder: `Description (max 120 chars)...`
                         }, void 0, false, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 414,
+                            lineNumber: 484,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1688,13 +1762,13 @@ function DataEntry() {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 421,
+                            lineNumber: 491,
                             columnNumber: 25
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                    lineNumber: 413,
+                    lineNumber: 483,
                     columnNumber: 21
                 }, this);
             case '160 Char':
@@ -1709,7 +1783,7 @@ function DataEntry() {
                             placeholder: `Description (max 160 chars)...`
                         }, void 0, false, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 427,
+                            lineNumber: 497,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1720,13 +1794,13 @@ function DataEntry() {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 434,
+                            lineNumber: 504,
                             columnNumber: 25
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                    lineNumber: 426,
+                    lineNumber: 496,
                     columnNumber: 21
                 }, this);
             case 'Image':
@@ -1735,7 +1809,7 @@ function DataEntry() {
                     onChange: (val)=>handleChange(heading.id, sub.id, field.id, val, 0, rowIdx)
                 }, void 0, false, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                    lineNumber: 439,
+                    lineNumber: 509,
                     columnNumber: 21
                 }, this);
             case 'Slug':
@@ -1760,7 +1834,7 @@ function DataEntry() {
                             }
                         }, void 0, false, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 454,
+                            lineNumber: 524,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1775,13 +1849,13 @@ function DataEntry() {
                             children: slugSourceField ? `Linked to: ${slugSourceField.label}` : 'No source connected'
                         }, void 0, false, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 461,
+                            lineNumber: 531,
                             columnNumber: 25
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                    lineNumber: 453,
+                    lineNumber: 523,
                     columnNumber: 21
                 }, this);
             case 'Permalink':
@@ -1804,7 +1878,7 @@ function DataEntry() {
                             }
                         }, void 0, false, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 476,
+                            lineNumber: 546,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1819,13 +1893,13 @@ function DataEntry() {
                             children: permSourceField ? `Linked to: ${permSourceField.label} (Editable)` : 'No source connected'
                         }, void 0, false, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 485,
+                            lineNumber: 555,
                             columnNumber: 25
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                    lineNumber: 475,
+                    lineNumber: 545,
                     columnNumber: 21
                 }, this);
             case 'Grid':
@@ -1855,7 +1929,7 @@ function DataEntry() {
                                         children: col.label
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                        lineNumber: 504,
+                                        lineNumber: 574,
                                         columnNumber: 41
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1870,24 +1944,24 @@ function DataEntry() {
                                         placeholder: col.placeholder || `Enter ${col.label}...`
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                        lineNumber: 507,
+                                        lineNumber: 577,
                                         columnNumber: 41
                                     }, this)
                                 ]
                             }, cIdx, true, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                lineNumber: 503,
+                                lineNumber: 573,
                                 columnNumber: 37
                             }, this);
                         })
                     }, void 0, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                        lineNumber: 493,
+                        lineNumber: 563,
                         columnNumber: 25
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                    lineNumber: 492,
+                    lineNumber: 562,
                     columnNumber: 21
                 }, this);
             default:
@@ -1896,7 +1970,7 @@ function DataEntry() {
                     type: "text"
                 }, void 0, false, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                    lineNumber: 522,
+                    lineNumber: 592,
                     columnNumber: 24
                 }, this);
         }
@@ -2026,7 +2100,7 @@ function DataEntry() {
                                 children: "←"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                lineNumber: 645,
+                                lineNumber: 715,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2039,7 +2113,7 @@ function DataEntry() {
                                         children: page.name
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                        lineNumber: 649,
+                                        lineNumber: 719,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2047,7 +2121,7 @@ function DataEntry() {
                                         children: "›"
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                        lineNumber: 650,
+                                        lineNumber: 720,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2057,19 +2131,19 @@ function DataEntry() {
                                         children: isSettingsPage ? 'Manage' : entryId === 'new' ? 'New Entry' : 'Edit Entry'
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                        lineNumber: 651,
+                                        lineNumber: 721,
                                         columnNumber: 25
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                lineNumber: 648,
+                                lineNumber: 718,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                        lineNumber: 644,
+                        lineNumber: 714,
                         columnNumber: 17
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2080,18 +2154,18 @@ function DataEntry() {
                             children: "Back to List"
                         }, void 0, false, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 658,
+                            lineNumber: 728,
                             columnNumber: 25
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                        lineNumber: 656,
+                        lineNumber: 726,
                         columnNumber: 17
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                lineNumber: 643,
+                lineNumber: 713,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2125,18 +2199,18 @@ function DataEntry() {
                                                         children: sectionLabel
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                        lineNumber: 676,
+                                                        lineNumber: 746,
                                                         columnNumber: 58
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                lineNumber: 674,
+                                                lineNumber: 744,
                                                 columnNumber: 37
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                            lineNumber: 673,
+                                            lineNumber: 743,
                                             columnNumber: 33
                                         }, this),
                                         (heading.subHeadings || []).map((sub)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2148,12 +2222,12 @@ function DataEntry() {
                                                             children: sub.title
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                            lineNumber: 684,
+                                                            lineNumber: 754,
                                                             columnNumber: 49
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                        lineNumber: 683,
+                                                        lineNumber: 753,
                                                         columnNumber: 45
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2169,9 +2243,78 @@ function DataEntry() {
                                                                 return false;
                                                             }
                                                             return true;
-                                                        }).map((field)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                className: `data-entry-field-group ${field.maxChars > 120 ? 'span-full' : ''}`,
+                                                        }).map((field)=>{
+                                                            const isAdminEdit = user?.role === 'System Admin';
+                                                            const spanClass = field.span ? `col-span-${field.span}` : field.maxChars > 120 ? 'col-span-12' : 'col-span-6';
+                                                            return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                className: `data-entry-field-group ${spanClass} ${isAdminEdit ? 'admin-field-hover' : ''}`,
+                                                                style: {
+                                                                    borderTop: dragTarget === field.id && draggedField?.fieldId !== field.id ? '2px solid var(--accent)' : 'none',
+                                                                    padding: isAdminEdit ? '8px' : '0'
+                                                                },
+                                                                draggable: isAdminEdit,
+                                                                onDragStart: (e)=>isAdminEdit && handleDragStart(e, heading.id, sub.id, field.id),
+                                                                onDragEnd: isAdminEdit ? handleDragEnd : undefined,
+                                                                onDragOver: (e)=>isAdminEdit && handleDragOver(e, heading.id, sub.id, field.id),
+                                                                onDrop: (e)=>isAdminEdit && handleDrop(e, heading.id, sub.id, field.id),
                                                                 children: [
+                                                                    isAdminEdit && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+                                                                        children: [
+                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                                className: "field-drag-handle",
+                                                                                children: "≡ Drag"
+                                                                            }, void 0, false, {
+                                                                                fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
+                                                                                lineNumber: 788,
+                                                                                columnNumber: 69
+                                                                            }, this),
+                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                                className: "field-resize-controls",
+                                                                                children: [
+                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                                                        className: `field-resize-btn ${field.span === 3 ? 'active' : ''}`,
+                                                                                        onClick: ()=>handleResizeField(heading.id, sub.id, field.id, 3),
+                                                                                        children: "25%"
+                                                                                    }, void 0, false, {
+                                                                                        fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
+                                                                                        lineNumber: 790,
+                                                                                        columnNumber: 73
+                                                                                    }, this),
+                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                                                        className: `field-resize-btn ${field.span === 4 ? 'active' : ''}`,
+                                                                                        onClick: ()=>handleResizeField(heading.id, sub.id, field.id, 4),
+                                                                                        children: "33%"
+                                                                                    }, void 0, false, {
+                                                                                        fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
+                                                                                        lineNumber: 791,
+                                                                                        columnNumber: 73
+                                                                                    }, this),
+                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                                                        className: `field-resize-btn ${!field.span && field.maxChars <= 120 || field.span === 6 ? 'active' : ''}`,
+                                                                                        onClick: ()=>handleResizeField(heading.id, sub.id, field.id, 6),
+                                                                                        children: "50%"
+                                                                                    }, void 0, false, {
+                                                                                        fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
+                                                                                        lineNumber: 792,
+                                                                                        columnNumber: 73
+                                                                                    }, this),
+                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                                                        className: `field-resize-btn ${!field.span && field.maxChars > 120 || field.span === 12 ? 'active' : ''}`,
+                                                                                        onClick: ()=>handleResizeField(heading.id, sub.id, field.id, 12),
+                                                                                        children: "100%"
+                                                                                    }, void 0, false, {
+                                                                                        fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
+                                                                                        lineNumber: 793,
+                                                                                        columnNumber: 73
+                                                                                    }, this)
+                                                                                ]
+                                                                            }, void 0, true, {
+                                                                                fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
+                                                                                lineNumber: 789,
+                                                                                columnNumber: 69
+                                                                            }, this)
+                                                                        ]
+                                                                    }, void 0, true),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                                                         className: "data-entry-label",
                                                                         children: [
@@ -2181,30 +2324,30 @@ function DataEntry() {
                                                                                 children: "*"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                                                lineNumber: 705,
-                                                                                columnNumber: 80
+                                                                                lineNumber: 799,
+                                                                                columnNumber: 84
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                                 className: `data-entry-type-badge ${field.valueType === 'Link' ? 'badge-link' : ''}`,
                                                                                 children: field.valueType === 'Link' ? `🔗 ${getPage(field.linkedPageId)?.name || 'Link'}` : field.valueType
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                                                lineNumber: 706,
-                                                                                columnNumber: 61
+                                                                                lineNumber: 800,
+                                                                                columnNumber: 65
                                                                             }, this),
                                                                             field.infinity && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                                 className: "badge-infinity",
                                                                                 children: "∞ Infinity"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                                                lineNumber: 710,
-                                                                                columnNumber: 65
+                                                                                lineNumber: 804,
+                                                                                columnNumber: 69
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                                        lineNumber: 703,
-                                                                        columnNumber: 57
+                                                                        lineNumber: 797,
+                                                                        columnNumber: 61
                                                                     }, this),
                                                                     field.infinity || field.maxItems > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                         className: "repeater-container",
@@ -2219,8 +2362,8 @@ function DataEntry() {
                                                                                             children: renderFieldInput(heading, sub, field, idx)
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                                                            lineNumber: 718,
-                                                                                            columnNumber: 73
+                                                                                            lineNumber: 812,
+                                                                                            columnNumber: 77
                                                                                         }, this),
                                                                                         field.infinity && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                                                             className: "repeater-delete-btn",
@@ -2228,14 +2371,14 @@ function DataEntry() {
                                                                                             children: "✕"
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                                                            lineNumber: 722,
-                                                                                            columnNumber: 77
+                                                                                            lineNumber: 816,
+                                                                                            columnNumber: 81
                                                                                         }, this)
                                                                                     ]
                                                                                 }, rowId, true, {
                                                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                                                    lineNumber: 717,
-                                                                                    columnNumber: 69
+                                                                                    lineNumber: 811,
+                                                                                    columnNumber: 73
                                                                                 }, this)),
                                                                             field.infinity && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                                                 className: "repeater-add-btn",
@@ -2252,36 +2395,37 @@ function DataEntry() {
                                                                                 ]
                                                                             }, void 0, true, {
                                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                                                lineNumber: 732,
-                                                                                columnNumber: 69
+                                                                                lineNumber: 826,
+                                                                                columnNumber: 73
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                                        lineNumber: 715,
-                                                                        columnNumber: 61
+                                                                        lineNumber: 809,
+                                                                        columnNumber: 65
                                                                     }, this) : renderFieldInput(heading, sub, field)
                                                                 ]
                                                             }, field.id, true, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                                lineNumber: 699,
-                                                                columnNumber: 53
-                                                            }, this))
+                                                                lineNumber: 773,
+                                                                columnNumber: 57
+                                                            }, this);
+                                                        })
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                        lineNumber: 688,
+                                                        lineNumber: 758,
                                                         columnNumber: 41
                                                     }, this)
                                                 ]
                                             }, sub.id, true, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                lineNumber: 681,
+                                                lineNumber: 751,
                                                 columnNumber: 37
                                             }, this))
                                     ]
                                 }, heading.id, true, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                    lineNumber: 672,
+                                    lineNumber: 742,
                                     columnNumber: 29
                                 }, this);
                             return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -2299,14 +2443,14 @@ function DataEntry() {
                                     children: "No structure configured"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                    lineNumber: 769,
+                                    lineNumber: 864,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                     children: "Go to Edit Page to set up headings and fields first."
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                    lineNumber: 770,
+                                    lineNumber: 865,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2315,13 +2459,13 @@ function DataEntry() {
                                     children: "Edit Page Structure"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                    lineNumber: 771,
+                                    lineNumber: 866,
                                     columnNumber: 29
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 768,
+                            lineNumber: 863,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2333,7 +2477,7 @@ function DataEntry() {
                                     children: "Clear"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                    lineNumber: 779,
+                                    lineNumber: 874,
                                     columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2345,24 +2489,24 @@ function DataEntry() {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                    lineNumber: 782,
+                                    lineNumber: 877,
                                     columnNumber: 25
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 778,
+                            lineNumber: 873,
                             columnNumber: 21
                         }, this)
                     ]
                 }, refreshKey, true, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                    lineNumber: 668,
+                    lineNumber: 738,
                     columnNumber: 17
                 }, this)
             }, refreshKey, false, {
                 fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                lineNumber: 666,
+                lineNumber: 736,
                 columnNumber: 13
             }, this),
             viewEntryData && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2414,7 +2558,7 @@ function DataEntry() {
                                     children: "Entry Details"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                    lineNumber: 804,
+                                    lineNumber: 899,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2423,13 +2567,13 @@ function DataEntry() {
                                     children: "✕"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                    lineNumber: 805,
+                                    lineNumber: 900,
                                     columnNumber: 29
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 803,
+                            lineNumber: 898,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2454,7 +2598,7 @@ function DataEntry() {
                                             children: h.title
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                            lineNumber: 810,
+                                            lineNumber: 905,
                                             columnNumber: 37
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2487,7 +2631,7 @@ function DataEntry() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                                    lineNumber: 819,
+                                                                    lineNumber: 914,
                                                                     columnNumber: 61
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2499,35 +2643,35 @@ function DataEntry() {
                                                                     children: val || '—'
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                                    lineNumber: 820,
+                                                                    lineNumber: 915,
                                                                     columnNumber: 61
                                                                 }, this)
                                                             ]
                                                         }, f.id, true, {
                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                            lineNumber: 818,
+                                                            lineNumber: 913,
                                                             columnNumber: 57
                                                         }, this);
                                                     })
                                                 }, sh.id, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                                    lineNumber: 813,
+                                                    lineNumber: 908,
                                                     columnNumber: 45
                                                 }, this))
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                            lineNumber: 811,
+                                            lineNumber: 906,
                                             columnNumber: 37
                                         }, this)
                                     ]
                                 }, h.id, true, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                    lineNumber: 809,
+                                    lineNumber: 904,
                                     columnNumber: 33
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 807,
+                            lineNumber: 902,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2545,29 +2689,29 @@ function DataEntry() {
                                 children: "Close"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                                lineNumber: 831,
+                                lineNumber: 926,
                                 columnNumber: 29
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                            lineNumber: 830,
+                            lineNumber: 925,
                             columnNumber: 25
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                    lineNumber: 798,
+                    lineNumber: 893,
                     columnNumber: 21
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/Desktop/crm demo/backend/src/views/DataEntry.jsx",
-                lineNumber: 793,
+                lineNumber: 888,
                 columnNumber: 17
             }, this)
         ]
     }, void 0, true);
 }
-_s(DataEntry, "JKbxknjf175fgGeoRuj+laNe7lM=", false, function() {
+_s(DataEntry, "R1X1kl+VJq/o1zzAe1jJ4v0mtAE=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useParams"],
         __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"],

@@ -22,6 +22,76 @@ export default function DataEntry() {
     const [searchQuery, setSearchQuery] = useState('');
     const [viewEntryData, setViewEntryData] = useState(null);
 
+    // DnD State for Admin
+    const [draggedField, setDraggedField] = useState(null);
+    const [dragTarget, setDragTarget] = useState(null);
+
+    // Save field layout changes immediately to page config
+    const persistLayoutChange = (newHeadings) => {
+        updatePage(page.id, { ...page, headings: newHeadings });
+    };
+
+    const handleResizeField = (headingId, subId, fieldId, newSpan) => {
+        const newHeadings = [...page.headings];
+        const h = newHeadings.find(h => h.id === headingId);
+        if (h) {
+            const sh = h.subHeadings.find(s => s.id === subId);
+            if (sh) {
+                const f = sh.fields.find(f => f.id === fieldId);
+                if (f) {
+                    f.span = newSpan;
+                    persistLayoutChange(newHeadings);
+                }
+            }
+        }
+    };
+
+    const handleDragStart = (e, headingId, subId, fieldId) => {
+        setDraggedField({ headingId, subId, fieldId });
+        e.dataTransfer.effectAllowed = 'move';
+        // Hack to hide HTML5 drag image outline
+        const el = e.target;
+        setTimeout(() => { el.style.opacity = '0.5'; }, 0);
+    };
+
+    const handleDragEnd = (e) => {
+        e.target.style.opacity = '1';
+        setDraggedField(null);
+        setDragTarget(null);
+    };
+
+    const handleDragOver = (e, headingId, subId, fieldId) => {
+        e.preventDefault();
+        if (draggedField && draggedField.headingId === headingId && draggedField.subId === subId) {
+            setDragTarget(fieldId);
+        }
+    };
+
+    const handleDrop = (e, headingId, subId, targetFieldId) => {
+        e.preventDefault();
+        setDragTarget(null);
+
+        if (!draggedField || draggedField.headingId !== headingId || draggedField.subId !== subId) return;
+        if (draggedField.fieldId === targetFieldId) return;
+
+        const newHeadings = [...page.headings];
+        const h = newHeadings.find(h => h.id === headingId);
+        if (h) {
+            const sh = h.subHeadings.find(s => s.id === subId);
+            if (sh) {
+                const fields = [...sh.fields];
+                const draggedIdx = fields.findIndex(f => f.id === draggedField.fieldId);
+                const targetIdx = fields.findIndex(f => f.id === targetFieldId);
+
+                const [movedField] = fields.splice(draggedIdx, 1);
+                fields.splice(targetIdx, 0, movedField);
+
+                sh.fields = fields;
+                persistLayoutChange(newHeadings);
+            }
+        }
+    };
+
     // Load entry for editing
     useEffect(() => {
         if (!isNew && page) {
@@ -695,55 +765,80 @@ export default function DataEntry() {
                                                     }
                                                     return true;
                                                 })
-                                                .map((field) => (
-                                                    <div
-                                                        key={field.id}
-                                                        className={`data-entry-field-group ${field.maxChars > 120 ? 'span-full' : ''}`}
-                                                    >
-                                                        <label className="data-entry-label">
-                                                            {field.label || 'Untitled Field'}
-                                                            {field.required && <span className="required">*</span>}
-                                                            <span className={`data-entry-type-badge ${field.valueType === 'Link' ? 'badge-link' : ''}`}>
-                                                                {field.valueType === 'Link' ? `🔗 ${getPage(field.linkedPageId)?.name || 'Link'}` : field.valueType}
-                                                            </span>
-                                                            {field.infinity && (
-                                                                <span className="badge-infinity">∞ Infinity</span>
-                                                            )}
-                                                        </label>
+                                                .map((field) => {
+                                                    const isAdminEdit = user?.role === 'System Admin';
+                                                    const spanClass = field.span ? `col-span-${field.span}` : (field.maxChars > 120 ? 'col-span-12' : 'col-span-6');
 
-                                                        {(field.infinity || field.maxItems > 0) ? (
-                                                            <div className="repeater-container">
-                                                                {(repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [0]).map((rowId, idx) => (
-                                                                    <div key={rowId} className="repeater-row animate-fade-in-up">
-                                                                        <div className="repeater-row-content">
-                                                                            {renderFieldInput(heading, sub, field, idx)}
-                                                                        </div>
-                                                                        {field.infinity && (
-                                                                            <button
-                                                                                className="repeater-delete-btn"
-                                                                                onClick={() => removeRepeaterRow(getFieldKey(heading.id, sub.id, field.id), rowId)}
-                                                                            >
-                                                                                ✕
-                                                                            </button>
-                                                                        )}
+                                                    return (
+                                                        <div
+                                                            key={field.id}
+                                                            className={`data-entry-field-group ${spanClass} ${isAdminEdit ? 'admin-field-hover' : ''}`}
+                                                            style={{
+                                                                borderTop: dragTarget === field.id && draggedField?.fieldId !== field.id ? '2px solid var(--accent)' : 'none',
+                                                                padding: isAdminEdit ? '8px' : '0'
+                                                            }}
+                                                            draggable={isAdminEdit}
+                                                            onDragStart={(e) => isAdminEdit && handleDragStart(e, heading.id, sub.id, field.id)}
+                                                            onDragEnd={isAdminEdit ? handleDragEnd : undefined}
+                                                            onDragOver={(e) => isAdminEdit && handleDragOver(e, heading.id, sub.id, field.id)}
+                                                            onDrop={(e) => isAdminEdit && handleDrop(e, heading.id, sub.id, field.id)}
+                                                        >
+                                                            {isAdminEdit && (
+                                                                <>
+                                                                    <div className="field-drag-handle">≡ Drag</div>
+                                                                    <div className="field-resize-controls">
+                                                                        <button className={`field-resize-btn ${field.span === 3 ? 'active' : ''}`} onClick={() => handleResizeField(heading.id, sub.id, field.id, 3)}>25%</button>
+                                                                        <button className={`field-resize-btn ${field.span === 4 ? 'active' : ''}`} onClick={() => handleResizeField(heading.id, sub.id, field.id, 4)}>33%</button>
+                                                                        <button className={`field-resize-btn ${(!field.span && field.maxChars <= 120) || field.span === 6 ? 'active' : ''}`} onClick={() => handleResizeField(heading.id, sub.id, field.id, 6)}>50%</button>
+                                                                        <button className={`field-resize-btn ${(!field.span && field.maxChars > 120) || field.span === 12 ? 'active' : ''}`} onClick={() => handleResizeField(heading.id, sub.id, field.id, 12)}>100%</button>
                                                                     </div>
-                                                                ))}
+                                                                </>
+                                                            )}
+                                                            <label className="data-entry-label">
+                                                                {field.label || 'Untitled Field'}
+                                                                {field.required && <span className="required">*</span>}
+                                                                <span className={`data-entry-type-badge ${field.valueType === 'Link' ? 'badge-link' : ''}`}>
+                                                                    {field.valueType === 'Link' ? `🔗 ${getPage(field.linkedPageId)?.name || 'Link'}` : field.valueType}
+                                                                </span>
                                                                 {field.infinity && (
-                                                                    <button
-                                                                        className="repeater-add-btn"
-                                                                        onClick={() => addRepeaterRow(getFieldKey(heading.id, sub.id, field.id), field.maxItems)}
-                                                                        disabled={field.maxItems > 0 && (repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [0]).length >= field.maxItems}
-                                                                        style={{ marginTop: '8px' }}
-                                                                    >
-                                                                        + Add {field.label || 'Row'}
-                                                                    </button>
+                                                                    <span className="badge-infinity">∞ Infinity</span>
                                                                 )}
-                                                            </div>
-                                                        ) : (
-                                                            renderFieldInput(heading, sub, field)
-                                                        )}
-                                                    </div>
-                                                ))}
+                                                            </label>
+
+                                                            {(field.infinity || field.maxItems > 0) ? (
+                                                                <div className="repeater-container">
+                                                                    {(repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [0]).map((rowId, idx) => (
+                                                                        <div key={rowId} className="repeater-row animate-fade-in-up">
+                                                                            <div className="repeater-row-content">
+                                                                                {renderFieldInput(heading, sub, field, idx)}
+                                                                            </div>
+                                                                            {field.infinity && (
+                                                                                <button
+                                                                                    className="repeater-delete-btn"
+                                                                                    onClick={() => removeRepeaterRow(getFieldKey(heading.id, sub.id, field.id), rowId)}
+                                                                                >
+                                                                                    ✕
+                                                                                </button>
+                                                                            )}
+                                                                        </div>
+                                                                    ))}
+                                                                    {field.infinity && (
+                                                                        <button
+                                                                            className="repeater-add-btn"
+                                                                            onClick={() => addRepeaterRow(getFieldKey(heading.id, sub.id, field.id), field.maxItems)}
+                                                                            disabled={field.maxItems > 0 && (repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [0]).length >= field.maxItems}
+                                                                            style={{ marginTop: '8px' }}
+                                                                        >
+                                                                            + Add {field.label || 'Row'}
+                                                                        </button>
+                                                                    )}
+                                                                </div>
+                                                            ) : (
+                                                                renderFieldInput(heading, sub, field)
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })}
                                         </div>
                                     </div>
                                 ))}

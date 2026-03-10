@@ -991,26 +991,96 @@ body {
 }
 
 .data-entry-fields-grid {
-  flex-wrap: wrap;
+  grid-template-columns: repeat(12, 1fr);
   gap: 20px;
-  display: flex;
-}
-
-.data-entry-field-group {
-  flex-direction: column;
-  flex: 250px;
-  gap: 6px;
-  display: flex;
-}
-
-.data-entry-fields-grid .span-full {
-  grid-column: 1 / -1;
+  display: grid;
 }
 
 .data-entry-field-group {
   flex-direction: column;
   gap: 6px;
+  transition: box-shadow .2s, background .2s;
   display: flex;
+  position: relative;
+}
+
+.col-span-3 {
+  grid-column: span 3 / span 3;
+}
+
+.col-span-4 {
+  grid-column: span 4 / span 4;
+}
+
+.col-span-6 {
+  grid-column: span 6 / span 6;
+}
+
+.col-span-12 {
+  grid-column: span 12 / span 12;
+}
+
+.admin-field-hover {
+  border-radius: var(--radius-sm);
+}
+
+.admin-field-hover:hover {
+  box-shadow: 0 0 0 1px var(--accent);
+  background: var(--bg);
+}
+
+.field-drag-handle {
+  background: var(--accent);
+  color: #fff;
+  cursor: grab;
+  opacity: 0;
+  z-index: 10;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 10px;
+  transition: opacity .2s;
+  position: absolute;
+  top: -8px;
+  left: 0;
+}
+
+.field-resize-controls {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  opacity: 0;
+  z-index: 10;
+  border-radius: 4px;
+  gap: 2px;
+  padding: 2px;
+  transition: opacity .2s;
+  display: flex;
+  position: absolute;
+  top: -8px;
+  right: 0;
+}
+
+.admin-field-hover:hover .field-drag-handle, .admin-field-hover:hover .field-resize-controls {
+  opacity: 1;
+}
+
+.field-resize-btn {
+  cursor: pointer;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  border-radius: 2px;
+  padding: 2px 4px;
+  font-size: 10px;
+}
+
+.field-resize-btn:hover {
+  background: var(--bg);
+  color: var(--text-primary);
+}
+
+.field-resize-btn.active {
+  background: var(--accent);
+  color: #fff;
 }
 
 .data-entry-label {
