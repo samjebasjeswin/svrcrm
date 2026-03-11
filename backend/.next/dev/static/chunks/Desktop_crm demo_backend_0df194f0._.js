@@ -1139,6 +1139,7 @@ function AppProvider({ children }) {
                                 if (!entry || !entry.data) return;
                                 linkFields.forEach({
                                     "AppProvider.useCallback[getInboundLinks]": (lf)=>{
+                                        // Check base key
                                         if (String(entry.data[lf.compositeKey] || "") === targetIdStr) {
                                             inboundLinks.push({
                                                 sourcePageId: page.id,
@@ -1146,6 +1147,20 @@ function AppProvider({ children }) {
                                                 sourceEntryId: entry.id,
                                                 sourceEntryLabel: getLinkedEntryDisplayValue(page.id, entry.id)
                                             });
+                                        } else {
+                                            // Check for row-based keys (infinity/maxItems)
+                                            Object.keys(entry.data).forEach({
+                                                "AppProvider.useCallback[getInboundLinks]": (dataKey)=>{
+                                                    if (dataKey.startsWith(`${lf.compositeKey}_row`) && String(entry.data[dataKey] || "") === targetIdStr) {
+                                                        inboundLinks.push({
+                                                            sourcePageId: page.id,
+                                                            sourcePageName: page.name,
+                                                            sourceEntryId: entry.id,
+                                                            sourceEntryLabel: getLinkedEntryDisplayValue(page.id, entry.id)
+                                                        });
+                                                    }
+                                                }
+                                            }["AppProvider.useCallback[getInboundLinks]"]);
                                         }
                                     }
                                 }["AppProvider.useCallback[getInboundLinks]"]);
@@ -1220,7 +1235,9 @@ function AppProvider({ children }) {
                     linkedPageId: link.sourcePageId,
                     displayFieldName: link.sourceFieldName,
                     linkId: link.id,
-                    required: false
+                    required: false,
+                    infinity: link.infinity || false,
+                    maxItems: link.maxItems || 0
                 });
             });
             updatePage(targetPageId, {
@@ -1301,7 +1318,7 @@ function AppProvider({ children }) {
                         }
                     }, void 0, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/context/AppContext.jsx",
-                        lineNumber: 782,
+                        lineNumber: 797,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1311,18 +1328,18 @@ function AppProvider({ children }) {
                         children: "Loading CRM..."
                     }, void 0, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/context/AppContext.jsx",
-                        lineNumber: 783,
+                        lineNumber: 798,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Desktop/crm demo/backend/src/context/AppContext.jsx",
-                lineNumber: 781,
+                lineNumber: 796,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/Desktop/crm demo/backend/src/context/AppContext.jsx",
-            lineNumber: 780,
+            lineNumber: 795,
             columnNumber: 7
         }, this);
     }
@@ -1544,7 +1561,7 @@ function AppProvider({ children }) {
         children: children
     }, void 0, false, {
         fileName: "[project]/Desktop/crm demo/backend/src/context/AppContext.jsx",
-        lineNumber: 790,
+        lineNumber: 805,
         columnNumber: 5
     }, this);
 }
