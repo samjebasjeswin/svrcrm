@@ -46,10 +46,12 @@ export default function Dashboard() {
                     Good morning, {user?.username || 'Super'}
                 </h1>
                 <p style={{ color: '#64748b', fontSize: '14px', fontWeight: '500' }}>
-
                     Here's what's happening with {currentCompany?.name} today
                 </p>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '32px' }}>
+            </header>
+
+            {/* Stats Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '32px' }}>
                 {stats.map((stat, i) => (
                     <div key={i} className="card" style={{
                         padding: '24px', background: 'white',
@@ -62,8 +64,6 @@ export default function Dashboard() {
                                 {stat.label}
                             </p>
                             <h2 style={{ fontSize: '28px', fontWeight: '800', color: '#0f172a', margin: 0 }}>
-
->>>>>>> fba02d5433fa6eb0ae88588defbb8e19b2efbefd
                                 {stat.value}
                             </h2>
                         </div>
@@ -74,8 +74,8 @@ export default function Dashboard() {
                             color: stat.iconColor
                         }}>
                             {stat.icon}
-
                         </div>
+
                     </div>
                 ))}
             </div>
