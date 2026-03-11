@@ -7,7 +7,15 @@ export default function EditMappingHierarchy() {
     const params = useParams();
     const mappingId = params.mappingId || params.id;
     const router = useRouter();
-    const { fieldMappings, getPageEntries, getPage, updateFieldMapping, getLinkedEntryDisplayValue, currentCompanyId } = useApp();
+    const {
+        fieldMappings,
+        getPageEntries,
+        getPage,
+        updateFieldMapping,
+        getLinkedEntryDisplayValue,
+        getInboundLinks,
+        currentCompanyId
+    } = useApp();
 
     const mapping = fieldMappings.find(m => m.id === Number(mappingId) && m.companyId === currentCompanyId);
     const [hierarchy, setHierarchy] = useState({});
@@ -320,6 +328,18 @@ export default function EditMappingHierarchy() {
                                                 <span className="checkmark"></span>
                                             </label>
                                             <strong>{getEntryName(entry)}</strong>
+                                            {mapping.productPageId && (
+                                                <div className="connected-items">
+                                                    {getInboundLinks(mapping.targetPageId, entry.id)
+                                                        .filter(l => l.sourcePageId === mapping.productPageId)
+                                                        .map((link, idx) => (
+                                                            <span key={idx} className="link-badge">
+                                                                🔗 {getLinkedEntryDisplayValue(mapping.productPageId, link.sourceEntryId, mapping.productDisplayFieldName) || link.sourceEntryLabel || 'Item'}
+                                                            </span>
+                                                        ))
+                                                    }
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="entry-controls">
                                             <div className="form-group">
@@ -578,6 +598,23 @@ export default function EditMappingHierarchy() {
                 .entries-config-list {
                     max-height: 70vh;
                     overflow-y: auto;
+                }
+                .link-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 4px;
+                    padding: 2px 8px;
+                    background: #f0fdf4;
+                    color: #166534;
+                    border: 1px solid #bbf7d0;
+                    border-radius: 99px;
+                    font-size: 11px;
+                    margin-top: 4px;
+                }
+                .connected-items {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 6px;
                 }
             `}</style>
         </div>

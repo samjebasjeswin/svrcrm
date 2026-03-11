@@ -34,7 +34,7 @@ export default function DataEntry() {
         updatePage(page.id, { ...page, headings: newHeadings });
     };
 
-    const handleResizeField = (headingId, subId, fieldId, newSpan, newHeight) => {
+    const handleResizeField = (headingId, subId, fieldId, newWidth, newHeight) => {
         const newHeadings = [...page.headings];
         const h = newHeadings.find(h => h.id === headingId);
         if (h) {
@@ -43,7 +43,7 @@ export default function DataEntry() {
                 const f = sh.fields.find(f => f.id === fieldId);
                 if (f) {
                     let changed = false;
-                    if (newSpan && f.span !== newSpan) { f.span = newSpan; changed = true; }
+                    if (newWidth && f.widthPercent !== newWidth) { f.widthPercent = newWidth; changed = true; }
                     if (newHeight && f.height !== newHeight) { f.height = newHeight; changed = true; }
                     if (changed) persistLayoutChange(newHeadings);
                 }
@@ -51,7 +51,7 @@ export default function DataEntry() {
         }
     };
 
-    const handleResizeStart = (e, headingId, subId, fieldId, currentSpan, currentHeight) => {
+    const handleResizeStart = (e, headingId, subId, fieldId, currentWidth, currentHeight) => {
         e.preventDefault();
         e.stopPropagation();
 
@@ -59,45 +59,48 @@ export default function DataEntry() {
         const fieldEl = document.getElementById(`field-group-${fieldId}`);
         if (!gridEl || !fieldEl) return;
 
-        const gridWidth = gridEl.getBoundingClientRect().width;
-        const colWidth = gridWidth / 12;
-        const startFieldHeight = fieldEl.getBoundingClientRect().height;
+        const gridRect = gridEl.getBoundingClientRect();
+        const fieldRect = fieldEl.getBoundingClientRect();
 
         setResizingField({
             headingId, subId, fieldId,
             startX: e.clientX,
             startY: e.clientY,
-            startSpan: currentSpan || 6,
-            startHeight: currentHeight || Math.round(startFieldHeight)
+            startWidth: fieldRect.width,
+            startHeight: fieldRect.height,
+            gridWidth: gridRect.width
         });
 
         const handleMouseMove = (moveEv) => {
             setResizingField(prev => {
                 if (!prev) return null;
 
-                // Width: calculate span from X movement
+                // Width: calculate percentage based on pixels moved
                 const dx = moveEv.clientX - prev.startX;
-                const spanDiff = Math.round(dx / colWidth);
-                let newSpan = prev.startSpan + spanDiff;
-                if (newSpan < 3) newSpan = 3;
-                if (newSpan > 12) newSpan = 12;
+                let newWidthPx = prev.startWidth + dx;
 
-                // Height: calculate from Y movement, snap to 20px increments, min 60px
+                // Convert to percentage of container (minus some gap compensation if needed, but simple is usually better)
+                let widthPercent = (newWidthPx / prev.gridWidth) * 100;
+
+                // Clamping
+                if (widthPercent < 20) widthPercent = 20;
+                if (widthPercent > 100) widthPercent = 100;
+
+                // Height: fluid pixels
                 const dy = moveEv.clientY - prev.startY;
                 let newHeight = prev.startHeight + dy;
-                newHeight = Math.round(newHeight / 20) * 20; // snap to 20px
                 if (newHeight < 60) newHeight = 60;
                 if (newHeight > 800) newHeight = 800;
 
-                // Live DOM preview for speed
+                // Live DOM preview
                 const el = document.getElementById(`field-group-${fieldId}`);
                 if (el) {
-                    el.className = el.className.replace(/col-span-\d+/g, '');
-                    el.classList.add(`col-span-${newSpan}`);
+                    el.style.width = `calc(${widthPercent}% - 20px)`; // Account for gap
+                    el.style.flexBasis = `calc(${widthPercent}% - 20px)`;
                     el.style.height = `${newHeight}px`;
                 }
 
-                return { ...prev, previewSpan: newSpan, previewHeight: newHeight };
+                return { ...prev, previewWidth: widthPercent, previewHeight: newHeight };
             });
         };
 
@@ -106,12 +109,15 @@ export default function DataEntry() {
                 if (prev) {
                     handleResizeField(
                         prev.headingId, prev.subId, prev.fieldId,
-                        prev.previewSpan || prev.startSpan,
-                        prev.previewHeight || prev.startHeight
+                        prev.previewWidth,
+                        prev.previewHeight
                     );
-                    // Clean up inline height so React takes back over
                     const el = document.getElementById(`field-group-${fieldId}`);
-                    if (el) el.style.height = '';
+                    if (el) {
+                        el.style.width = '';
+                        el.style.flexBasis = '';
+                        el.style.height = '';
+                    }
                 }
                 return null;
             });
@@ -844,16 +850,18 @@ export default function DataEntry() {
                                                 })
                                                 .map((field) => {
                                                     const isAdminEdit = user?.role === 'System Admin';
-                                                    const spanClass = field.span ? `col-span-${field.span}` : (field.maxChars > 120 ? 'col-span-12' : 'col-span-6');
+                                                    const wp = field.widthPercent || (field.maxChars > 120 ? 100 : 50);
 
                                                     return (
                                                         <div
                                                             id={`field-group-${field.id}`}
                                                             key={field.id}
-                                                            className={`data-entry-field-group ${spanClass} ${isAdminEdit ? 'admin-field-hover' : ''}`}
+                                                            className={`data-entry-field-group ${isAdminEdit ? 'admin-field-hover' : ''}`}
                                                             style={{
                                                                 borderTop: dragTarget === field.id && draggedField?.fieldId !== field.id ? '2px solid var(--accent)' : 'none',
                                                                 padding: isAdminEdit ? '8px' : '0',
+                                                                width: `calc(${wp}% - 20px)`,
+                                                                flexBasis: `calc(${wp}% - 20px)`,
                                                                 height: field.height ? `${field.height}px` : 'auto',
                                                                 overflow: field.height ? 'hidden' : undefined
                                                             }}
@@ -868,7 +876,7 @@ export default function DataEntry() {
                                                                     <div className="field-drag-handle">≡ Drag</div>
                                                                     <div
                                                                         className="field-drag-resizer"
-                                                                        onMouseDown={(e) => handleResizeStart(e, heading.id, sub.id, field.id, field.span || (field.maxChars > 120 ? 12 : 6), field.height)}
+                                                                        onMouseDown={(e) => handleResizeStart(e, heading.id, sub.id, field.id, field.widthPercent, field.height)}
                                                                     />
                                                                 </>
                                                             )}
