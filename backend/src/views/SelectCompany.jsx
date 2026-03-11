@@ -8,18 +8,7 @@ export default function SelectCompany() {
 
     const handleSelectCompany = (id) => {
         selectCompany(id);
-        if (user?.role === 'System Admin') {
-            router.push('/pages');
-        } else {
-            // For Super Admin or others, land on first hub page if available
-            const companyPages = pages[id] || [];
-            if (companyPages.length > 0) {
-                router.push(`/data-entry/${companyPages[0].id}`);
-            } else {
-                // If no pages, go to pages manager anyway to create one
-                router.push('/pages');
-            }
-        }
+        router.push('/dashboard');
     };
 
     return (
