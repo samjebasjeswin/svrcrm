@@ -1,4 +1,3 @@
 {
-  "/edit-hierarchy/[id]/page": "app/edit-hierarchy/[id]/page.js",
   "/pages/page": "app/pages/page.js"
 }
