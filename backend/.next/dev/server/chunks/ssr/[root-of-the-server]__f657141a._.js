@@ -653,6 +653,8 @@ function PagesManager() {
     // Mapping local state
     const [mappingTargetPageId, setMappingTargetPageId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
     const [mappingTargetFieldId, setMappingTargetFieldId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
+    const [mappingProductPageId, setMappingProductPageId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
+    const [mappingProductFieldName, setMappingProductFieldName] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
     const [mappingLabel, setMappingLabel] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
     const [editingMappingId, setEditingMappingId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [editMappingLabel, setEditMappingLabel] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
@@ -684,10 +686,14 @@ function PagesManager() {
                 targetPageId: Number(mappingTargetPageId),
                 targetPageName: targetPage.name,
                 targetFieldId: Number(mappingTargetFieldId),
-                targetFieldName: targetField.label
+                targetFieldName: targetField.label,
+                productPageId: mappingProductPageId ? Number(mappingProductPageId) : null,
+                productDisplayFieldName: mappingProductFieldName || ''
             });
             setMappingTargetPageId('');
             setMappingTargetFieldId('');
+            setMappingProductPageId('');
+            setMappingProductFieldName('');
             setMappingLabel('');
             alert('Mapping added successfully!');
         }
@@ -786,7 +792,7 @@ function PagesManager() {
                                 children: "System Admin"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                lineNumber: 217,
+                                lineNumber: 223,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -796,13 +802,13 @@ function PagesManager() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                lineNumber: 218,
+                                lineNumber: 224,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                        lineNumber: 216,
+                        lineNumber: 222,
                         columnNumber: 17
                     }, this),
                     activeTab === 'pages' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -811,13 +817,13 @@ function PagesManager() {
                         children: "+ Add Page"
                     }, void 0, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                        lineNumber: 221,
+                        lineNumber: 227,
                         columnNumber: 21
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                lineNumber: 215,
+                lineNumber: 221,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -847,12 +853,12 @@ function PagesManager() {
                         children: tab.label
                     }, tab.key, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                        lineNumber: 230,
+                        lineNumber: 236,
                         columnNumber: 21
                     }, this))
             }, void 0, false, {
                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                lineNumber: 228,
+                lineNumber: 234,
                 columnNumber: 13
             }, this),
             activeTab === 'pages' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -898,7 +904,7 @@ function PagesManager() {
                                                     children: "📄"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                    lineNumber: 257,
+                                                    lineNumber: 263,
                                                     columnNumber: 45
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -911,7 +917,7 @@ function PagesManager() {
                                                     children: page.name
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                    lineNumber: 258,
+                                                    lineNumber: 264,
                                                     columnNumber: 45
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -927,18 +933,18 @@ function PagesManager() {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                    lineNumber: 259,
+                                                    lineNumber: 265,
                                                     columnNumber: 45
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                            lineNumber: 256,
+                                            lineNumber: 262,
                                             columnNumber: 41
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                        lineNumber: 255,
+                                        lineNumber: 261,
                                         columnNumber: 37
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -957,7 +963,7 @@ function PagesManager() {
                                                 children: "View"
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 265,
+                                                lineNumber: 271,
                                                 columnNumber: 41
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -966,7 +972,7 @@ function PagesManager() {
                                                 children: "Edit"
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 266,
+                                                lineNumber: 272,
                                                 columnNumber: 41
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -975,19 +981,19 @@ function PagesManager() {
                                                 children: "Delete"
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 267,
+                                                lineNumber: 273,
                                                 columnNumber: 41
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                        lineNumber: 264,
+                                        lineNumber: 270,
                                         columnNumber: 37
                                     }, this)
                                 ]
                             }, page.id, true, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                lineNumber: 254,
+                                lineNumber: 260,
                                 columnNumber: 33
                             }, this);
                         }),
@@ -1012,7 +1018,7 @@ function PagesManager() {
                                     children: "+"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                    lineNumber: 273,
+                                    lineNumber: 279,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1023,24 +1029,24 @@ function PagesManager() {
                                     children: "Add Page"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                    lineNumber: 274,
+                                    lineNumber: 280,
                                     columnNumber: 29
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                            lineNumber: 272,
+                            lineNumber: 278,
                             columnNumber: 25
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                    lineNumber: 250,
+                    lineNumber: 256,
                     columnNumber: 21
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                lineNumber: 249,
+                lineNumber: 255,
                 columnNumber: 17
             }, this),
             activeTab === 'linking' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1053,20 +1059,20 @@ function PagesManager() {
                                 children: "Linking"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                lineNumber: 284,
+                                lineNumber: 290,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 children: "Connect your pages together by creating relational fields"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                lineNumber: 285,
+                                lineNumber: 291,
                                 columnNumber: 25
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                        lineNumber: 283,
+                        lineNumber: 289,
                         columnNumber: 21
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1084,13 +1090,13 @@ function PagesManager() {
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 289,
+                                                lineNumber: 295,
                                                 columnNumber: 71
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                        lineNumber: 289,
+                                        lineNumber: 295,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1102,7 +1108,7 @@ function PagesManager() {
                                         children: "The page that will receive the linked fields."
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                        lineNumber: 290,
+                                        lineNumber: 296,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1120,7 +1126,7 @@ function PagesManager() {
                                                 children: "Select target page..."
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 292,
+                                                lineNumber: 298,
                                                 columnNumber: 33
                                             }, this),
                                             pages.map((p)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1128,19 +1134,19 @@ function PagesManager() {
                                                     children: p.name
                                                 }, p.id, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                    lineNumber: 293,
+                                                    lineNumber: 299,
                                                     columnNumber: 49
                                                 }, this))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                        lineNumber: 291,
+                                        lineNumber: 297,
                                         columnNumber: 29
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                lineNumber: 288,
+                                lineNumber: 294,
                                 columnNumber: 25
                             }, this),
                             linkTargetPageId && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1163,7 +1169,7 @@ function PagesManager() {
                                                         children: "Source Page to Link"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 300,
+                                                        lineNumber: 306,
                                                         columnNumber: 41
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1176,7 +1182,7 @@ function PagesManager() {
                                                                 children: "Select source page..."
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                lineNumber: 302,
+                                                                lineNumber: 308,
                                                                 columnNumber: 45
                                                             }, this),
                                                             pages.filter((p)=>p.id !== Number(linkTargetPageId)).map((p)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1184,19 +1190,19 @@ function PagesManager() {
                                                                     children: p.name
                                                                 }, p.id, false, {
                                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                    lineNumber: 303,
+                                                                    lineNumber: 309,
                                                                     columnNumber: 108
                                                                 }, this))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 301,
+                                                        lineNumber: 307,
                                                         columnNumber: 41
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 299,
+                                                lineNumber: 305,
                                                 columnNumber: 37
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1207,7 +1213,7 @@ function PagesManager() {
                                                         children: "Label Field (Display Name)"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 307,
+                                                        lineNumber: 313,
                                                         columnNumber: 41
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1221,7 +1227,7 @@ function PagesManager() {
                                                                 children: "Select display field..."
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                lineNumber: 309,
+                                                                lineNumber: 315,
                                                                 columnNumber: 45
                                                             }, this),
                                                             getAvailableFields(linkSourcePageId).map((f)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1229,19 +1235,19 @@ function PagesManager() {
                                                                     children: f.label
                                                                 }, f.id, false, {
                                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                    lineNumber: 310,
+                                                                    lineNumber: 316,
                                                                     columnNumber: 92
                                                                 }, this))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 308,
+                                                        lineNumber: 314,
                                                         columnNumber: 41
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 306,
+                                                lineNumber: 312,
                                                 columnNumber: 37
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1252,7 +1258,7 @@ function PagesManager() {
                                                         children: "Display Name (Custom Label)"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 314,
+                                                        lineNumber: 320,
                                                         columnNumber: 41
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1264,13 +1270,13 @@ function PagesManager() {
                                                         disabled: !linkSourcePageId
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 315,
+                                                        lineNumber: 321,
                                                         columnNumber: 41
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 313,
+                                                lineNumber: 319,
                                                 columnNumber: 37
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1288,7 +1294,7 @@ function PagesManager() {
                                                         children: editingLinkId ? 'Update Link' : '+ Add Source'
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 318,
+                                                        lineNumber: 324,
                                                         columnNumber: 41
                                                     }, this),
                                                     editingLinkId && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1303,19 +1309,19 @@ function PagesManager() {
                                                         children: "Cancel"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 326,
+                                                        lineNumber: 332,
                                                         columnNumber: 45
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 317,
+                                                lineNumber: 323,
                                                 columnNumber: 37
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                        lineNumber: 298,
+                                        lineNumber: 304,
                                         columnNumber: 33
                                     }, this),
                                     !editingLinkId && selectedSources.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1332,7 +1338,7 @@ function PagesManager() {
                                                 children: "Sources to be linked:"
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 343,
+                                                lineNumber: 349,
                                                 columnNumber: 41
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1368,7 +1374,7 @@ function PagesManager() {
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                        lineNumber: 348,
+                                                                        lineNumber: 354,
                                                                         columnNumber: 57
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1385,13 +1391,13 @@ function PagesManager() {
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                        lineNumber: 349,
+                                                                        lineNumber: 355,
                                                                         columnNumber: 57
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                lineNumber: 347,
+                                                                lineNumber: 353,
                                                                 columnNumber: 53
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1407,24 +1413,24 @@ function PagesManager() {
                                                                 children: "✕"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                lineNumber: 351,
+                                                                lineNumber: 357,
                                                                 columnNumber: 53
                                                             }, this)
                                                         ]
                                                     }, s.id, true, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 346,
+                                                        lineNumber: 352,
                                                         columnNumber: 49
                                                     }, this))
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 344,
+                                                lineNumber: 350,
                                                 columnNumber: 41
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                        lineNumber: 342,
+                                        lineNumber: 348,
                                         columnNumber: 37
                                     }, this),
                                     !editingLinkId && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1454,13 +1460,13 @@ function PagesManager() {
                                                                 children: "Optional"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                lineNumber: 360,
+                                                                lineNumber: 366,
                                                                 columnNumber: 129
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 360,
+                                                        lineNumber: 366,
                                                         columnNumber: 45
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1474,13 +1480,13 @@ function PagesManager() {
                                                         placeholder: "e.g. Pricing, Technical Specs..."
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 361,
+                                                        lineNumber: 367,
                                                         columnNumber: 45
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 359,
+                                                lineNumber: 365,
                                                 columnNumber: 41
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1493,7 +1499,7 @@ function PagesManager() {
                                                 children: editingGroupLinks ? '✏️ Update Group' : '🔗 Apply Links'
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 363,
+                                                lineNumber: 369,
                                                 columnNumber: 41
                                             }, this),
                                             editingGroupLinks && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1513,25 +1519,25 @@ function PagesManager() {
                                                 children: "Cancel"
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 367,
+                                                lineNumber: 373,
                                                 columnNumber: 45
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                        lineNumber: 358,
+                                        lineNumber: 364,
                                         columnNumber: 37
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                lineNumber: 297,
+                                lineNumber: 303,
                                 columnNumber: 29
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                        lineNumber: 287,
+                        lineNumber: 293,
                         columnNumber: 21
                     }, this),
                     pageLinks.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1543,12 +1549,12 @@ function PagesManager() {
                                     children: "Relationship Map"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                    lineNumber: 390,
+                                    lineNumber: 396,
                                     columnNumber: 62
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                lineNumber: 390,
+                                lineNumber: 396,
                                 columnNumber: 29
                             }, this),
                             Object.entries(pageLinks.reduce((acc, link)=>{
@@ -1603,7 +1609,7 @@ function PagesManager() {
                                                         children: "Target Page"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 432,
+                                                        lineNumber: 438,
                                                         columnNumber: 49
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -1611,18 +1617,18 @@ function PagesManager() {
                                                         children: targetPage.name
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 433,
+                                                        lineNumber: 439,
                                                         columnNumber: 49
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 431,
+                                                lineNumber: 437,
                                                 columnNumber: 45
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                            lineNumber: 430,
+                                            lineNumber: 436,
                                             columnNumber: 41
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1648,7 +1654,7 @@ function PagesManager() {
                                                                                 children: "📦"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                                lineNumber: 444,
+                                                                                lineNumber: 450,
                                                                                 columnNumber: 65
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1658,7 +1664,7 @@ function PagesManager() {
                                                                                         children: group.label || `Linked Set`
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                                        lineNumber: 446,
+                                                                                        lineNumber: 452,
                                                                                         columnNumber: 69
                                                                                     }, this),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1670,19 +1676,19 @@ function PagesManager() {
                                                                                         ]
                                                                                     }, void 0, true, {
                                                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                                        lineNumber: 449,
+                                                                                        lineNumber: 455,
                                                                                         columnNumber: 69
                                                                                     }, this)
                                                                                 ]
                                                                             }, void 0, true, {
                                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                                lineNumber: 445,
+                                                                                lineNumber: 451,
                                                                                 columnNumber: 65
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                        lineNumber: 443,
+                                                                        lineNumber: 449,
                                                                         columnNumber: 61
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1690,7 +1696,7 @@ function PagesManager() {
                                                                         children: group.links.length
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                        lineNumber: 455,
+                                                                        lineNumber: 461,
                                                                         columnNumber: 61
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1705,13 +1711,13 @@ function PagesManager() {
                                                                         children: "Edit"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                        lineNumber: 456,
+                                                                        lineNumber: 462,
                                                                         columnNumber: 61
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                lineNumber: 442,
+                                                                lineNumber: 448,
                                                                 columnNumber: 57
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1736,7 +1742,7 @@ function PagesManager() {
                                                                                         children: "📄"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                                        lineNumber: 470,
+                                                                                        lineNumber: 476,
                                                                                         columnNumber: 77
                                                                                     }, this),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1753,7 +1759,7 @@ function PagesManager() {
                                                                                                 children: link.linkName
                                                                                             }, void 0, false, {
                                                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                                                lineNumber: 472,
+                                                                                                lineNumber: 478,
                                                                                                 columnNumber: 81
                                                                                             }, this),
                                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1769,19 +1775,19 @@ function PagesManager() {
                                                                                                 ]
                                                                                             }, void 0, true, {
                                                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                                                lineNumber: 473,
+                                                                                                lineNumber: 479,
                                                                                                 columnNumber: 81
                                                                                             }, this)
                                                                                         ]
                                                                                     }, void 0, true, {
                                                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                                        lineNumber: 471,
+                                                                                        lineNumber: 477,
                                                                                         columnNumber: 77
                                                                                     }, this)
                                                                                 ]
                                                                             }, void 0, true, {
                                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                                lineNumber: 469,
+                                                                                lineNumber: 475,
                                                                                 columnNumber: 73
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1801,7 +1807,7 @@ function PagesManager() {
                                                                                         children: "Edit"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                                        lineNumber: 479,
+                                                                                        lineNumber: 485,
                                                                                         columnNumber: 77
                                                                                     }, this),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1818,31 +1824,31 @@ function PagesManager() {
                                                                                         children: "✕"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                                        lineNumber: 486,
+                                                                                        lineNumber: 492,
                                                                                         columnNumber: 77
                                                                                     }, this)
                                                                                 ]
                                                                             }, void 0, true, {
                                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                                lineNumber: 478,
+                                                                                lineNumber: 484,
                                                                                 columnNumber: 73
                                                                             }, this)
                                                                         ]
                                                                     }, link.id, true, {
                                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                        lineNumber: 468,
+                                                                        lineNumber: 474,
                                                                         columnNumber: 69
                                                                     }, this);
                                                                 })
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                lineNumber: 464,
+                                                                lineNumber: 470,
                                                                 columnNumber: 57
                                                             }, this)
                                                         ]
                                                     }, `grp-${gIdx}`, true, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 441,
+                                                        lineNumber: 447,
                                                         columnNumber: 53
                                                     }, this);
                                                 }),
@@ -1876,7 +1882,7 @@ function PagesManager() {
                                                                             children: "📄"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                            lineNumber: 511,
+                                                                            lineNumber: 517,
                                                                             columnNumber: 65
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1893,7 +1899,7 @@ function PagesManager() {
                                                                                     children: link.linkName
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                                    lineNumber: 513,
+                                                                                    lineNumber: 519,
                                                                                     columnNumber: 69
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1910,19 +1916,19 @@ function PagesManager() {
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                                    lineNumber: 514,
+                                                                                    lineNumber: 520,
                                                                                     columnNumber: 69
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                            lineNumber: 512,
+                                                                            lineNumber: 518,
                                                                             columnNumber: 65
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                    lineNumber: 510,
+                                                                    lineNumber: 516,
                                                                     columnNumber: 61
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1942,7 +1948,7 @@ function PagesManager() {
                                                                             children: "Edit"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                            lineNumber: 520,
+                                                                            lineNumber: 526,
                                                                             columnNumber: 65
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1958,50 +1964,50 @@ function PagesManager() {
                                                                             children: "✕"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                            lineNumber: 527,
+                                                                            lineNumber: 533,
                                                                             columnNumber: 65
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                    lineNumber: 519,
+                                                                    lineNumber: 525,
                                                                     columnNumber: 61
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                            lineNumber: 509,
+                                                            lineNumber: 515,
                                                             columnNumber: 57
                                                         }, this)
                                                     }, link.id, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 508,
+                                                        lineNumber: 514,
                                                         columnNumber: 53
                                                     }, this);
                                                 })
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                            lineNumber: 436,
+                                            lineNumber: 442,
                                             columnNumber: 41
                                         }, this)
                                     ]
                                 }, targetId, true, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                    lineNumber: 429,
+                                    lineNumber: 435,
                                     columnNumber: 37
                                 }, this);
                             })
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                        lineNumber: 389,
+                        lineNumber: 395,
                         columnNumber: 25
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                lineNumber: 282,
+                lineNumber: 288,
                 columnNumber: 17
             }, this),
             activeTab === 'mapping' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2017,20 +2023,20 @@ function PagesManager() {
                                 children: "Mapping"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                lineNumber: 554,
+                                lineNumber: 560,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 children: "Configure specialized data mappings for hierarchy and visualization"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                lineNumber: 555,
+                                lineNumber: 561,
                                 columnNumber: 25
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                        lineNumber: 553,
+                        lineNumber: 559,
                         columnNumber: 21
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2038,7 +2044,7 @@ function PagesManager() {
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "linking-grid",
                             style: {
-                                gridTemplateColumns: '1fr 1fr 1fr auto'
+                                gridTemplateColumns: '1.2fr 1fr 1fr 1fr 1fr auto'
                             },
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2049,7 +2055,7 @@ function PagesManager() {
                                             children: "Mapping Label"
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                            lineNumber: 560,
+                                            lineNumber: 566,
                                             columnNumber: 33
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2060,13 +2066,13 @@ function PagesManager() {
                                             placeholder: "e.g. Material Catalog Hierarchy"
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                            lineNumber: 561,
+                                            lineNumber: 567,
                                             columnNumber: 33
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                    lineNumber: 559,
+                                    lineNumber: 565,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2081,13 +2087,13 @@ function PagesManager() {
                                                     children: "*"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                    lineNumber: 570,
+                                                    lineNumber: 576,
                                                     columnNumber: 75
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                            lineNumber: 570,
+                                            lineNumber: 576,
                                             columnNumber: 33
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -2103,7 +2109,7 @@ function PagesManager() {
                                                     children: "Select target page..."
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                    lineNumber: 572,
+                                                    lineNumber: 578,
                                                     columnNumber: 37
                                                 }, this),
                                                 pages.map((p)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2111,19 +2117,19 @@ function PagesManager() {
                                                         children: p.name
                                                     }, p.id, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 573,
+                                                        lineNumber: 579,
                                                         columnNumber: 53
                                                     }, this))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                            lineNumber: 571,
+                                            lineNumber: 577,
                                             columnNumber: 33
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                    lineNumber: 569,
+                                    lineNumber: 575,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2138,13 +2144,13 @@ function PagesManager() {
                                                     children: "*"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                    lineNumber: 577,
+                                                    lineNumber: 583,
                                                     columnNumber: 76
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                            lineNumber: 577,
+                                            lineNumber: 583,
                                             columnNumber: 33
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -2158,7 +2164,7 @@ function PagesManager() {
                                                     children: mappingTargetPageId ? 'Select field...' : 'Select page first'
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                    lineNumber: 579,
+                                                    lineNumber: 585,
                                                     columnNumber: 37
                                                 }, this),
                                                 getAvailableFields(mappingTargetPageId).map((f)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2166,19 +2172,111 @@ function PagesManager() {
                                                         children: f.label
                                                     }, f.id, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 580,
+                                                        lineNumber: 586,
                                                         columnNumber: 87
                                                     }, this))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                            lineNumber: 578,
+                                            lineNumber: 584,
                                             columnNumber: 33
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                    lineNumber: 576,
+                                    lineNumber: 582,
+                                    columnNumber: 29
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "form-group",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                            className: "form-label",
+                                            children: "Related Page"
+                                        }, void 0, false, {
+                                            fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
+                                            lineNumber: 590,
+                                            columnNumber: 33
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
+                                            className: "form-input",
+                                            value: mappingProductPageId,
+                                            onChange: (e)=>{
+                                                setMappingProductPageId(e.target.value);
+                                                setMappingProductFieldName('');
+                                            },
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                    value: "",
+                                                    children: "None"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
+                                                    lineNumber: 592,
+                                                    columnNumber: 37
+                                                }, this),
+                                                pages.map((p)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                        value: p.id,
+                                                        children: p.name
+                                                    }, p.id, false, {
+                                                        fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
+                                                        lineNumber: 593,
+                                                        columnNumber: 53
+                                                    }, this))
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
+                                            lineNumber: 591,
+                                            columnNumber: 33
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
+                                    lineNumber: 589,
+                                    columnNumber: 29
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "form-group",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                            className: "form-label",
+                                            children: "Display Field"
+                                        }, void 0, false, {
+                                            fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
+                                            lineNumber: 597,
+                                            columnNumber: 33
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
+                                            className: "form-input",
+                                            value: mappingProductFieldName,
+                                            onChange: (e)=>setMappingProductFieldName(e.target.value),
+                                            disabled: !mappingProductPageId,
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                    value: "",
+                                                    children: mappingProductPageId ? 'Select field...' : 'Select page first'
+                                                }, void 0, false, {
+                                                    fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
+                                                    lineNumber: 599,
+                                                    columnNumber: 37
+                                                }, this),
+                                                getAvailableFields(mappingProductPageId).map((f)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                        value: f.label,
+                                                        children: f.label
+                                                    }, f.id, false, {
+                                                        fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
+                                                        lineNumber: 600,
+                                                        columnNumber: 88
+                                                    }, this))
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
+                                            lineNumber: 598,
+                                            columnNumber: 33
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
+                                    lineNumber: 596,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2198,23 +2296,23 @@ function PagesManager() {
                                         children: "Add Mapping"
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                        lineNumber: 584,
+                                        lineNumber: 604,
                                         columnNumber: 33
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                    lineNumber: 583,
+                                    lineNumber: 603,
                                     columnNumber: 29
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                            lineNumber: 558,
+                            lineNumber: 564,
                             columnNumber: 25
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                        lineNumber: 557,
+                        lineNumber: 563,
                         columnNumber: 21
                     }, this),
                     fieldMappings.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2240,7 +2338,7 @@ function PagesManager() {
                                                         children: "🗺️"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 595,
+                                                        lineNumber: 615,
                                                         columnNumber: 49
                                                     }, this),
                                                     editingMappingId === mapping.id ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2263,7 +2361,7 @@ function PagesManager() {
                                                                 autoFocus: true
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                lineNumber: 598,
+                                                                lineNumber: 618,
                                                                 columnNumber: 57
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2272,7 +2370,7 @@ function PagesManager() {
                                                                 children: "Save"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                lineNumber: 607,
+                                                                lineNumber: 627,
                                                                 columnNumber: 57
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2281,13 +2379,13 @@ function PagesManager() {
                                                                 children: "✕"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                lineNumber: 608,
+                                                                lineNumber: 628,
                                                                 columnNumber: 57
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 597,
+                                                        lineNumber: 617,
                                                         columnNumber: 53
                                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                         style: {
@@ -2310,7 +2408,7 @@ function PagesManager() {
                                                                         children: mapping.label || mapping.targetPageName
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                        lineNumber: 613,
+                                                                        lineNumber: 633,
                                                                         columnNumber: 61
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2327,13 +2425,13 @@ function PagesManager() {
                                                                         children: "✏️"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                        lineNumber: 614,
+                                                                        lineNumber: 634,
                                                                         columnNumber: 61
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                lineNumber: 612,
+                                                                lineNumber: 632,
                                                                 columnNumber: 57
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2347,19 +2445,35 @@ function PagesManager() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                lineNumber: 625,
+                                                                lineNumber: 645,
                                                                 columnNumber: 57
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 611,
+                                                        lineNumber: 631,
+                                                        columnNumber: 53
+                                                    }, this),
+                                                    mapping.productPageId && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                        className: "badge",
+                                                        style: {
+                                                            background: '#ecfdf5',
+                                                            color: '#059669'
+                                                        },
+                                                        children: [
+                                                            "Related: ",
+                                                            getPage(mapping.productPageId)?.name,
+                                                            mapping.productDisplayFieldName && ` (Field: ${mapping.productDisplayFieldName})`
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
+                                                        lineNumber: 651,
                                                         columnNumber: 53
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 594,
+                                                lineNumber: 614,
                                                 columnNumber: 45
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2371,7 +2485,7 @@ function PagesManager() {
                                                 children: mapping.targetFieldName
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 631,
+                                                lineNumber: 657,
                                                 columnNumber: 45
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2386,7 +2500,7 @@ function PagesManager() {
                                                         children: "Edit"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 633,
+                                                        lineNumber: 659,
                                                         columnNumber: 49
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2395,7 +2509,7 @@ function PagesManager() {
                                                         children: "View"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 634,
+                                                        lineNumber: 660,
                                                         columnNumber: 49
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2404,40 +2518,40 @@ function PagesManager() {
                                                         children: "✕"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 635,
+                                                        lineNumber: 661,
                                                         columnNumber: 49
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 632,
+                                                lineNumber: 658,
                                                 columnNumber: 45
                                             }, this)
                                         ]
                                     }, mapping.id, true, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                        lineNumber: 593,
+                                        lineNumber: 613,
                                         columnNumber: 41
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                lineNumber: 591,
+                                lineNumber: 611,
                                 columnNumber: 33
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                            lineNumber: 590,
+                            lineNumber: 610,
                             columnNumber: 29
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                        lineNumber: 589,
+                        lineNumber: 609,
                         columnNumber: 25
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                lineNumber: 552,
+                lineNumber: 558,
                 columnNumber: 17
             }, this),
             activeTab === 'api' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2459,7 +2573,7 @@ function PagesManager() {
                                         children: "API Report"
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                        lineNumber: 651,
+                                        lineNumber: 677,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2469,13 +2583,13 @@ function PagesManager() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                        lineNumber: 652,
+                                        lineNumber: 678,
                                         columnNumber: 29
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                lineNumber: 650,
+                                lineNumber: 676,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2497,13 +2611,13 @@ function PagesManager() {
                                 children: "📋 Copy Full JSON Report"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                lineNumber: 654,
+                                lineNumber: 680,
                                 columnNumber: 25
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                        lineNumber: 649,
+                        lineNumber: 675,
                         columnNumber: 21
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2540,7 +2654,7 @@ function PagesManager() {
                                                     children: "Standard Contact Form"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                    lineNumber: 680,
+                                                    lineNumber: 706,
                                                     columnNumber: 37
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2552,13 +2666,13 @@ function PagesManager() {
                                                     children: "Legacy endpoint for general inquiries"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                    lineNumber: 681,
+                                                    lineNumber: 707,
                                                     columnNumber: 37
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                            lineNumber: 679,
+                                            lineNumber: 705,
                                             columnNumber: 33
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2580,7 +2694,7 @@ function PagesManager() {
                                                     children: "Endpoint"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                    lineNumber: 684,
+                                                    lineNumber: 710,
                                                     columnNumber: 37
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("code", {
@@ -2597,24 +2711,24 @@ function PagesManager() {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                    lineNumber: 685,
+                                                    lineNumber: 711,
                                                     columnNumber: 37
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                            lineNumber: 683,
+                                            lineNumber: 709,
                                             columnNumber: 33
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                    lineNumber: 678,
+                                    lineNumber: 704,
                                     columnNumber: 29
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                lineNumber: 677,
+                                lineNumber: 703,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2643,7 +2757,7 @@ function PagesManager() {
                                                     children: "Product Inquiry Form"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                    lineNumber: 694,
+                                                    lineNumber: 720,
                                                     columnNumber: 37
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2655,13 +2769,13 @@ function PagesManager() {
                                                     children: "Legacy endpoint for product interests"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                    lineNumber: 695,
+                                                    lineNumber: 721,
                                                     columnNumber: 37
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                            lineNumber: 693,
+                                            lineNumber: 719,
                                             columnNumber: 33
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2683,7 +2797,7 @@ function PagesManager() {
                                                     children: "Endpoint"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                    lineNumber: 698,
+                                                    lineNumber: 724,
                                                     columnNumber: 37
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("code", {
@@ -2700,30 +2814,30 @@ function PagesManager() {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                    lineNumber: 699,
+                                                    lineNumber: 725,
                                                     columnNumber: 37
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                            lineNumber: 697,
+                                            lineNumber: 723,
                                             columnNumber: 33
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                    lineNumber: 692,
+                                    lineNumber: 718,
                                     columnNumber: 29
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                lineNumber: 691,
+                                lineNumber: 717,
                                 columnNumber: 25
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                        lineNumber: 676,
+                        lineNumber: 702,
                         columnNumber: 21
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2740,12 +2854,12 @@ function PagesManager() {
                             children: "Dynamic Page Endpoints"
                         }, void 0, false, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                            lineNumber: 708,
+                            lineNumber: 734,
                             columnNumber: 25
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                        lineNumber: 707,
+                        lineNumber: 733,
                         columnNumber: 21
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2773,7 +2887,7 @@ function PagesManager() {
                                         }
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                        lineNumber: 714,
+                                        lineNumber: 740,
                                         columnNumber: 33
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2791,7 +2905,7 @@ function PagesManager() {
                                                 children: page.name
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 716,
+                                                lineNumber: 742,
                                                 columnNumber: 37
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2803,13 +2917,13 @@ function PagesManager() {
                                                 children: "Endpoint identification for Next.js frontend"
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 717,
+                                                lineNumber: 743,
                                                 columnNumber: 37
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                        lineNumber: 715,
+                                        lineNumber: 741,
                                         columnNumber: 33
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2846,7 +2960,7 @@ function PagesManager() {
                                                                 children: "POST: SUBMIT DATA"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                lineNumber: 724,
+                                                                lineNumber: 750,
                                                                 columnNumber: 45
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("code", {
@@ -2867,7 +2981,7 @@ function PagesManager() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                lineNumber: 725,
+                                                                lineNumber: 751,
                                                                 columnNumber: 45
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2878,13 +2992,13 @@ function PagesManager() {
                                                                 children: "Use this endpoint to send form submissions."
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                lineNumber: 728,
+                                                                lineNumber: 754,
                                                                 columnNumber: 45
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 723,
+                                                        lineNumber: 749,
                                                         columnNumber: 41
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2907,7 +3021,7 @@ function PagesManager() {
                                                                 children: "REQUIRED FIELDS"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                lineNumber: 732,
+                                                                lineNumber: 758,
                                                                 columnNumber: 45
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2929,7 +3043,7 @@ function PagesManager() {
                                                                             children: f.label
                                                                         }, f.id, false, {
                                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                            lineNumber: 735,
+                                                                            lineNumber: 761,
                                                                             columnNumber: 53
                                                                         }, this)),
                                                                     getAvailableFields(page.id).length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2941,25 +3055,25 @@ function PagesManager() {
                                                                         children: "No fields defined"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                        lineNumber: 739,
+                                                                        lineNumber: 765,
                                                                         columnNumber: 94
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                lineNumber: 733,
+                                                                lineNumber: 759,
                                                                 columnNumber: 45
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 731,
+                                                        lineNumber: 757,
                                                         columnNumber: 41
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 722,
+                                                lineNumber: 748,
                                                 columnNumber: 37
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2987,7 +3101,7 @@ function PagesManager() {
                                                                 children: "GET: RETRIEVE DATA (QUERY)"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                lineNumber: 747,
+                                                                lineNumber: 773,
                                                                 columnNumber: 45
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2997,13 +3111,13 @@ function PagesManager() {
                                                                 children: "GraphQL Style"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                lineNumber: 748,
+                                                                lineNumber: 774,
                                                                 columnNumber: 45
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 746,
+                                                        lineNumber: 772,
                                                         columnNumber: 41
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3030,12 +3144,12 @@ ${getAvailableFields(page.id).slice(0, 3).map((f)=>`    ${f.label.toLowerCase().
 }`
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                            lineNumber: 752,
+                                                            lineNumber: 778,
                                                             columnNumber: 45
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 751,
+                                                        lineNumber: 777,
                                                         columnNumber: 41
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3056,14 +3170,14 @@ ${getAvailableFields(page.id).slice(0, 3).map((f)=>`    ${f.label.toLowerCase().
                                                                         children: "API IDE"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                        lineNumber: 764,
+                                                                        lineNumber: 790,
                                                                         columnNumber: 71
                                                                     }, this),
                                                                     " to fetch entries."
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                lineNumber: 763,
+                                                                lineNumber: 789,
                                                                 columnNumber: 45
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3077,25 +3191,25 @@ ${getAvailableFields(page.id).slice(0, 3).map((f)=>`    ${f.label.toLowerCase().
                                                                 children: "Open in IDE →"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                                lineNumber: 766,
+                                                                lineNumber: 792,
                                                                 columnNumber: 45
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                        lineNumber: 762,
+                                                        lineNumber: 788,
                                                         columnNumber: 41
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                lineNumber: 745,
+                                                lineNumber: 771,
                                                 columnNumber: 37
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                        lineNumber: 720,
+                                        lineNumber: 746,
                                         columnNumber: 33
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3122,14 +3236,14 @@ ${getAvailableFields(page.id).slice(0, 3).map((f)=>`    ${f.label.toLowerCase().
                                                             children: page.id
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                            lineNumber: 780,
+                                                            lineNumber: 806,
                                                             columnNumber: 63
                                                         }, this),
                                                         " | Dynamic Retrieval Supported"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                    lineNumber: 779,
+                                                    lineNumber: 805,
                                                     columnNumber: 41
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3149,7 +3263,7 @@ ${getAvailableFields(page.id).slice(0, 3).map((f)=>`    ${f.label.toLowerCase().
                                                             children: "Copy Query"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                            lineNumber: 783,
+                                                            lineNumber: 809,
                                                             columnNumber: 45
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3170,41 +3284,41 @@ ${getAvailableFields(page.id).slice(0, 3).map((f)=>`    ${f.label.toLowerCase().
                                                             children: "Copy Schema"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                            lineNumber: 794,
+                                                            lineNumber: 820,
                                                             columnNumber: 45
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                                    lineNumber: 782,
+                                                    lineNumber: 808,
                                                     columnNumber: 41
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                            lineNumber: 778,
+                                            lineNumber: 804,
                                             columnNumber: 37
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                        lineNumber: 777,
+                                        lineNumber: 803,
                                         columnNumber: 33
                                     }, this)
                                 ]
                             }, page.id, true, {
                                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                lineNumber: 713,
+                                lineNumber: 739,
                                 columnNumber: 29
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                        lineNumber: 711,
+                        lineNumber: 737,
                         columnNumber: 21
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                lineNumber: 648,
+                lineNumber: 674,
                 columnNumber: 17
             }, this),
             showModal && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3218,7 +3332,7 @@ ${getAvailableFields(page.id).slice(0, 3).map((f)=>`    ${f.label.toLowerCase().
                             children: "Add New Page"
                         }, void 0, false, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                            lineNumber: 825,
+                            lineNumber: 851,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3233,13 +3347,13 @@ ${getAvailableFields(page.id).slice(0, 3).map((f)=>`    ${f.label.toLowerCase().
                                             children: "*"
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                            lineNumber: 827,
+                                            lineNumber: 853,
                                             columnNumber: 69
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                    lineNumber: 827,
+                                    lineNumber: 853,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3251,13 +3365,13 @@ ${getAvailableFields(page.id).slice(0, 3).map((f)=>`    ${f.label.toLowerCase().
                                     onKeyDown: (e)=>e.key === 'Enter' && handleAddPage()
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                    lineNumber: 828,
+                                    lineNumber: 854,
                                     columnNumber: 29
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                            lineNumber: 826,
+                            lineNumber: 852,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3269,7 +3383,7 @@ ${getAvailableFields(page.id).slice(0, 3).map((f)=>`    ${f.label.toLowerCase().
                                     children: "Cancel"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                    lineNumber: 831,
+                                    lineNumber: 857,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$crm__demo$2f$backend$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3278,30 +3392,30 @@ ${getAvailableFields(page.id).slice(0, 3).map((f)=>`    ${f.label.toLowerCase().
                                     children: "Add Page"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                                    lineNumber: 832,
+                                    lineNumber: 858,
                                     columnNumber: 29
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                            lineNumber: 830,
+                            lineNumber: 856,
                             columnNumber: 25
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                    lineNumber: 824,
+                    lineNumber: 850,
                     columnNumber: 21
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-                lineNumber: 823,
+                lineNumber: 849,
                 columnNumber: 17
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/Desktop/crm demo/backend/src/views/PagesManager.jsx",
-        lineNumber: 213,
+        lineNumber: 219,
         columnNumber: 9
     }, this);
 }
