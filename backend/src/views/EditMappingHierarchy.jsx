@@ -195,37 +195,44 @@ export default function EditMappingHierarchy() {
                         onDragOver={(e) => handleDragOver(e, entry.id)}
                         onDrop={(e) => handleDrop(e, entry.id)}
                     >
-                        <div
-                            className={`tree-node-content ${isOver ? 'drag-over' : ''}`}
-                            draggable
-                            onDragStart={(e) => handleDragStart(e, entry.id)}
-                            onDragEnd={handleDragEnd}
-                        >
-                            <span className="drag-handle" title="Drag to reorder">⠿</span>
-                            <span className="node-icon">📄</span>
-                            <span className={`node-name ${h.role === 'primary' ? 'role-primary' : ''} ${h.role === 'leaf' ? 'role-leaf' : ''}`}>
-                                {getEntryName(entry)}
-                                {h.role && h.role !== 'none' && (
-                                    <span className="node-role">({h.role})</span>
-                                )}
-                            </span>
-                        </div>
-                        <div className="tree-children">
-                            {buildTree(entry.id)}
+                        <div className="tree-node-row-container" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <div
+                                className={`tree-node-content ${isOver ? 'drag-over' : ''}`}
+                                draggable
+                                onDragStart={(e) => handleDragStart(e, entry.id)}
+                                onDragEnd={handleDragEnd}
+                            >
+                                <span className="drag-handle" title="Drag to reorder">⠿</span>
+                                <span className="node-icon">📄</span>
+                                <span className={`node-name ${h.role === 'primary' ? 'role-primary' : ''} ${h.role === 'leaf' ? 'role-leaf' : ''}`}>
+                                    {getEntryName(entry)}
+                                    {h.role && h.role !== 'none' && (
+                                        <span className="node-role">({h.role})</span>
+                                    )}
+                                </span>
+                            </div>
+
                             {productLinks.length > 0 && (
-                                <div className="tree-product-links">
-                                    {productLinks.map((link, idx) => (
-                                        <div key={`link-${idx}`} className="tree-node tree-link-node">
-                                            <div className="tree-node-content link-preview-content">
-                                                <span className="node-icon">🔗</span>
-                                                <span className="node-name link-preview-name">
-                                                    {getLinkedEntryDisplayValue(mapping.productPageId, link.sourceEntryId, mapping.productDisplayFieldName) || link.sourceEntryLabel || 'Item'}
-                                                </span>
+                                <div className="tree-horizontal-products" style={{ display: 'flex', alignItems: 'center' }}>
+                                    <div className="horizontal-tree-line" style={{ width: '30px', borderTop: '1.5px dashed var(--border)', marginLeft: '-8px' }}></div>
+                                    <div className="tree-product-links-horizontal" style={{ display: 'flex', gap: '8px' }}>
+                                        {productLinks.map((link, idx) => (
+                                            <div key={`link-${idx}`} className="tree-node tree-link-node horizontal-leaf">
+                                                <div className="tree-node-content link-preview-content">
+                                                    <span className="node-icon">🔗</span>
+                                                    <span className="node-name link-preview-name">
+                                                        {getLinkedEntryDisplayValue(mapping.productPageId, link.sourceEntryId, mapping.productDisplayFieldName) || link.sourceEntryLabel || 'Item'}
+                                                    </span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
+                                    </div>
                                 </div>
                             )}
+                        </div>
+
+                        <div className="tree-children">
+                            {buildTree(entry.id)}
                         </div>
                     </div>
                 );
@@ -286,49 +293,6 @@ export default function EditMappingHierarchy() {
                             </div>
                         </div>
 
-                        {selectedIds.size > 0 && (
-                            <div className="bulk-actions-bar animate-fade-in-down">
-                                <div className="bulk-info">
-                                    <strong>{selectedIds.size}</strong> selected
-                                </div>
-                                <div className="bulk-controls">
-                                    <select
-                                        className="form-input form-input-sm"
-                                        onChange={(e) => handleBulkUpdate('parentId', e.target.value)}
-                                        value=""
-                                    >
-                                        <option value="" disabled>Set Parent for all...</option>
-                                        <option value="">None (Root)</option>
-                                        {entries.map(e => (
-                                            <option key={e.id} value={e.id}>{getEntryName(e)}</option>
-                                        ))}
-                                    </select>
-                                    <select
-                                        className="form-input form-input-sm"
-                                        onChange={(e) => handleBulkUpdate('role', e.target.value)}
-                                        value=""
-                                    >
-                                        <option value="" disabled>Set Role for all...</option>
-                                        <option value="none">Standard</option>
-                                        <option value="primary">Primary</option>
-                                        <option value="leaf">Leaf</option>
-                                    </select>
-                                    <button className="btn btn-ghost btn-sm" onClick={() => setSelectedIds(new Set())}>Clear</button>
-                                </div>
-                            </div>
-                        )}
-
-                        <div className="entries-config-header">
-                            <label className="checkbox-container">
-                                <input
-                                    type="checkbox"
-                                    checked={filteredEntries.length > 0 && selectedIds.size === filteredEntries.length}
-                                    onChange={toggleSelectAll}
-                                />
-                                <span className="checkmark"></span>
-                            </label>
-                            <span style={{ fontSize: '11px', fontWeight: 'bold', color: 'var(--text-secondary)' }}>SELECT ALL</span>
-                        </div>
 
                         <div className="entries-config-list">
                             {filteredEntries.map(entry => {

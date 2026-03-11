@@ -75,18 +75,42 @@ export default function MappedDataView() {
                 const h = hierarchy[entry.id] || {};
                 const displayValue = entry.data[fieldKey] || `Entry #${entry.id}`;
 
+                const productLinks = mapping.productPageId ? getInboundLinks(mapping.targetPageId, entry.id)
+                    .filter(l => l.sourcePageId === mapping.productPageId) : [];
+
                 return (
                     <div key={entry.id} className="tree-node">
-                        <div className="tree-node-content">
-                            <span className="node-icon">📄</span>
-                            <span className={`node-name ${h.role === 'primary' ? 'role-primary' : ''} ${h.role === 'leaf' ? 'role-leaf' : ''}`}>
-                                {displayValue}
-                                {h.role && h.role !== 'none' && (
-                                    <span className="node-role">({h.role})</span>
-                                )}
-                            </span>
+                        <div className="tree-node-row-container" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <div className="tree-node-content">
+                                <span className="node-icon">📄</span>
+                                <span className={`node-name ${h.role === 'primary' ? 'role-primary' : ''} ${h.role === 'leaf' ? 'role-leaf' : ''}`}>
+                                    {displayValue}
+                                    {h.role && h.role !== 'none' && (
+                                        <span className="node-role">({h.role})</span>
+                                    )}
+                                </span>
+                            </div>
+
+                            {productLinks.length > 0 && (
+                                <div className="tree-horizontal-products" style={{ display: 'flex', alignItems: 'center' }}>
+                                    <div className="horizontal-tree-line" style={{ width: '30px', borderTop: '1.5px dashed #cbd5e1', marginLeft: '-8px' }}></div>
+                                    <div className="tree-product-links-horizontal" style={{ display: 'flex', gap: '8px' }}>
+                                        {productLinks.map((link, idx) => (
+                                            <div key={`link-${idx}`} className="tree-node tree-link-node horizontal-leaf">
+                                                <div className="tree-node-content link-preview-content">
+                                                    <span className="node-icon">🔗</span>
+                                                    <span className="node-name link-preview-name">
+                                                        {getLinkedEntryDisplayValue(mapping.productPageId, link.sourceEntryId, mapping.productDisplayFieldName) || link.sourceEntryLabel || 'Item'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                        <div className="tree-children" style={{ marginLeft: '24px', borderLeft: '1px solid #cbd5e1', paddingLeft: '12px' }}>
+
+                        <div className="tree-children">
                             {renderTree(entry.id)}
                         </div>
                     </div>
@@ -213,12 +237,16 @@ export default function MappedDataView() {
                     position: absolute;
                     left: -10px;
                     top: 0;
-                    bottom: 0;
+                    bottom: 0px;
                     width: 1.5px;
                     background: #cbd5e1;
                 }
                 .tree-node:last-child::before {
-                    height: 12px;
+                    height: 20px;
+                }
+                .tree-children {
+                    margin-left: 20px;
+                    position: relative;
                 }
                 .tree-node-content {
                     padding: 10px 16px;
@@ -246,6 +274,16 @@ export default function MappedDataView() {
                     width: 10px;
                     height: 1.5px;
                     background: #cbd5e1;
+                }
+                .tree-link-node .link-preview-content {
+                    border: 1.5px dashed var(--accent);
+                    background: #f0f7ff;
+                    padding: 6px 12px;
+                }
+                .link-preview-name {
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: var(--accent);
                 }
                 .node-name {
                     font-weight: 500;
