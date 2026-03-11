@@ -185,6 +185,9 @@ export default function EditMappingHierarchy() {
             .map(entry => {
                 const h = hierarchy[entry.id] || {};
                 const isOver = dragOverId === entry.id;
+                const productLinks = mapping.productPageId ? getInboundLinks(mapping.targetPageId, entry.id)
+                    .filter(l => l.sourcePageId === mapping.productPageId) : [];
+
                 return (
                     <div
                         key={entry.id}
@@ -209,6 +212,20 @@ export default function EditMappingHierarchy() {
                         </div>
                         <div className="tree-children">
                             {buildTree(entry.id)}
+                            {productLinks.length > 0 && (
+                                <div className="tree-product-links">
+                                    {productLinks.map((link, idx) => (
+                                        <div key={`link-${idx}`} className="tree-node tree-link-node">
+                                            <div className="tree-node-content link-preview-content">
+                                                <span className="node-icon">🔗</span>
+                                                <span className="node-name link-preview-name">
+                                                    {getLinkedEntryDisplayValue(mapping.productPageId, link.sourceEntryId, mapping.productDisplayFieldName) || link.sourceEntryLabel || 'Item'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 );
@@ -319,27 +336,36 @@ export default function EditMappingHierarchy() {
                                 return (
                                     <div key={entry.id} className="entry-config-row">
                                         <div className="entry-identity">
-                                            <label className="checkbox-container">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={selectedIds.has(entry.id)}
-                                                    onChange={() => toggleSelect(entry.id)}
-                                                />
-                                                <span className="checkmark"></span>
-                                            </label>
-                                            <strong>{getEntryName(entry)}</strong>
-                                            {mapping.productPageId && (
-                                                <div className="connected-items">
-                                                    {getInboundLinks(mapping.targetPageId, entry.id)
-                                                        .filter(l => l.sourcePageId === mapping.productPageId)
-                                                        .map((link, idx) => (
-                                                            <span key={idx} className="link-badge">
-                                                                🔗 {getLinkedEntryDisplayValue(mapping.productPageId, link.sourceEntryId, mapping.productDisplayFieldName) || link.sourceEntryLabel || 'Item'}
-                                                            </span>
-                                                        ))
-                                                    }
-                                                </div>
-                                            )}
+                                            <div className="entry-main-info">
+                                                <label className="checkbox-container">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedIds.has(entry.id)}
+                                                        onChange={() => toggleSelect(entry.id)}
+                                                    />
+                                                    <span className="checkmark"></span>
+                                                </label>
+                                                <strong>{getEntryName(entry)}</strong>
+                                            </div>
+                                            {mapping.productPageId && (() => {
+                                                const links = getInboundLinks(mapping.targetPageId, entry.id)
+                                                    .filter(l => l.sourcePageId === mapping.productPageId);
+
+                                                if (links.length === 0) return null;
+
+                                                return (
+                                                    <div className="connected-tree-container">
+                                                        {links.map((link, idx) => (
+                                                            <div key={idx} className="linked-leaf-node">
+                                                                <div className="leaf-connector"></div>
+                                                                <span className="link-badge">
+                                                                    🔗 {getLinkedEntryDisplayValue(mapping.productPageId, link.sourceEntryId, mapping.productDisplayFieldName) || link.sourceEntryLabel || 'Item'}
+                                                                </span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                );
+                                            })()}
                                         </div>
                                         <div className="entry-controls">
                                             <div className="form-group">
@@ -439,6 +465,26 @@ export default function EditMappingHierarchy() {
                 }
                 .tree-node:last-child::before {
                     height: 12px;
+                }
+                .tree-link-node::before {
+                    background: #94a3b8;
+                    border-style: dashed;
+                }
+                .link-preview-content {
+                    background: #f0fdf4;
+                    border-color: #bbf7d0;
+                    cursor: default;
+                }
+                .link-preview-content:hover {
+                    box-shadow: none;
+                    border-color: #bbf7d0;
+                }
+                .link-preview-name {
+                    color: #166534;
+                    font-size: 13px;
+                }
+                .tree-product-links {
+                    margin-top: 4px;
                 }
                 .tree-node-content {
                     padding: 8px 12px;
@@ -588,6 +634,13 @@ export default function EditMappingHierarchy() {
                 }
                 .entry-identity {
                     display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 100%;
+                    min-height: 40px;
+                }
+                .entry-main-info {
+                    display: flex;
                     align-items: center;
                     gap: 12px;
                 }
@@ -599,22 +652,70 @@ export default function EditMappingHierarchy() {
                     max-height: 70vh;
                     overflow-y: auto;
                 }
+                .connected-tree-container {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 0;
+                    margin-left: auto;
+                    min-width: 180px;
+                }
+                .linked-leaf-node {
+                    display: flex;
+                    align-items: center;
+                    position: relative;
+                    padding-left: 40px;
+                    height: 38px;
+                    width: 100%;
+                }
+                .leaf-connector {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    bottom: 0;
+                    width: 40px;
+                }
+                .leaf-connector::before {
+                    content: '';
+                    position: absolute;
+                    left: 10px;
+                    top: -19px; /* half of height */
+                    bottom: 19px; 
+                    width: 1.5px;
+                    background: #cbd5e1;
+                }
+                .linked-leaf-node:first-child .leaf-connector::before {
+                    top: 19px;
+                }
+                .linked-leaf-node:last-child .leaf-connector::before {
+                    bottom: 19px;
+                }
+                .leaf-connector::after {
+                    content: '';
+                    position: absolute;
+                    left: 10px;
+                    top: 19px;
+                    width: 25px;
+                    height: 1.5px;
+                    background: #cbd5e1;
+                    border-radius: 0 4px 4px 0;
+                }
                 .link-badge {
                     display: inline-flex;
                     align-items: center;
-                    gap: 4px;
-                    padding: 2px 8px;
+                    gap: 6px;
+                    padding: 4px 12px;
                     background: #f0fdf4;
                     color: #166534;
                     border: 1px solid #bbf7d0;
-                    border-radius: 99px;
-                    font-size: 11px;
-                    margin-top: 4px;
+                    border-radius: 8px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+                    white-space: nowrap;
                 }
                 .connected-items {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 6px;
+                    display: none;
                 }
             `}</style>
         </div>
