@@ -108,7 +108,19 @@ app.get('/api/crm/state', async (req, res) => {
         entries.forEach(e => {
             const key = `${e.company_id}_${e.page_id}`;
             if (!entriesMap[key]) entriesMap[key] = [];
-            entriesMap[key].push({ id: e.id, data: e.data_json, savedAt: e.created_at });
+
+            // Handle parsing the data_json depending on how MySQL returned it
+            let parsedData = e.data_json;
+            if (typeof parsedData === 'string') {
+                try {
+                    parsedData = JSON.parse(parsedData);
+                } catch (err) {
+                    // Fallback to empty object if invalid JSON
+                    parsedData = {};
+                }
+            }
+
+            entriesMap[key].push({ id: e.id, data: parsedData, savedAt: e.created_at });
         });
 
         const linksMap = {};

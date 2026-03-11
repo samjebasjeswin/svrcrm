@@ -96,6 +96,8 @@ export default function PagesManager() {
     // Mapping local state
     const [mappingTargetPageId, setMappingTargetPageId] = useState('');
     const [mappingTargetFieldId, setMappingTargetFieldId] = useState('');
+    const [mappingProductPageId, setMappingProductPageId] = useState('');
+    const [mappingProductFieldName, setMappingProductFieldName] = useState('');
     const [mappingLabel, setMappingLabel] = useState('');
     const [editingMappingId, setEditingMappingId] = useState(null);
     const [editMappingLabel, setEditMappingLabel] = useState('');
@@ -135,10 +137,14 @@ export default function PagesManager() {
                 targetPageId: Number(mappingTargetPageId),
                 targetPageName: targetPage.name,
                 targetFieldId: Number(mappingTargetFieldId),
-                targetFieldName: targetField.label
+                targetFieldName: targetField.label,
+                productPageId: mappingProductPageId ? Number(mappingProductPageId) : null,
+                productDisplayFieldName: mappingProductFieldName || ''
             });
             setMappingTargetPageId('');
             setMappingTargetFieldId('');
+            setMappingProductPageId('');
+            setMappingProductFieldName('');
             setMappingLabel('');
             alert('Mapping added successfully!');
         }
@@ -555,7 +561,7 @@ export default function PagesManager() {
                         <p>Configure specialized data mappings for hierarchy and visualization</p>
                     </div>
                     <div className="linking-controls card">
-                        <div className="linking-grid" style={{ gridTemplateColumns: '1fr 1fr 1fr auto' }}>
+                        <div className="linking-grid" style={{ gridTemplateColumns: '1.2fr 1fr 1fr 1fr 1fr auto' }}>
                             <div className="form-group">
                                 <label className="form-label">Mapping Label</label>
                                 <input
@@ -580,6 +586,20 @@ export default function PagesManager() {
                                     {getAvailableFields(mappingTargetPageId).map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
                                 </select>
                             </div>
+                            <div className="form-group">
+                                <label className="form-label">Related Page</label>
+                                <select className="form-input" value={mappingProductPageId} onChange={(e) => { setMappingProductPageId(e.target.value); setMappingProductFieldName(''); }}>
+                                    <option value="">None</option>
+                                    {pages.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Display Field</label>
+                                <select className="form-input" value={mappingProductFieldName} onChange={(e) => setMappingProductFieldName(e.target.value)} disabled={!mappingProductPageId}>
+                                    <option value="">{mappingProductPageId ? 'Select field...' : 'Select page first'}</option>
+                                    {getAvailableFields(mappingProductPageId).map(f => <option key={f.id} value={f.label}>{f.label}</option>)}
+                                </select>
+                            </div>
                             <div className="form-group" style={{ display: 'flex', alignItems: 'flex-end' }}>
                                 <button className="btn btn-primary" style={{ background: '#7b1fa2', height: '42px' }} onClick={handleAddMapping} disabled={!mappingTargetPageId || !mappingTargetFieldId}>Add Mapping</button>
                             </div>
@@ -589,7 +609,7 @@ export default function PagesManager() {
                         <div className="linking-relationship-map animate-fade-in-up" style={{ marginTop: 24 }}>
                             <div className="relationship-card card">
                                 <div className="relationship-sources">
-                                    {fieldMappings.map(mapping => (
+                                    {fieldMappings.filter(m => m.companyId === currentCompanyId).map(mapping => (
                                         <div key={mapping.id} className="relationship-row">
                                             <div className="source-info" style={{ flex: 1 }}>
                                                 <span className="source-icon">🗺️</span>
@@ -626,6 +646,12 @@ export default function PagesManager() {
                                                             Target: {mapping.targetPageName}
                                                         </span>
                                                     </div>
+                                                )}
+                                                {mapping.productPageId && (
+                                                    <span className="badge" style={{ background: '#ecfdf5', color: '#059669' }}>
+                                                        Related: {getPage(mapping.productPageId)?.name}
+                                                        {mapping.productDisplayFieldName && ` (Field: ${mapping.productDisplayFieldName})`}
+                                                    </span>
                                                 )}
                                             </div>
                                             <div className="field-name-badge" style={{ background: '#f3e5f5', color: '#7b1fa2' }}>{mapping.targetFieldName}</div>

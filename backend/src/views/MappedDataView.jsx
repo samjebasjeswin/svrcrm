@@ -4,11 +4,12 @@ import { useParams, useRouter } from 'next/navigation';
 import { useApp } from '../context/AppContext';
 
 export default function MappedDataView() {
-    const { mappingId } = useParams();
+    const params = useParams();
+    const mappingId = params.mappingId || params.id;
     const router = useRouter();
-    const { fieldMappings, getPageEntries, getPage, updateFieldMapping } = useApp();
+    const { fieldMappings, getPageEntries, getPage, updateFieldMapping, currentCompanyId, getInboundLinks, getLinkedEntryDisplayValue } = useApp();
 
-    const mapping = fieldMappings.find(m => m.id === Number(mappingId));
+    const mapping = fieldMappings.find(m => m.id === Number(mappingId) && m.companyId === currentCompanyId);
     const [isEditingLabel, setIsEditingLabel] = useState(false);
     const [tempLabel, setTempLabel] = useState('');
 
@@ -74,18 +75,42 @@ export default function MappedDataView() {
                 const h = hierarchy[entry.id] || {};
                 const displayValue = entry.data[fieldKey] || `Entry #${entry.id}`;
 
+                const productLinks = mapping.productPageId ? getInboundLinks(mapping.targetPageId, entry.id)
+                    .filter(l => l.sourcePageId === mapping.productPageId) : [];
+
                 return (
                     <div key={entry.id} className="tree-node">
-                        <div className="tree-node-content">
-                            <span className="node-icon">📄</span>
-                            <span className={`node-name ${h.role === 'primary' ? 'role-primary' : ''} ${h.role === 'leaf' ? 'role-leaf' : ''}`}>
-                                {displayValue}
-                                {h.role && h.role !== 'none' && (
-                                    <span className="node-role">({h.role})</span>
-                                )}
-                            </span>
+                        <div className="tree-node-row-container" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <div className="tree-node-content">
+                                <span className="node-icon">📄</span>
+                                <span className={`node-name ${h.role === 'primary' ? 'role-primary' : ''} ${h.role === 'leaf' ? 'role-leaf' : ''}`}>
+                                    {displayValue}
+                                    {h.role && h.role !== 'none' && (
+                                        <span className="node-role">({h.role})</span>
+                                    )}
+                                </span>
+                            </div>
+
+                            {productLinks.length > 0 && (
+                                <div className="tree-horizontal-products" style={{ display: 'flex', alignItems: 'center' }}>
+                                    <div className="horizontal-tree-line" style={{ width: '30px', borderTop: '1.5px dashed #cbd5e1', marginLeft: '-8px' }}></div>
+                                    <div className="tree-product-links-horizontal" style={{ display: 'flex', gap: '8px' }}>
+                                        {productLinks.map((link, idx) => (
+                                            <div key={`link-${idx}`} className="tree-node tree-link-node horizontal-leaf">
+                                                <div className="tree-node-content link-preview-content">
+                                                    <span className="node-icon">🔗</span>
+                                                    <span className="node-name link-preview-name">
+                                                        {getLinkedEntryDisplayValue(mapping.productPageId, link.sourceEntryId, mapping.productDisplayFieldName) || link.sourceEntryLabel || 'Item'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                        <div className="tree-children" style={{ marginLeft: '24px', borderLeft: '1px solid #cbd5e1', paddingLeft: '12px' }}>
+
+                        <div className="tree-children">
                             {renderTree(entry.id)}
                         </div>
                     </div>
@@ -137,63 +162,26 @@ export default function MappedDataView() {
             </div>
 
             <div className="card" style={{ padding: '24px' }}>
-                {entries.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
-                        <p style={{ fontSize: '18px' }}>No entries selected for this mapping.</p>
-                        <p style={{ fontSize: '14px', marginTop: '8px' }}>Go to the hierarchy editor to select and configure entries.</p>
-                        <button
-                            className="btn btn-primary"
-                            style={{ marginTop: '16px' }}
-                            onClick={() => router.push(`/edit-hierarchy/${mappingId}`)}
-                        >
-                            Edit Mapping
-                        </button>
-                    </div>
-                ) : (
-                    <>
-                        {hasHierarchy ? (
-                            <div className="tree-viz">
-                                {renderTree(null)}
-                            </div>
-                        ) : (
-                            <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr style={{ background: '#f8fafc', borderBottom: '1.5px solid var(--border)' }}>
-                                        <th style={{ padding: '16px 24px', textAlign: 'left', fontWeight: 600 }}>#</th>
-                                        <th style={{ padding: '16px 24px', textAlign: 'left', fontWeight: 600 }}>Entry Date</th>
-                                        <th style={{ padding: '16px 24px', textAlign: 'left', fontWeight: 600 }}>{mapping.targetFieldName}</th>
-                                        <th style={{ padding: '16px 24px', textAlign: 'right', fontWeight: 600 }}>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {entries.map((entry, idx) => (
-                                        <tr key={entry.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                                            <td style={{ padding: '16px 24px' }}>{idx + 1}</td>
-                                            <td style={{ padding: '16px 24px' }}>
-                                                {new Date(entry.id).toLocaleDateString()}
-                                            </td>
-                                            <td style={{ padding: '16px 24px', fontWeight: 500 }}>
-                                                {entry.data[fieldKey] || (
-                                                    <span style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>
-                                                        No data
-                                                    </span>
-                                                )}
-                                            </td>
-                                            <td style={{ padding: '16px 24px', textAlign: 'right' }}>
-                                                <button
-                                                    className="btn btn-accent btn-sm"
-                                                    onClick={() => router.push(`/data-entry/${mapping.targetPageId}/${entry.id}`)}
-                                                >
-                                                    Edit
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        )}
-                    </>
-                )}
+                <h3 style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    Hierarchy Preview <span className="drag-hint">← Drag items to reorder</span>
+                </h3>
+                <div className="tree-viz">
+                    {entries.length === 0 ? (
+                        <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
+                            <p style={{ fontSize: '18px' }}>No entries selected for this mapping.</p>
+                            <p style={{ fontSize: '14px', marginTop: '8px' }}>Go to the hierarchy editor to select and configure entries.</p>
+                            <button
+                                className="btn btn-primary"
+                                style={{ marginTop: '16px' }}
+                                onClick={() => router.push(`/edit-hierarchy/${mappingId}`)}
+                            >
+                                Edit Mapping
+                            </button>
+                        </div>
+                    ) : (
+                        renderTree(null)
+                    )}
+                </div>
             </div>
 
             <style>{`
@@ -212,12 +200,16 @@ export default function MappedDataView() {
                     position: absolute;
                     left: -10px;
                     top: 0;
-                    bottom: 0;
+                    bottom: 0px;
                     width: 1.5px;
                     background: #cbd5e1;
                 }
                 .tree-node:last-child::before {
-                    height: 12px;
+                    height: 20px;
+                }
+                .tree-children {
+                    margin-left: 20px;
+                    position: relative;
                 }
                 .tree-node-content {
                     padding: 10px 16px;
@@ -245,6 +237,25 @@ export default function MappedDataView() {
                     width: 10px;
                     height: 1.5px;
                     background: #cbd5e1;
+                }
+                .tree-link-node .link-preview-content {
+                    border: 1.5px dashed var(--accent);
+                    background: #f0f7ff;
+                    padding: 6px 12px;
+                }
+                .link-preview-name {
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: var(--accent);
+                }
+                .drag-hint {
+                    font-size: 12px;
+                    font-weight: 400;
+                    color: #94a3b8;
+                    margin-left: 8px;
+                    background: #f1f5f9;
+                    padding: 2px 8px;
+                    border-radius: 4px;
                 }
                 .node-name {
                     font-weight: 500;

@@ -23,7 +23,17 @@ export async function GET(request, { params }) {
         const state = await stateRes.json();
 
         const pages = state.pages[companyId] || [];
-        const selectedPage = pages.find(p => String(p.id) === String(pageId));
+        let selectedPage = pages.find(p => String(p.id) === String(pageId));
+
+        if (!selectedPage) {
+            selectedPage = pages.find(p => {
+                const lowerName = p.name?.toLowerCase() || '';
+                const queryStr = String(pageId).toLowerCase();
+                return lowerName === queryStr ||
+                    lowerName.replace(/\s+/g, '-') === queryStr ||
+                    (lowerName === 'form' && queryStr === 'contact');
+            });
+        }
 
         if (!selectedPage) {
             console.error('Page not found:', companyId, pageId);
@@ -31,7 +41,7 @@ export async function GET(request, { params }) {
         }
 
         const entriesMap = state.savedEntries || {};
-        const entries = entriesMap[`${companyId}_${pageId}`] || [];
+        const entries = entriesMap[`${companyId}_${selectedPage.id}`] || [];
 
         // extract available fields
         const availableFields = [];
@@ -118,7 +128,17 @@ export async function POST(request, { params }) {
         const state = await stateRes.json();
 
         const pages = state.pages[companyId] || [];
-        const selectedPage = pages.find(p => String(p.id) === String(pageId));
+        let selectedPage = pages.find(p => String(p.id) === String(pageId));
+
+        if (!selectedPage) {
+            selectedPage = pages.find(p => {
+                const lowerName = p.name?.toLowerCase() || '';
+                const queryStr = String(pageId).toLowerCase();
+                return lowerName === queryStr ||
+                    lowerName.replace(/\s+/g, '-') === queryStr ||
+                    (lowerName === 'form' && queryStr === 'contact');
+            });
+        }
 
         if (!selectedPage) {
             return NextResponse.json({ error: 'Page not found' }, { status: 404, headers: CORS_HEADERS });
@@ -152,7 +172,7 @@ export async function POST(request, { params }) {
         const newEntry = { id: entryId, data: entryData, savedAt: new Date().toISOString() };
 
         // Append to state.savedEntries
-        const entriesKey = `${companyId}_${pageId}`;
+        const entriesKey = `${companyId}_${selectedPage.id}`;
         if (!state.savedEntries) state.savedEntries = {};
         if (!state.savedEntries[entriesKey]) state.savedEntries[entriesKey] = [];
         state.savedEntries[entriesKey].push(newEntry);

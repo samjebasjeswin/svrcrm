@@ -6,7 +6,7 @@ import { useApp } from '../context/AppContext';
 export default function EntriesList() {
     const { pageId } = useParams();
     const router = useRouter();
-    const { getPage, getPageEntries, currentCompanyId, deleteEntry, inquiries, deleteInquiry, companies, getInboundLinks, getLinkedEntryDisplayValue } = useApp();
+    const { getPage, getPageEntries, currentCompanyId, deleteEntry, inquiries, deleteInquiry, updateInquiryStatus, companies, getInboundLinks, getLinkedEntryDisplayValue } = useApp();
     const [expandedInquiryId, setExpandedInquiryId] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [viewEntryData, setViewEntryData] = useState(null);
@@ -86,6 +86,33 @@ export default function EntriesList() {
     }, [inquiries, currentCompanyId]);
 
     const isFormPage = page?.name?.toLowerCase() === 'form';
+
+    // For form page, also grab entries from savedEntries (submitted via API) and normalize them
+    const formPageEntries = useMemo(() => {
+        if (!isFormPage) return [];
+        return entries.map(entry => {
+            // Try to extract values using field composite keys first, then fall back to plain keys
+            let name = null, email = null, message = null;
+            for (const h of (page?.headings || [])) {
+                for (const sh of (h.subHeadings || [])) {
+                    for (const f of (sh.fields || [])) {
+                        const compositeKey = `${h.id}_${sh.id}_${f.id}`;
+                        const val = entry.data?.[compositeKey];
+                        const label = f.label?.toLowerCase() || '';
+                        if (!name && (label.includes('full name') || label.includes('name'))) name = val;
+                        if (!email && (label.includes('email'))) email = val;
+                        if (!message && (label.includes('message'))) message = val;
+                    }
+                }
+            }
+            // Also check for plain keys (from direct API submissions)
+            if (!name) name = entry.data?.['Full Name'] || entry.data?.['full_name'] || entry.data?.name;
+            if (!email) email = entry.data?.['Email Address'] || entry.data?.['email_address'] || entry.data?.email;
+            if (!message) message = entry.data?.['Message'] || entry.data?.['message'];
+
+            return { id: entry.id, name, email, message, submittedAt: entry.savedAt, status: 'New', type: 'contact', _isEntry: true };
+        });
+    }, [isFormPage, entries, page]);
 
     if (!page) return <div className="dashboard-page">Page not found</div>;
 
@@ -256,114 +283,131 @@ export default function EntriesList() {
             )}
 
             {/* Inquiries Section - Redesigned as Table */}
-            {isFormPage && (
-                <div style={{ marginTop: '0' }}>
-                    <div className="linking-header" style={{ borderLeftColor: 'var(--primary)', marginBottom: '32px' }}>
-                        <h2>Inquiries & Messages</h2>
-                        <p>Manage contact form submissions and product inquiries for {currentCompany?.name}</p>
-                    </div>
+            {isFormPage && (() => {
+                const allFormData = [
+                    ...filteredInquiries,
+                    ...formPageEntries.filter(fe => !filteredInquiries.some(fi => fi.id === fe.id))
+                ];
 
-                    {filteredInquiries && filteredInquiries.length > 0 ? (
-                        <div className="table-container animate-fade-in-up">
-                            <table className="premium-table">
-                                <thead>
-                                    <tr>
-                                        <th style={{ width: '60px' }}>SL NO</th>
-                                        <th>SENDER</th>
-                                        <th>SUBJECT / TYPE</th>
-                                        <th>SUBMITTED AT</th>
-                                        <th>STATUS</th>
-                                        <th style={{ textAlign: 'right', width: '120px' }}>ACTIONS</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredInquiries.map((inquiry, idx) => {
-                                        const status = inquiry.status || 'New';
-                                        return (
-                                            <tr key={inquiry.id}>
-                                                <td>{idx + 1}</td>
-                                                <td>
-                                                    <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>
-                                                        {inquiry.type === 'product' ? (inquiry.product || '—') : (inquiry.name || inquiry.fullName || '—')}
-                                                    </div>
-                                                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                                                        {inquiry.email || inquiry.contact_email || '—'}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                        <span style={{
-                                                            padding: '2px 8px',
-                                                            borderRadius: '4px',
-                                                            fontSize: '10px',
-                                                            fontWeight: '700',
-                                                            textTransform: 'uppercase',
-                                                            background: inquiry.type === 'product' ? 'rgba(236, 72, 153, 0.1)' : 'rgba(79, 70, 229, 0.1)',
-                                                            color: inquiry.type === 'product' ? '#ec4899' : 'var(--primary)'
-                                                        }}>
-                                                            {inquiry.type === 'product' ? 'Product' : 'Contact'}
-                                                        </span>
-                                                        <span style={{ fontWeight: '600', fontSize: '13px' }}>
-                                                            {inquiry.type === 'product'
-                                                                ? `Qty: ${inquiry.quantity || '—'}`
-                                                                : (inquiry.message || 'No Message')}
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{inquiry.submittedAt}</td>
-                                                <td>
-                                                    <select
-                                                        style={{
-                                                            padding: '4px 8px',
-                                                            borderRadius: '6px',
-                                                            fontSize: '12px',
-                                                            fontWeight: '700',
-                                                            border: '1px solid var(--border)',
-                                                            background: status === 'New' ? 'rgba(239, 68, 68, 0.05)' : status === 'Seen' ? 'rgba(245, 158, 11, 0.05)' : 'rgba(16, 185, 129, 0.05)',
-                                                            color: status === 'New' ? '#ef4444' : status === 'Seen' ? '#f59e0b' : '#10b981'
-                                                        }}
-                                                        value={status}
-                                                        onChange={(e) => updateInquiryStatus(inquiry.id, e.target.value)}
-                                                    >
-                                                        <option value="New">New</option>
-                                                        <option value="Seen">Seen</option>
-                                                        <option value="Closed">Closed</option>
-                                                    </select>
-                                                </td>
-                                                <td style={{ textAlign: 'right' }}>
-                                                    <div className="table-actions" style={{ justifyContent: 'flex-end', display: 'flex', gap: '8px' }}>
-                                                        <button
-                                                            className="action-icon-btn"
-                                                            title="View Details"
-                                                            onClick={() => router.push(`/inquiry/${inquiry.id}`)}
-                                                            style={{ fontSize: '14px' }}
-                                                        >
-                                                            👁️ View
-                                                        </button>
-                                                        <button
-                                                            className="action-icon-btn delete"
-                                                            title="Delete"
-                                                            onClick={() => { if (confirm('Delete inquiry?')) deleteInquiry(inquiry.id); }}
-                                                        >
-                                                            🗑️
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
+                return (
+                    <div style={{ marginTop: '0' }}>
+                        <div className="linking-header" style={{ borderLeftColor: 'var(--primary)', marginBottom: '32px' }}>
+                            <h2>Inquiries &amp; Messages</h2>
+                            <p>Manage contact form submissions and product inquiries for {currentCompany?.name}</p>
                         </div>
-                    ) : (
-                        <div style={{ textAlign: 'center', padding: '60px', background: '#f8fafc', borderRadius: '24px', border: '2px dashed var(--border)' }}>
-                            <div style={{ fontSize: '40px', marginBottom: '16px' }}>📭</div>
-                            <h3>No Inquiries & Messages for {currentCompany?.name}</h3>
-                            <p style={{ color: 'var(--text-muted)' }}>Messages submitted via your public forms will appear here.</p>
-                        </div>
-                    )}
-                </div>
-            )}
+
+                        {allFormData && allFormData.length > 0 ? (
+                            <div className="table-container animate-fade-in-up">
+                                <table className="premium-table">
+                                    <thead>
+                                        <tr>
+                                            <th style={{ width: '60px' }}>SL NO</th>
+                                            <th>SENDER</th>
+                                            <th>SUBJECT / TYPE</th>
+                                            <th>SUBMITTED AT</th>
+                                            <th>STATUS</th>
+                                            <th style={{ textAlign: 'right', width: '120px' }}>ACTIONS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {allFormData.map((inquiry, idx) => {
+                                            const status = inquiry.status || 'New';
+                                            return (
+                                                <tr key={inquiry.id}>
+                                                    <td>{idx + 1}</td>
+                                                    <td>
+                                                        <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>
+                                                            {inquiry.type === 'product' ? (inquiry.product || '—') : (inquiry.name || inquiry.fullName || '—')}
+                                                        </div>
+                                                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                                                            {inquiry.email || inquiry.contact_email || '—'}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                            <span style={{
+                                                                padding: '2px 8px',
+                                                                borderRadius: '4px',
+                                                                fontSize: '10px',
+                                                                fontWeight: '700',
+                                                                textTransform: 'uppercase',
+                                                                background: inquiry.type === 'product' ? 'rgba(236, 72, 153, 0.1)' : 'rgba(79, 70, 229, 0.1)',
+                                                                color: inquiry.type === 'product' ? '#ec4899' : 'var(--primary)'
+                                                            }}>
+                                                                {inquiry.type === 'product' ? 'Product' : 'Contact'}
+                                                            </span>
+                                                            <span style={{ fontWeight: '600', fontSize: '13px' }}>
+                                                                {inquiry.type === 'product'
+                                                                    ? `Qty: ${inquiry.quantity || '—'}`
+                                                                    : (inquiry.message || 'No Message')}
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                    <td style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{inquiry.submittedAt}</td>
+                                                    <td>
+                                                        <select
+                                                            style={{
+                                                                padding: '4px 8px',
+                                                                borderRadius: '6px',
+                                                                fontSize: '12px',
+                                                                fontWeight: '700',
+                                                                border: '1px solid var(--border)',
+                                                                background: status === 'New' ? 'rgba(239, 68, 68, 0.05)' : status === 'Seen' ? 'rgba(245, 158, 11, 0.05)' : 'rgba(16, 185, 129, 0.05)',
+                                                                color: status === 'New' ? '#ef4444' : status === 'Seen' ? '#f59e0b' : '#10b981'
+                                                            }}
+                                                            value={status}
+                                                            onChange={(e) => {
+                                                                if (!inquiry._isEntry) updateInquiryStatus(inquiry.id, e.target.value);
+                                                            }}
+                                                        >
+                                                            <option value="New">New</option>
+                                                            <option value="Seen">Seen</option>
+                                                            <option value="Closed">Closed</option>
+                                                        </select>
+                                                    </td>
+                                                    <td style={{ textAlign: 'right' }}>
+                                                        <div className="table-actions" style={{ justifyContent: 'flex-end', display: 'flex', gap: '8px' }}>
+                                                            <button
+                                                                className="action-icon-btn"
+                                                                title="View Details"
+                                                                onClick={() => inquiry._isEntry
+                                                                    ? setViewEntryData(entries.find(e => e.id === inquiry.id))
+                                                                    : router.push(`/inquiry/${inquiry.id}`)
+                                                                }
+                                                                style={{ fontSize: '14px' }}
+                                                            >
+                                                                👁️ View
+                                                            </button>
+                                                            <button
+                                                                className="action-icon-btn delete"
+                                                                title="Delete"
+                                                                onClick={() => {
+                                                                    if (confirm('Delete inquiry?')) {
+                                                                        if (inquiry._isEntry) deleteEntry(pageId, inquiry.id);
+                                                                        else deleteInquiry(inquiry.id);
+                                                                    }
+                                                                }}
+                                                            >
+                                                                🗑️
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        ) : (
+                            <div style={{ textAlign: 'center', padding: '60px', background: '#f8fafc', borderRadius: '24px', border: '2px dashed var(--border)' }}>
+                                <div style={{ fontSize: '40px', marginBottom: '16px' }}>📭</div>
+                                <h3>No Inquiries & Messages for {currentCompany?.name}</h3>
+                                <p style={{ color: 'var(--text-muted)' }}>Messages submitted via your public forms will appear here.</p>
+                            </div>
+                        )}
+                    </div>
+                );
+            })()}
 
             {/* View Entry Details Modal */}
             {viewEntryData && (

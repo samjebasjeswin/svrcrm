@@ -655,12 +655,25 @@ export function AppProvider({ children }) {
         entries.forEach(entry => {
           if (!entry || !entry.data) return;
           linkFields.forEach(lf => {
+            // Check base key
             if (String(entry.data[lf.compositeKey] || "") === targetIdStr) {
               inboundLinks.push({
                 sourcePageId: page.id,
                 sourcePageName: page.name,
                 sourceEntryId: entry.id,
                 sourceEntryLabel: getLinkedEntryDisplayValue(page.id, entry.id)
+              });
+            } else {
+              // Check for row-based keys (infinity/maxItems)
+              Object.keys(entry.data).forEach(dataKey => {
+                if (dataKey.startsWith(`${lf.compositeKey}_row`) && String(entry.data[dataKey] || "") === targetIdStr) {
+                  inboundLinks.push({
+                    sourcePageId: page.id,
+                    sourcePageName: page.name,
+                    sourceEntryId: entry.id,
+                    sourceEntryLabel: getLinkedEntryDisplayValue(page.id, entry.id)
+                  });
+                }
               });
             }
           });
@@ -718,7 +731,9 @@ export function AppProvider({ children }) {
           linkedPageId: link.sourcePageId,
           displayFieldName: link.sourceFieldName, // This is CRITICAL for showing correct value
           linkId: link.id, // Reference to the link history item
-          required: false
+          required: false,
+          infinity: link.infinity || false,
+          maxItems: link.maxItems || 0
         });
       });
 
@@ -811,7 +826,7 @@ export function AppProvider({ children }) {
         deletePageLink,
         ensureFormPage,
         fieldMappings,
-        addFieldMapping: (m) => setFieldMappings(prev => [...prev, { ...m, id: Date.now() }]),
+        addFieldMapping: (m) => setFieldMappings(prev => [...prev, { ...m, id: Date.now(), companyId: currentCompanyId }]),
         updateFieldMapping: (id, m) => setFieldMappings(prev => prev.map(item => item.id === id ? { ...item, ...m } : item)),
         deleteFieldMapping: (id) => setFieldMappings(prev => prev.filter(m => m.id !== id)),
 

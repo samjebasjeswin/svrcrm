@@ -1028,20 +1028,75 @@ body {
 }
 
 .data-entry-field-group {
-  flex: 1 1 250px;
   display: flex;
   flex-direction: column;
   gap: 6px;
+  position: relative;
+  transition: box-shadow 0.2s, background 0.2s;
+  box-sizing: border-box;
 }
 
-.data-entry-fields-grid .span-full {
-  grid-column: 1 / -1;
+/* Admin drag & resize styles */
+.admin-field-hover {
+  border-radius: var(--radius-sm);
 }
 
-.data-entry-field-group {
+.admin-field-hover:hover {
+  box-shadow: 0 0 0 1px var(--accent);
+  background: var(--bg);
+}
+
+.field-drag-handle {
+  position: absolute;
+  top: -8px;
+  left: 0;
+  background: var(--accent);
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: grab;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+.field-drag-resizer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  cursor: nwse-resize;
+  z-index: 10;
+  opacity: 0;
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 2px;
+}
+
+.field-drag-resizer::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.admin-field-hover:hover .field-drag-resizer {
+  opacity: 1;
+}
+
+.field-drag-resizer:hover::after,
+.field-drag-resizer:active::after {
+  opacity: 1;
+}
+
+.admin-field-hover:hover .field-drag-handle {
+  opacity: 1;
 }
 
 .data-entry-label {
@@ -1787,8 +1842,8 @@ input:checked+.infinity-slider:after {
 .image-preview-wrapper {
   position: relative;
   width: 100%;
-  max-width: 320px;
-  aspect-ratio: 16 / 9;
+  height: 100%;
+  min-height: 120px;
   border-radius: 12px;
   overflow: hidden;
   border: 1.5px solid var(--border);
@@ -1799,7 +1854,7 @@ input:checked+.infinity-slider:after {
 .image-preview {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .image-clear-btn {

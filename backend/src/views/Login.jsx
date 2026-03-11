@@ -101,7 +101,7 @@ export default function Login() {
                 </div>
                 <div className="hint-card">
                     <strong>System Admin</strong>
-                    <span>systemadmin / password</span>
+                    <span>systemadmin / pass</span>
                 </div>
             </div>
         </div>
