@@ -192,6 +192,17 @@ export default function DataEntry() {
                         if (!initialRepeaters[fieldKey].includes(rowIdx)) {
                             initialRepeaters[fieldKey].push(rowIdx);
                         }
+
+                        // Also check if this field belongs to an infinite batch
+                        page.headings?.forEach(h => h.subHeadings?.forEach(sh => sh.fields?.forEach(f => {
+                            if (getFieldKey(h.id, sh.id, f.id) === fieldKey && f.batchId && f.batchInfinity) {
+                                const batchKey = `batch_${f.batchId}`;
+                                if (!initialRepeaters[batchKey]) initialRepeaters[batchKey] = [];
+                                if (!initialRepeaters[batchKey].includes(rowIdx)) {
+                                    initialRepeaters[batchKey].push(rowIdx);
+                                }
+                            }
+                        })));
                     }
                 });
 
@@ -217,6 +228,10 @@ export default function DataEntry() {
             // Pre-initialize rows for new entries if maxItems > 0
             const initialRepeaters = {};
             page.headings?.forEach(h => h.subHeadings?.forEach(sh => sh.fields?.forEach(f => {
+                if (f.batchInfinity) {
+                    const batchKey = `batch_${f.batchId}`;
+                    if (!initialRepeaters[batchKey]) initialRepeaters[batchKey] = [0];
+                }
                 if (f.maxItems > 0) {
                     const fieldKey = getFieldKey(h.id, sh.id, f.id);
                     initialRepeaters[fieldKey] = Array.from({ length: f.maxItems }, (_, i) => i);
@@ -813,189 +828,215 @@ export default function DataEntry() {
                         </button>
                     )}
                 </div>
-            </div>
-
-            {/* Body */}
+                 {/* Body */}
             <div className="data-entry-body" key={refreshKey}>
-                {/* Body */}
-                <div className="data-entry-body" key={refreshKey}>
-                    {/* Render Dynamic Sections */}
-                    {(() => {
-                        const renderSection = (heading, sectionLabel = '') => (
-                            <div key={heading.id} className="data-entry-section animate-fade-in-up" style={{ position: 'relative' }}>
-                                <div className="data-entry-main-heading">
-                                    <h2>
-                                        {heading.title || 'Untitled Heading'}
-                                        {sectionLabel && <span style={{ marginLeft: '12px', fontSize: '12px', verticalAlign: 'middle', padding: '2px 8px', borderRadius: '4px', background: 'rgba(79,70,229,0.1)', color: 'var(--accent)', fontWeight: 600 }}>{sectionLabel}</span>}
-                                    </h2>
-                                </div>
-
-                                {(heading.subHeadings || []).map((sub) => (
-                                    <div key={sub.id} className="data-entry-sub-section">
-                                        {sub.title && (
-                                            <div className="data-entry-sub-heading">
-                                                <h3>{sub.title}</h3>
-                                            </div>
-                                        )}
-
-                                        <div className="data-entry-fields-grid">
-                                            {(() => {
-                                                const filteredFields = (sub.fields || [])
-                                                    .filter(field => {
-                                                        const isProductField = ['Product Name', 'Quantity', 'Type'].includes(field.label);
-                                                        const isAdmin = user?.role === 'Super Admin' || user?.role === 'System Admin';
-                                                        if (isAdmin && page.superAdminEnabled === false && isProductField) {
-                                                            return false;
-                                                        }
-                                                        return true;
-                                                    });
-
-                                                const groupedFields = [];
-                                                let currentGroup = null;
-
-                                                filteredFields.forEach((field) => {
-                                                    const isAdminEdit = user?.role === 'System Admin';
-                                                    const wp = field.widthPercent || (field.maxChars > 120 ? 100 : 50);
-
-                                                    const fieldElement = (
-                                                        <div
-                                                            id={`field-group-${field.id}`}
-                                                            key={field.id}
-                                                            className={`data-entry-field-group ${isAdminEdit ? 'admin-field-hover' : ''}`}
-                                                            style={{
-                                                                borderTop: dragTarget === field.id && draggedField?.fieldId !== field.id ? '2px solid var(--accent)' : 'none',
-                                                                padding: isAdminEdit ? '8px' : '0',
-                                                                width: field.batchId ? '100%' : `calc(${wp}% - 20px)`,
-                                                                flexBasis: field.batchId ? '100%' : `calc(${wp}% - 20px)`,
-                                                                height: field.height ? `${field.height}px` : 'auto',
-                                                                overflow: field.height ? 'hidden' : undefined
-                                                            }}
-                                                            draggable={isAdminEdit}
-                                                            onDragStart={(e) => isAdminEdit && handleDragStart(e, heading.id, sub.id, field.id)}
-                                                            onDragEnd={isAdminEdit ? handleDragEnd : undefined}
-                                                            onDragOver={(e) => isAdminEdit && handleDragOver(e, heading.id, sub.id, field.id)}
-                                                            onDrop={(e) => isAdminEdit && handleDrop(e, heading.id, sub.id, field.id)}
-                                                        >
-                                                            {isAdminEdit && (
-                                                                <>
-                                                                    <div className="field-drag-handle">≡ Drag</div>
-                                                                    <div
-                                                                        className="field-drag-resizer"
-                                                                        onMouseDown={(e) => handleResizeStart(e, heading.id, sub.id, field.id, field.widthPercent, field.height)}
-                                                                    />
-                                                                </>
-                                                            )}
-                                                            <label className="data-entry-label">
-                                                                {field.label || 'Untitled Field'}
-                                                                {field.required && <span className="required">*</span>}
-                                                                <span className={`data-entry-type-badge ${field.valueType === 'Link' ? 'badge-link' : ''}`}>
-                                                                    {field.valueType === 'Link' ? `🔗 ${getPage(field.linkedPageId)?.name || 'Link'}` : field.valueType}
-                                                                </span>
-                                                                {field.infinity && (
-                                                                    <span className="badge-infinity">∞ Infinity</span>
-                                                                )}
-                                                            </label>
-
-                                                            {(field.infinity || field.maxItems > 0) ? (
-                                                                <div className="repeater-container">
-                                                                    {(repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [0]).map((rowId, idx) => (
-                                                                        <div key={rowId} className="repeater-row animate-fade-in-up">
-                                                                            <div className="repeater-row-content">
-                                                                                {renderFieldInput(heading, sub, field, idx)}
-                                                                            </div>
-                                                                            {field.infinity && (
-                                                                                <button
-                                                                                    className="repeater-delete-btn"
-                                                                                    onClick={() => removeRepeaterRow(getFieldKey(heading.id, sub.id, field.id), rowId)}
-                                                                                >
-                                                                                    ✕
-                                                                                </button>
-                                                                            )}
-                                                                        </div>
-                                                                    ))}
-                                                                    {field.infinity && (
-                                                                        <button
-                                                                            className="repeater-add-btn"
-                                                                            onClick={() => addRepeaterRow(getFieldKey(heading.id, sub.id, field.id), field.maxItems)}
-                                                                            disabled={field.maxItems > 0 && (repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [0]).length >= field.maxItems}
-                                                                            style={{ marginTop: '8px' }}
-                                                                        >
-                                                                            + Add {field.label || 'Row'}
-                                                                        </button>
-                                                                    )}
-                                                                </div>
-                                                            ) : (
-                                                                renderFieldInput(heading, sub, field)
-                                                            )}
-                                                        </div>
-                                                    );
-
-                                                    if (field.batchId) {
-                                                        if (currentGroup && currentGroup.batchId === field.batchId) {
-                                                            currentGroup.fields.push(fieldElement);
-                                                        } else {
-                                                            currentGroup = { batchId: field.batchId, label: field.batchLabel, fields: [fieldElement] };
-                                                            groupedFields.push(currentGroup);
-                                                        }
-                                                    } else {
-                                                        currentGroup = null;
-                                                        groupedFields.push({ type: 'single', content: fieldElement });
-                                                    }
-                                                });
-
-                                                return groupedFields.map((group, gIdx) => {
-                                                    if (group.type === 'single') return group.content;
-
-                                                    return (
-                                                        <div key={`group-${group.batchId}-${gIdx}`} className="field-batch-group animate-fade-in-up" style={{
-                                                            width: '100%',
-                                                            marginBottom: '12px',
-                                                            background: '#f8fafc',
-                                                            borderRadius: '12px',
-                                                            padding: '16px',
-                                                            border: '1.5px solid var(--border)',
-                                                            display: 'flex',
-                                                            flexDirection: 'column',
-                                                            gap: '16px'
-                                                        }}>
-                                                            {group.label && (
-                                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '-4px' }}>
-                                                                    <span style={{ fontSize: '18px' }}>📦</span>
-                                                                    <span style={{ fontSize: '14px', fontWeight: '800', color: 'var(--primary)', letterSpacing: '0.3px', textTransform: 'uppercase' }}>{group.label}</span>
-                                                                    <div style={{ flex: 1, height: '1.5px', background: 'var(--border)', opacity: 0.6 }}></div>
-                                                                    <span style={{ fontSize: '10px', fontWeight: '700', color: 'var(--accent)', background: 'rgba(79,70,229,0.1)', padding: '2px 8px', borderRadius: '10px' }}>{group.fields.length} FIELDS</span>
-                                                                </div>
-                                                            )}
-                                                            <div style={{
-                                                                display: 'grid',
-                                                                gridTemplateColumns: group.fields.length >= 2 ? 'repeat(2, 1fr)' : '1fr',
-                                                                gap: '20px'
-                                                            }}>
-                                                                {group.fields}
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                });
-                                            })()}
-                                        </div>
-                                    </div>
-                                ))}
+                {/* Render Dynamic Sections */}
+                {(() => {
+                    const renderSection = (heading, sectionLabel = '') => (
+                        <div key={heading.id} className="data-entry-section animate-fade-in-up" style={{ position: 'relative' }}>
+                            <div className="data-entry-main-heading">
+                                <h2>
+                                    {heading.title || 'Untitled Heading'}
+                                    {sectionLabel && <span style={{ marginLeft: '12px', fontSize: '12px', verticalAlign: 'middle', padding: '2px 8px', borderRadius: '4px', background: 'rgba(79,70,229,0.1)', color: 'var(--accent)', fontWeight: 600 }}>{sectionLabel}</span>}
+                                </h2>
                             </div>
-                        );
 
-                        return (
-                            <>
-                                {/* Main Content Sections */}
-                                {(page.headings || []).map(h => renderSection(h))}
+                            {(heading.subHeadings || []).map((sub) => (
+                                <div key={sub.id} className="data-entry-sub-section">
+                                    {sub.title && (
+                                        <div className="data-entry-sub-heading">
+                                            <h3>{sub.title}</h3>
+                                        </div>
+                                    )}
 
-                                {/* Static SEO Sections */}
-                                {page.staticSeoEnabled && (page.staticSeoHeadings || []).map(h => renderSection(h, 'Static SEO'))}
+                                    <div className="data-entry-fields-grid">
+                                        {(() => {
+                                            const filteredFields = (sub.fields || []);
+                                            const groups = [];
+                                            let currentGroup = null;
 
-                                {/* Dynamic SEO Sections */}
-                                {page.dynamicSeoEnabled && (page.dynamicSeoHeadings || []).map(h => renderSection(h, 'Dynamic SEO'))}
-                            </>
-                        );
-                    })()}
+                                            filteredFields.forEach((field) => {
+                                                const isAdminEdit = user?.role === 'System Admin';
+                                                const wp = field.widthPercent || (field.maxChars > 120 ? 100 : 50);
+
+                                                const renderField = (rowIdx = null) => (
+                                                    <div
+                                                        id={`field-group-${field.id}${rowIdx !== null ? `-row${rowIdx}` : ''}`}
+                                                        key={`${field.id}${rowIdx !== null ? `-row${rowIdx}` : ''}`}
+                                                        className={`data-entry-field-group ${isAdminEdit ? 'admin-field-hover' : ''}`}
+                                                        style={{
+                                                            borderTop: dragTarget === field.id && draggedField?.fieldId !== field.id ? '2px solid var(--accent)' : 'none',
+                                                            padding: isAdminEdit ? '8px' : '0',
+                                                            width: field.batchId ? '100%' : `calc(${wp}% - 20px)`,
+                                                            flexBasis: field.batchId ? '100%' : `calc(${wp}% - 20px)`,
+                                                            height: field.height ? `${field.height}px` : 'auto',
+                                                            overflow: field.height ? 'hidden' : undefined
+                                                        }}
+                                                        draggable={isAdminEdit && rowIdx === null}
+                                                        onDragStart={(e) => isAdminEdit && rowIdx === null && handleDragStart(e, heading.id, sub.id, field.id)}
+                                                        onDragEnd={isAdminEdit && rowIdx === null ? handleDragEnd : undefined}
+                                                        onDragOver={(e) => isAdminEdit && rowIdx === null && handleDragOver(e, heading.id, sub.id, field.id)}
+                                                        onDrop={(e) => isAdminEdit && rowIdx === null && handleDrop(e, heading.id, sub.id, field.id)}
+                                                    >
+                                                        {isAdminEdit && rowIdx === null && (
+                                                            <>
+                                                                <div className="field-drag-handle">≡ Drag</div>
+                                                                <div
+                                                                    className="field-drag-resizer"
+                                                                    onMouseDown={(e) => handleResizeStart(e, heading.id, sub.id, field.id, field.widthPercent, field.height)}
+                                                                />
+                                                            </>
+                                                        )}
+                                                        <label className="data-entry-label">
+                                                            {field.label || 'Untitled Field'}
+                                                            {field.required && <span className="required">*</span>}
+                                                            <span className={`data-entry-type-badge ${field.valueType === 'Link' ? 'badge-link' : ''}`}>
+                                                                {field.valueType === 'Link' ? `🔗 ${getPage(field.linkedPageId)?.name || 'Link'}` : field.valueType}
+                                                            </span>
+                                                            {field.infinity && !field.batchInfinity && (
+                                                                <span className="badge-infinity">∞ Infinity</span>
+                                                            )}
+                                                        </label>
+
+                                                        {(field.infinity || field.maxItems > 0) && !field.batchInfinity ? (
+                                                            <div className="repeater-container">
+                                                                {(repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [0]).map((rId, idx) => (
+                                                                    <div key={rId} className="repeater-row animate-fade-in-up">
+                                                                        <div className="repeater-row-content">
+                                                                            {renderFieldInput(heading, sub, field, idx)}
+                                                                        </div>
+                                                                        {field.infinity && (
+                                                                            <button
+                                                                                className="repeater-delete-btn"
+                                                                                onClick={() => removeRepeaterRow(getFieldKey(heading.id, sub.id, field.id), rId)}
+                                                                            >
+                                                                                ✕
+                                                                            </button>
+                                                                        )}
+                                                                    </div>
+                                                                ))}
+                                                                {field.infinity && (
+                                                                    <button
+                                                                        className="repeater-add-btn"
+                                                                        onClick={() => addRepeaterRow(getFieldKey(heading.id, sub.id, field.id), field.maxItems)}
+                                                                        disabled={field.maxItems > 0 && (repeaterRows[getFieldKey(heading.id, sub.id, field.id)] || [0]).length >= field.maxItems}
+                                                                        style={{ marginTop: '8px' }}
+                                                                    >
+                                                                        + Add {field.label || 'Row'}
+                                                                    </button>
+                                                                )}
+                                                            </div>
+                                                        ) : (
+                                                            renderFieldInput(heading, sub, field, rowIdx)
+                                                        )}
+                                                    </div>
+                                                );
+
+                                                if (field.batchId) {
+                                                    if (currentGroup && currentGroup.batchId === field.batchId) {
+                                                        currentGroup.fieldObjs.push(field);
+                                                    } else {
+                                                        currentGroup = {
+                                                            batchId: field.batchId,
+                                                            label: field.batchLabel,
+                                                            isInfinite: !!field.batchInfinity,
+                                                            fieldObjs: [field]
+                                                        };
+                                                        groups.push(currentGroup);
+                                                    }
+                                                } else {
+                                                    currentGroup = null;
+                                                    groups.push({ type: 'single', render: renderField, fieldId: field.id });
+                                                }
+                                            });
+
+                                            return groups.map((group, gIdx) => {
+                                                if (group.type === 'single') return group.render();
+                                                const batchKey = `batch_${group.batchId}`;
+                                                const rows = group.isInfinite ? (repeaterRows[batchKey] || [0]) : [null];
+                                                return (
+                                                    <div key={`group-${group.batchId}-${gIdx}`} className="field-batch-group animate-fade-in-up" style={{
+                                                        width: '100%',
+                                                        marginBottom: '12px',
+                                                        background: '#f8fafc',
+                                                        borderRadius: '12px',
+                                                        padding: '16px',
+                                                        border: '1.5px solid var(--border)',
+                                                        display: 'flex',
+                                                        flexDirection: 'column',
+                                                        gap: '16px'
+                                                    }}>
+                                                        {group.label && (
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: group.isInfinite ? '0' : '-4px' }}>
+                                                                <span style={{ fontSize: '18px' }}>📦</span>
+                                                                <span style={{ fontSize: '14px', fontWeight: '800', color: 'var(--primary)', letterSpacing: '0.3px', textTransform: 'uppercase' }}>{group.label}</span>
+                                                                {group.isInfinite && <span className="badge-infinity" style={{ marginLeft: '8px' }}>∞ Batch Infinity</span>}
+                                                                <div style={{ flex: 1, height: '1.5px', background: 'var(--border)', opacity: 0.6 }}></div>
+                                                                <span style={{ fontSize: '10px', fontWeight: '700', color: 'var(--accent)', background: 'rgba(79,70,229,0.1)', padding: '2px 8px', borderRadius: '10px' }}>{group.fieldObjs.length} FIELDS</span>
+                                                            </div>
+                                                        )}
+                                                        <div className="batch-rows-container" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                                                            {rows.map((rowId, rowIdx) => (
+                                                                <div key={rowId || 'static'} className={group.isInfinite ? 'repeater-row animate-fade-in-up' : ''} style={{ position: 'relative' }}>
+                                                                    <div style={{
+                                                                        display: 'grid',
+                                                                        gridTemplateColumns: group.fieldObjs.length >= 2 ? 'repeat(2, 1fr)' : '1fr',
+                                                                        gap: '20px'
+                                                                    }}>
+                                                                        {group.fieldObjs.map(field => (
+                                                                            <div key={`${field.id}-${rowId}`} className="data-entry-field-group">
+                                                                                <label className="data-entry-label">
+                                                                                    {field.label || 'Untitled Field'}
+                                                                                    {field.required && <span className="required">*</span>}
+                                                                                    <span className={`data-entry-type-badge ${field.valueType === 'Link' ? 'badge-link' : ''}`}>
+                                                                                        {field.valueType === 'Link' ? `🔗 ${getPage(field.linkedPageId)?.name || 'Link'}` : field.valueType}
+                                                                                    </span>
+                                                                                </label>
+                                                                                {renderFieldInput(heading, sub, field, group.isInfinite ? rowIdx : null)}
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                    {group.isInfinite && rowIdx > 0 && (
+                                                                        <button
+                                                                            className="repeater-delete-btn"
+                                                                            style={{ top: '0', right: '-10px' }}
+                                                                            onClick={() => removeRepeaterRow(batchKey, rowId)}
+                                                                        >✕</button>
+                                                                    )}
+                                                                    {group.isInfinite && <div style={{ height: '1px', background: 'var(--border)', opacity: 0.3, marginTop: '20px' }}></div>}
+                                                                </div>
+                                                            ))}
+                                                            {group.isInfinite && (
+                                                                <button
+                                                                    className="repeater-add-btn"
+                                                                    style={{ alignSelf: 'center', width: 'auto', padding: '10px 24px' }}
+                                                                    onClick={() => addRepeaterRow(batchKey, 0)}
+                                                                >+ Add {group.label || 'Row'}</button>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            });
+                                        })()}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    );
+
+                    return (
+                        <>
+                            {/* Main Content Sections */}
+                            {(page.headings || []).map(h => renderSection(h))}
+
+                            {/* Static SEO Sections */}
+                            {page.staticSeoEnabled && (page.staticSeoHeadings || []).map(h => renderSection(h, 'Static SEO'))}
+
+                            {/* Dynamic SEO Sections */}
+                            {page.dynamicSeoEnabled && (page.dynamicSeoHeadings || []).map(h => renderSection(h, 'Dynamic SEO'))}
+                        </>
+                    );
+                })()}
 
                     {headings.length === 0 && !page.staticSeoEnabled && !page.dynamicSeoEnabled && (
                         <div className="data-entry-empty-page">

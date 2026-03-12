@@ -556,6 +556,30 @@ export default function EditPage() {
         );
     };
 
+    const toggleBatchInfinity = (headingId, subId, batchId, currentState, setter = setHeadings) => {
+        setter((prev) =>
+            prev.map((h) =>
+                h.id === headingId
+                    ? {
+                        ...h,
+                        subHeadings: h.subHeadings.map((sh) =>
+                            sh.id === subId
+                                ? {
+                                    ...sh,
+                                    fields: sh.fields.map((f) =>
+                                        f.batchId === batchId
+                                            ? { ...f, batchInfinity: !currentState }
+                                            : f
+                                    ),
+                                }
+                                : sh
+                        ),
+                    }
+                    : h
+            )
+        );
+    };
+
     const addField = (headingId, subId, setter = setHeadings) => {
         setter((prev) =>
             prev.map((h) =>
@@ -1142,9 +1166,22 @@ export default function EditPage() {
                                                                 marginBottom: '8px'
                                                             }}>
                                                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                                        <span style={{ fontSize: '16px' }}>📦</span>
-                                                                        <span style={{ fontSize: '13px', fontWeight: '800', color: 'var(--primary)', textTransform: 'uppercase' }}>{group.label || 'Linked Set'}</span>
+                                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                                            <span style={{ fontSize: '16px' }}>📦</span>
+                                                                            <span style={{ fontSize: '13px', fontWeight: '800', color: 'var(--primary)', textTransform: 'uppercase' }}>{group.label || 'Linked Set'}</span>
+                                                                        </div>
+                                                                        
+                                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginLeft: '12px', padding: '2px 8px', background: '#f1f5f9', borderRadius: '20px' }}>
+                                                                            <span style={{ fontSize: '10px', fontWeight: '700', color: 'var(--text-secondary)' }}>INFINITE</span>
+                                                                            <button
+                                                                                className={`pill pill-sm ${group.fieldObjs[0]?.batchInfinity ? 'active' : ''}`}
+                                                                                style={{ fontSize: '9px', padding: '1px 6px', minWidth: '35px', height: '18px' }}
+                                                                                onClick={() => toggleBatchInfinity(heading.id, sub.id, group.batchId, group.fieldObjs[0]?.batchInfinity, setter)}
+                                                                            >
+                                                                                {group.fieldObjs[0]?.batchInfinity ? 'ON' : 'OFF'}
+                                                                            </button>
+                                                                        </div>
                                                                     </div>
                                                                     <button
                                                                         className="btn btn-ghost btn-sm"
