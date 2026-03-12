@@ -809,26 +809,28 @@ export default function DataEntry() {
         <>
             {/* Header */}
             <div className="data-entry-header">
-                <div className="data-entry-header-left">
+                <div className="data-entry-nav-left">
                     <button className="back-btn" onClick={() => router.push(isSettingsPage ? '/pages' : `/entries/${pageId}`)}>
                         ←
                     </button>
                     <div className="breadcrumb">
                         <span style={{ fontWeight: 700 }}>{page.name}</span>
-                        <span className="separator">›</span>
+                        <span className="separator"> &gt; </span>
                         <span style={{ color: 'var(--text-secondary)' }}>
                             {isSettingsPage ? 'Manage' : (entryId === 'new' ? 'New Entry' : 'Edit Entry')}
                         </span>
                     </div>
                 </div>
-                <div className="data-entry-header-right">
-                    {!isSettingsPage && (
+                {!isSettingsPage && (
+                    <div className="data-entry-nav-right">
                         <button className="btn btn-outline btn-sm" onClick={() => router.push(`/entries/${pageId}`)}>
                             Back to List
                         </button>
-                    )}
-                </div>
-                 {/* Body */}
+                    </div>
+                )}
+            </div>
+
+            {/* Body */}
             <div className="data-entry-body" key={refreshKey}>
                 {/* Render Dynamic Sections */}
                 {(() => {
@@ -1056,10 +1058,7 @@ export default function DataEntry() {
                         <button className="btn btn-primary" onClick={handleSave}>
                             💾 {isSettingsPage ? 'Save Changes' : (!isNew ? 'Update Entry' : 'Save Entry')}
                         </button>
-                    </div>
                 </div>
-
-
             </div>
 
             {/* View Details Modal */}

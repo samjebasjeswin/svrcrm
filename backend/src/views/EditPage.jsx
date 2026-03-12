@@ -1222,17 +1222,17 @@ export default function EditPage() {
         <>
             {/* Header */}
             <div className="edit-page-header">
-                <div className="edit-page-header-left">
+                <div className="edit-page-nav-left">
                     <button className="back-btn" onClick={() => router.push('/pages')}>
                         ←
                     </button>
                     <div className="breadcrumb">
                         <span style={{ fontWeight: 700 }}>Edit Page</span>
-                        <span className="separator">›</span>
+                        <span className="separator"> &gt; </span>
                         <span style={{ color: 'var(--text-secondary)' }}>{page.name}</span>
                     </div>
                 </div>
-                <div className="edit-page-header-right">
+                <div className="edit-page-nav-right">
                     <button className="btn btn-danger-text btn-sm" onClick={handleDeletePage}>
                         🗑 Delete Page
                     </button>
@@ -1244,6 +1244,7 @@ export default function EditPage() {
                     </button>
                 </div>
             </div>
+
 
             {/* ── 5-toggle row ── */}
             <div style={{ display: 'flex', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
@@ -1258,7 +1259,7 @@ export default function EditPage() {
                     <div>
                         <div style={{ fontWeight: 700, fontSize: '13px', color: 'var(--text-primary)' }}>Single Entry</div>
                         <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '3px', lineHeight: 1.4 }}>
-                            {singleEntry ? 'Settings page mode' : 'Multi-entry catalog'}
+                            {singleEntry ? 'Settings page mode' : 'View Page Show Single Form'}
                         </div>
                     </div>
                     <label className="toggle" style={{ alignSelf: 'flex-start' }}>
@@ -1315,7 +1316,7 @@ export default function EditPage() {
                     borderRadius: '12px', transition: 'all 0.2s', gap: '10px'
                 }}>
                     <div>
-                        <div style={{ fontWeight: 700, fontSize: '13px', color: 'var(--text-primary)' }}>Static SEO</div>
+                        <div style={{ fontWeight: 700, fontSize: '13px', color: 'var(--text-primary)' }}>Static Page SEO Field</div>
                         <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '3px', lineHeight: 1.4 }}>
                             Standard meta tags
                         </div>
@@ -1334,7 +1335,7 @@ export default function EditPage() {
                     borderRadius: '12px', transition: 'all 0.2s', gap: '10px'
                 }}>
                     <div>
-                        <div style={{ fontWeight: 700, fontSize: '13px', color: 'var(--text-primary)' }}>Dynamic SEO</div>
+                        <div style={{ fontWeight: 700, fontSize: '13px', color: 'var(--text-primary)' }}>Dynamic Page SEO Field</div>
                         <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '3px', lineHeight: 1.4 }}>
                             Social media meta tags
                         </div>

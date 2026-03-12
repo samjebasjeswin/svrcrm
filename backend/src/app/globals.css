@@ -954,39 +954,48 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 28px;
-  background: var(--bg-card);
+  padding: 16px 32px;
+  background: white;
   border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  width: 100%;
 }
 
-.data-entry-header-left {
+.data-entry-nav-left {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.data-entry-header-left .back-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+.data-entry-nav-left .back-btn {
+  font-size: 20px;
+  color: var(--text-soft);
+  background: none;
   border: none;
-  background: transparent;
   cursor: pointer;
+  padding: 4px;
   display: flex;
   align-items: center;
-  justify-content: center;
   transition: var(--transition);
-  font-size: 18px;
 }
 
-.data-entry-header-left .back-btn:hover {
-  background: var(--bg);
+.data-entry-nav-left .back-btn:hover {
+  color: var(--text-primary);
+  transform: translateX(-2px);
 }
 
-.data-entry-header-right {
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.breadcrumb .separator {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.data-entry-nav-right {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1433,6 +1442,21 @@ body {
 
 .add-subheading-btn:hover {
   background: rgba(79, 70, 229, 0.06);
+}
+
+/* ===== EDIT PAGE ===== */
+.edit-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px;
+  background: white;
+  border-bottom: 1px solid var(--border);
+  width: 100%;
+}
+
+.edit-page-body {
+  padding: 32px;
 }
 
 /* ===== RESPONSIVE ===== */
