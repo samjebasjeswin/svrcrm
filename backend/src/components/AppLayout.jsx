@@ -88,10 +88,8 @@ export default function AppLayout({ children }) {
             label: 'SYSTEM ADMIN',
             hideLabel: false,
             items: [
-                { icon: '+', label: 'Add Page', path: '/pages' },
                 { icon: '📄', label: 'Pages', path: '/pages' },
                 { icon: '🔗', label: 'Linking', path: '/pages?tab=linking' },
-                { icon: '🗺️', label: 'Mapping', path: '/pages?tab=mapping' },
                 { icon: '📡', label: 'API Report', path: '/pages?tab=api' },
                 { icon: '🧪', label: 'API IDE', path: '/api-ide' },
             ]
