@@ -731,6 +731,8 @@ export function AppProvider({ children }) {
           linkedPageId: link.sourcePageId,
           displayFieldName: link.sourceFieldName, // This is CRITICAL for showing correct value
           linkId: link.id, // Reference to the link history item
+          batchId: batchId, // Grouping ID for Grid UI
+          batchLabel: link.groupName || '', // Label for the group
           required: false,
           infinity: link.infinity || false,
           maxItems: link.maxItems || 0

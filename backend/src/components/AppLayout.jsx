@@ -54,32 +54,35 @@ export default function AppLayout({ children }) {
     const secondarySections = [
         {
             label: 'SUPER ADMIN',
-            items: pages.filter(page => page.superAdminEnabled !== false).map(page => {
-                const count = getPageEntries(page.id).length;
-                const lowerName = page.name.toLowerCase().trim();
-                const isForm = lowerName === 'form';
-                const isSettingsPage = page.singleEntry || lowerName === 'static seo' || lowerName === 'mailer settings';
+            items: [
+                ...pages.filter(page => page.superAdminEnabled !== false).map(page => {
+                    const count = getPageEntries(page.id).length;
+                    const lowerName = page.name.toLowerCase().trim();
+                    const isForm = lowerName === 'form';
+                    const isSettingsPage = page.singleEntry || lowerName === 'static seo' || lowerName === 'mailer settings';
 
-                let targetPath = `/entries/${page.id}`;
-                if (isSettingsPage) {
-                    const entries = getPageEntries(page.id);
-                    if (entries.length > 0) {
-                        targetPath = `/data-entry/${page.id}/${entries[0].id}`;
-                    } else {
-                        targetPath = `/data-entry/${page.id}/new`;
+                    let targetPath = `/entries/${page.id}`;
+                    if (isSettingsPage) {
+                        const entries = getPageEntries(page.id);
+                        if (entries.length > 0) {
+                            targetPath = `/data-entry/${page.id}/${entries[0].id}`;
+                        } else {
+                            targetPath = `/data-entry/${page.id}/new`;
+                        }
+                    } else if (isForm) {
+                        targetPath = `/entries/${page.id}`;
                     }
-                } else if (isForm) {
-                    targetPath = `/entries/${page.id}`;
-                }
 
-                return {
-                    icon: isForm ? '📋' : '📦',
-                    label: page.name,
-                    sublabel: `${count} ${count === 1 ? 'entry' : 'entries'}`,
-                    badge: isForm && newInquiries > 0 ? newInquiries : null,
-                    path: targetPath,
-                };
-            }),
+                    return {
+                        icon: isForm ? '📋' : '📦',
+                        label: page.name,
+                        sublabel: `${count} ${count === 1 ? 'entry' : 'entries'}`,
+                        badge: isForm && newInquiries > 0 ? newInquiries : null,
+                        path: targetPath,
+                    };
+                }),
+                { icon: '🗺️', label: 'Mapping', path: '/pages?tab=mapping' },
+            ],
         },
         ...(user?.role === 'System Admin' ? [{
             label: 'SYSTEM ADMIN',

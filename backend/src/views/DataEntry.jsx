@@ -839,20 +839,25 @@ export default function DataEntry() {
                                         )}
 
                                         <div className="data-entry-fields-grid">
-                                            {(sub.fields || [])
-                                                .filter(field => {
-                                                    const isProductField = ['Product Name', 'Quantity', 'Type'].includes(field.label);
-                                                    const isAdmin = user?.role === 'Super Admin' || user?.role === 'System Admin';
-                                                    if (isAdmin && page.superAdminEnabled === false && isProductField) {
-                                                        return false;
-                                                    }
-                                                    return true;
-                                                })
-                                                .map((field) => {
+                                            {(() => {
+                                                const filteredFields = (sub.fields || [])
+                                                    .filter(field => {
+                                                        const isProductField = ['Product Name', 'Quantity', 'Type'].includes(field.label);
+                                                        const isAdmin = user?.role === 'Super Admin' || user?.role === 'System Admin';
+                                                        if (isAdmin && page.superAdminEnabled === false && isProductField) {
+                                                            return false;
+                                                        }
+                                                        return true;
+                                                    });
+
+                                                const groupedFields = [];
+                                                let currentGroup = null;
+
+                                                filteredFields.forEach((field) => {
                                                     const isAdminEdit = user?.role === 'System Admin';
                                                     const wp = field.widthPercent || (field.maxChars > 120 ? 100 : 50);
 
-                                                    return (
+                                                    const fieldElement = (
                                                         <div
                                                             id={`field-group-${field.id}`}
                                                             key={field.id}
@@ -860,8 +865,8 @@ export default function DataEntry() {
                                                             style={{
                                                                 borderTop: dragTarget === field.id && draggedField?.fieldId !== field.id ? '2px solid var(--accent)' : 'none',
                                                                 padding: isAdminEdit ? '8px' : '0',
-                                                                width: `calc(${wp}% - 20px)`,
-                                                                flexBasis: `calc(${wp}% - 20px)`,
+                                                                width: field.batchId ? '100%' : `calc(${wp}% - 20px)`,
+                                                                flexBasis: field.batchId ? '100%' : `calc(${wp}% - 20px)`,
                                                                 height: field.height ? `${field.height}px` : 'auto',
                                                                 overflow: field.height ? 'hidden' : undefined
                                                             }}
@@ -924,7 +929,54 @@ export default function DataEntry() {
                                                             )}
                                                         </div>
                                                     );
-                                                })}
+
+                                                    if (field.batchId) {
+                                                        if (currentGroup && currentGroup.batchId === field.batchId) {
+                                                            currentGroup.fields.push(fieldElement);
+                                                        } else {
+                                                            currentGroup = { batchId: field.batchId, label: field.batchLabel, fields: [fieldElement] };
+                                                            groupedFields.push(currentGroup);
+                                                        }
+                                                    } else {
+                                                        currentGroup = null;
+                                                        groupedFields.push({ type: 'single', content: fieldElement });
+                                                    }
+                                                });
+
+                                                return groupedFields.map((group, gIdx) => {
+                                                    if (group.type === 'single') return group.content;
+
+                                                    return (
+                                                        <div key={`group-${group.batchId}-${gIdx}`} className="field-batch-group animate-fade-in-up" style={{
+                                                            width: '100%',
+                                                            marginBottom: '12px',
+                                                            background: '#f8fafc',
+                                                            borderRadius: '12px',
+                                                            padding: '16px',
+                                                            border: '1.5px solid var(--border)',
+                                                            display: 'flex',
+                                                            flexDirection: 'column',
+                                                            gap: '16px'
+                                                        }}>
+                                                            {group.label && (
+                                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '-4px' }}>
+                                                                    <span style={{ fontSize: '18px' }}>📦</span>
+                                                                    <span style={{ fontSize: '14px', fontWeight: '800', color: 'var(--primary)', letterSpacing: '0.3px', textTransform: 'uppercase' }}>{group.label}</span>
+                                                                    <div style={{ flex: 1, height: '1.5px', background: 'var(--border)', opacity: 0.6 }}></div>
+                                                                    <span style={{ fontSize: '10px', fontWeight: '700', color: 'var(--accent)', background: 'rgba(79,70,229,0.1)', padding: '2px 8px', borderRadius: '10px' }}>{group.fields.length} FIELDS</span>
+                                                                </div>
+                                                            )}
+                                                            <div style={{
+                                                                display: 'grid',
+                                                                gridTemplateColumns: group.fields.length >= 2 ? 'repeat(2, 1fr)' : '1fr',
+                                                                gap: '20px'
+                                                            }}>
+                                                                {group.fields}
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                });
+                                            })()}
                                         </div>
                                     </div>
                                 ))}
