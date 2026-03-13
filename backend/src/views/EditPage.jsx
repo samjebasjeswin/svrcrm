@@ -1282,10 +1282,32 @@ export default function EditPage() {
                                 Search bar in catalog list
                             </div>
                         </div>
-                        <label className="toggle" style={{ alignSelf: 'flex-start' }}>
-                            <input type="checkbox" checked={searchEnabled} onChange={(e) => setSearchEnabled(e.target.checked)} />
-                            <span className="toggle-slider" style={{ backgroundColor: searchEnabled ? '#10b981' : undefined }}></span>
-                        </label>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+                            <label className="toggle" style={{ alignSelf: 'flex-start' }}>
+                                <input type="checkbox" checked={searchEnabled} onChange={(e) => setSearchEnabled(e.target.checked)} />
+                                <span className="toggle-slider" style={{ backgroundColor: searchEnabled ? '#10b981' : undefined }}></span>
+                            </label>
+
+                            {searchEnabled && (
+                                <div style={{ flex: 1, animation: 'slideInRight 0.3s ease-out' }}>
+                                    <select
+                                        className="form-input"
+                                        style={{ height: '32px', fontSize: '11px', padding: '0 8px', border: '1.2px solid #10b981' }}
+                                        value={searchFieldId}
+                                        onChange={(e) => setSearchFieldId(e.target.value)}
+                                    >
+                                        <option value="">-- All fields --</option>
+                                        {[
+                                            ...headings,
+                                            ...(staticSeoEnabled ? staticSeoHeadings : []),
+                                            ...(dynamicSeoEnabled ? dynamicSeoHeadings : [])
+                                        ].flatMap(h => h.subHeadings?.flatMap(sh => sh.fields?.map(f => (
+                                            <option key={f.id} value={f.id}>{f.label || `Field ${f.id}`}</option>
+                                        )) || []) || [])}
+                                    </select>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 )}
 
@@ -1372,33 +1394,6 @@ export default function EditPage() {
                 {/* First Heading only */}
                 {headings.length > 0 && renderDynamicStructure([headings[0]], setHeadings, 'Content', 0, false)}
 
-                {/* Search field selector — shown below first heading if enabled */}
-                {!singleEntry && searchEnabled && (
-                    <div style={{
-                        padding: '16px 20px', background: 'rgba(16,185,129,0.04)',
-                        border: '1.5px solid #10b981', borderRadius: '12px', marginBottom: '24px'
-                    }}>
-                        <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px', display: 'block' }}>🔍 Searchable Field</label>
-                        <select
-                            className="form-input"
-                            style={{ height: '38px', fontSize: '13px' }}
-                            value={searchFieldId}
-                            onChange={(e) => setSearchFieldId(e.target.value)}
-                        >
-                            <option value="">-- All fields (Text search) --</option>
-                            {[
-                                ...headings,
-                                ...(staticSeoEnabled ? staticSeoHeadings : []),
-                                ...(dynamicSeoEnabled ? dynamicSeoHeadings : [])
-                            ].flatMap(h => h.subHeadings?.flatMap(sh => sh.fields?.map(f => (
-                                <option key={f.id} value={f.id}>🔍 {f.label || `Field ${f.id}`}</option>
-                            )) || []) || [])}
-                        </select>
-                        <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '6px' }}>
-                            Select which field users can search through (e.g. Name, SKU, Email)
-                        </p>
-                    </div>
-                )}
 
                 {/* Static SEO expanded panel */}
                 {staticSeoEnabled && (
