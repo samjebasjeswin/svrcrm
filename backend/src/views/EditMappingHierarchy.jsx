@@ -24,6 +24,8 @@ export default function EditMappingHierarchy() {
     const [selectedIds, setSelectedIds] = useState(new Set());
     const [isEditingLabel, setIsEditingLabel] = useState(false);
     const [tempLabel, setTempLabel] = useState('');
+    const [showLinks, setShowLinks] = useState(false);
+    const [activeModalEntry, setActiveModalEntry] = useState(null);
 
     // Drag state
     const dragItem = useRef(null);       // entry.id being dragged
@@ -212,7 +214,7 @@ export default function EditMappingHierarchy() {
                                 </span>
                             </div>
 
-                            {productLinks.length > 0 && (
+                            {showLinks && productLinks.length > 0 && (
                                 <div className="tree-horizontal-products" style={{ display: 'flex', alignItems: 'center' }}>
                                     <div className="horizontal-tree-line" style={{ width: '30px', borderTop: '1.5px dashed var(--border)', marginLeft: '-8px' }}></div>
                                     <div className="tree-product-links-horizontal" style={{ display: 'flex', gap: '8px' }}>
@@ -281,7 +283,7 @@ export default function EditMappingHierarchy() {
                     <div className="card">
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                             <h3>Configure Entries</h3>
-                            <div style={{ display: 'flex', gap: '8px' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-end' }}>
                                 <input
                                     type="text"
                                     className="form-input"
@@ -310,26 +312,17 @@ export default function EditMappingHierarchy() {
                                                     <span className="checkmark"></span>
                                                 </label>
                                                 <strong>{getEntryName(entry)}</strong>
+                                                {mapping.productPageId && (
+                                                    <button 
+                                                        className="icon-btn" 
+                                                        onClick={() => setActiveModalEntry(entry)}
+                                                        title="View linked items"
+                                                        style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px', padding: '4px' }}
+                                                    >
+                                                        👁️
+                                                    </button>
+                                                )}
                                             </div>
-                                            {mapping.productPageId && (() => {
-                                                const links = getInboundLinks(mapping.targetPageId, entry.id)
-                                                    .filter(l => l.sourcePageId === mapping.productPageId);
-
-                                                if (links.length === 0) return null;
-
-                                                return (
-                                                    <div className="connected-tree-container">
-                                                        {links.map((link, idx) => (
-                                                            <div key={idx} className="linked-leaf-node">
-                                                                <div className="leaf-connector"></div>
-                                                                <span className="link-badge">
-                                                                    🔗 {getLinkedEntryDisplayValue(mapping.productPageId, link.sourceEntryId, mapping.productDisplayFieldName) || link.sourceEntryLabel || 'Item'}
-                                                                </span>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                );
-                                            })()}
                                         </div>
                                         <div className="entry-controls">
                                             <div className="form-group">
@@ -368,7 +361,17 @@ export default function EditMappingHierarchy() {
                 {/* ── RIGHT: Hierarchy Preview (draggable) ── */}
                 <div className="hierarchy-preview-section">
                     <div className="card">
-                        <h3>Hierarchy Preview <span className="drag-hint">← Drag items to reorder</span></h3>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                            <h3>Hierarchy Preview <span className="drag-hint">← Drag items to reorder</span></h3>
+                            <button 
+                                className={`btn ${showLinks ? 'btn-primary' : 'btn-outline'}`}
+                                onClick={() => setShowLinks(!showLinks)}
+                                title={showLinks ? "Hide links in preview" : "Show links in preview"}
+                                style={{ padding: '4px 12px', height: '32px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}
+                            >
+                                {showLinks ? '👁️' : '👁️‍🗨️'} {showLinks ? 'Hide Links' : 'Show Links'}
+                            </button>
+                        </div>
                         <div className="tree-viz">
                             {entries.length === 0 ? (
                                 <p style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>No entries found.</p>
@@ -380,7 +383,95 @@ export default function EditMappingHierarchy() {
                 </div>
             </div>
 
+            {/* Link Modal */}
+            {activeModalEntry && (
+                <div className="modal-overlay" onClick={() => setActiveModalEntry(null)}>
+                    <div className="modal-content animate-zoom-in" onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h3>Linked Items: {getEntryName(activeModalEntry)}</h3>
+                            <button className="close-btn" onClick={() => setActiveModalEntry(null)}>&times;</button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="linked-items-modal-list">
+                                {(() => {
+                                    const links = getInboundLinks(mapping.targetPageId, activeModalEntry.id)
+                                        .filter(l => l.sourcePageId === mapping.productPageId);
+                                    
+                                    if (links.length === 0) {
+                                        return <div style={{ textAlign: 'center', padding: '20px', color: 'var(--text-secondary)' }}>No items linked to this entry.</div>;
+                                    }
+
+                                    return links.map((link, idx) => (
+                                        <div key={idx} className="link-badge large-badge">
+                                            <span className="node-icon">🔗</span>
+                                            {getLinkedEntryDisplayValue(mapping.productPageId, link.sourceEntryId, mapping.productDisplayFieldName) || link.sourceEntryLabel || 'Item'}
+                                        </div>
+                                    ));
+                                })()}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <style>{`
+                .modal-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.4);
+                    backdrop-filter: blur(4px);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 1000;
+                }
+                .modal-content {
+                    background: white;
+                    padding: 24px;
+                    border-radius: 16px;
+                    width: 400px;
+                    max-width: 90vw;
+                    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+                }
+                .modal-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 20px;
+                }
+                .modal-header h3 {
+                    margin: 0;
+                    font-size: 18px;
+                }
+                .close-btn {
+                    background: none;
+                    border: none;
+                    font-size: 24px;
+                    cursor: pointer;
+                    color: var(--text-secondary);
+                }
+                .linked-items-modal-list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                }
+                .large-badge {
+                    padding: 12px 16px;
+                    font-size: 14px;
+                    width: 100%;
+                    justify-content: flex-start;
+                }
+                .animate-zoom-in {
+                    animation: zoomIn 0.2s ease-out;
+                }
+                @keyframes zoomIn {
+                    from { transform: scale(0.95); opacity: 0; }
+                    to { transform: scale(1); opacity: 1; }
+                }
+
                 .hierarchy-manager {
                     padding: 40px;
                     max-width: 100%;
