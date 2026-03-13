@@ -110,7 +110,19 @@ export default function EntriesList() {
             });
         }
     } else {
-        tableColumns = fields.filter(f => f.valueType !== 'Grid' && f.valueType !== 'Rich Editor' && f.valueType !== 'Image').slice(0, 5);
+        const baseCols = fields.filter(f => f.valueType !== 'Grid' && f.valueType !== 'Rich Editor' && f.valueType !== 'Image').slice(0, 5);
+        const offerFld = baseCols.find(f => f.valueType === 'Offer');
+        if (offerFld) {
+            const idx = baseCols.indexOf(offerFld);
+            baseCols.splice(idx + 1, 0, { 
+                id: 'virtual_offer_price', 
+                label: 'Offer Price', 
+                isVirtualOfferPrice: true,
+                offerFieldKey: offerFld.compositeKey,
+                targetFieldId: offerFld.offerTargetFieldId
+            });
+        }
+        tableColumns = baseCols;
     }
 
     const filteredEntries = useMemo(() => {
@@ -316,7 +328,7 @@ export default function EntriesList() {
                                 {tableColumns.map(col => (
                                     <th key={col.id}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            {col.label.toUpperCase()}
+                                            {col.valueType === 'Offer' ? 'OFFER STATUS' : col.label.toUpperCase()}
                                             {user?.role === 'System Admin' && isLinkedOfferPage && (col.id === 'offer_item' || col.id === 'base_price') && (
                                                 <button 
                                                     onClick={() => { setConfigField(col.id === 'offer_item' ? 'title' : 'price'); setShowConfigModal(true); }}
@@ -356,6 +368,7 @@ export default function EntriesList() {
                                             let rawVal = entry.data ? entry.data[col.compositeKey] : null;
                                             let val = rawVal;
                                             
+                                            let cellStyle = {};
                                             if (isOfferPage) {
                                                 if (col.id === 'offer_item') {
                                                     // Explicitly use configured field if available, regardless of content (to show it's working)
@@ -366,7 +379,11 @@ export default function EntriesList() {
                                                         val = offerData.title || (isLinkedOfferPage ? getLinkedEntryDisplayValue(page.basePageId, entry.id) : '—');
                                                     }
                                                 }
-                                                if (col.id === 'status') val = offerData.status || 'Active';
+                                                if (col.id === 'status') {
+                                                    const statusStr = offerData.status || 'Active';
+                                                    val = statusStr;
+                                                    cellStyle = { color: statusStr === 'Active' ? '#10b981' : '#ef4444', fontWeight: '700' };
+                                                }
                                                 if (col.id === 'percentage') val = offerData.percentage || '—';
                                                 if (col.id === 'base_price') val = rawVal || '—';
                                                 
@@ -391,9 +408,48 @@ export default function EntriesList() {
                                                 }
                                             } else if (col.valueType === 'Link') {
                                                 val = getLinkedEntryDisplayValue(col.linkedPageId, val) || val;
+                                            } else if (col.valueType === 'Offer') {
+                                                try {
+                                                    const parsed = (typeof rawVal === 'string' && rawVal.startsWith('{')) ? JSON.parse(rawVal) : { status: rawVal };
+                                                    const status = (parsed.status || parsed);
+                                                    val = status === 'Active' ? 'active' : 'inactive';
+                                                    cellStyle = { color: status === 'Active' ? '#10b981' : '#ef4444', fontWeight: '700' };
+                                                } catch(e) {
+                                                    const status = (rawVal === 'Active') ? 'active' : 'inactive';
+                                                    val = status;
+                                                    cellStyle = { color: rawVal === 'Active' ? '#10b981' : '#ef4444', fontWeight: '700' };
+                                                }
+                                            } else if (col.isVirtualOfferPrice) {
+                                                const offerRaw = entry.data[col.offerFieldKey];
+                                                try {
+                                                    const offerData = (typeof offerRaw === 'string' && offerRaw.startsWith('{')) ? JSON.parse(offerRaw) : { status: offerRaw };
+                                                    if (offerData.status === 'Active') {
+                                                        const targetField = fields.find(f => String(f.id) === String(col.targetFieldId));
+                                                        const targetVal = targetField ? entry.data[targetField.compositeKey] : null;
+                                                        const amt = targetVal ? parseFloat(targetVal.toString().replace(/[^0-9.-]+/g, "")) : 0;
+                                                        const pctStr = offerData.percentage || '';
+
+                                                        if (!isNaN(amt) && pctStr) {
+                                                            const pStr = pctStr.toString();
+                                                            if (pStr.includes('%')) {
+                                                                const pct = parseFloat(pStr.replace('%', ''));
+                                                                val = !isNaN(pct) ? (amt - (amt * (pct / 100))).toFixed(2) : '—';
+                                                            } else {
+                                                                const flat = parseFloat(pStr);
+                                                                val = !isNaN(flat) ? flat.toFixed(2) : '—';
+                                                            }
+                                                        } else {
+                                                            val = '—';
+                                                        }
+                                                    } else {
+                                                        val = '—';
+                                                    }
+                                                } catch(e) {
+                                                    val = '—';
+                                                }
                                             }
 
-                                            return <td key={col.id}>{val || '—'}</td>
+                                            return <td key={col.id} style={cellStyle}>{val || '—'}</td>
                                         });
                                     })()}
                                     <td style={{ textAlign: 'right' }}>

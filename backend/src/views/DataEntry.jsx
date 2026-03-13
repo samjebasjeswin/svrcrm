@@ -702,7 +702,7 @@ export default function DataEntry() {
                         if (!isNaN(pct)) calcText = `${Number((amt - (amt * (pct / 100))).toFixed(2))}`;
                     } else {
                         const flat = parseFloat(strVal);
-                        if (!isNaN(flat)) calcText = `${Number((amt - flat).toFixed(2))}`;
+                        if (!isNaN(flat)) calcText = `${Number(flat.toFixed(2))}`;
                     }
                 }
 
