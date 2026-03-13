@@ -268,7 +268,7 @@ function FieldEditModal({ field, onSave, onClose, pages, currentPageId }) {
 export default function EditPage() {
     const { pageId } = useParams();
     const router = useRouter();
-    const { getPage, updatePage, deletePage, getCompanyPages, pageLinks, addPageLinks, deletePageLink } = useApp();
+    const { getPage, updatePage, deletePage, getCompanyPages, pageLinks, addPageLinks, deletePageLink, ensureLinkedOfferPage } = useApp();
 
     const page = getPage(pageId);
     const allPages = getCompanyPages();
@@ -791,6 +791,16 @@ export default function EditPage() {
     };
 
     const handleUpdate = () => {
+        const hasOfferField = headings.some(h => 
+            h.subHeadings?.some(sh => 
+                sh.fields?.some(f => f.valueType === 'Offer')
+            )
+        );
+
+        if (hasOfferField) {
+            ensureLinkedOfferPage(Number(pageId), page.name);
+        }
+
         updatePage(Number(pageId), {
             headings,
             singleEntry,
@@ -1279,7 +1289,7 @@ export default function EditPage() {
                         Cancel
                     </button>
                     <button className="btn btn-primary btn-sm" onClick={handleUpdate}>
-                        Update
+                        Update Structure
                     </button>
                 </div>
             </div>
@@ -1559,7 +1569,7 @@ export default function EditPage() {
                         Cancel
                     </button>
                     <button className="btn btn-primary" onClick={handleUpdate}>
-                        Save Changes
+                        Update Structure
                     </button>
                 </div>
             </div>

@@ -671,33 +671,125 @@ export default function DataEntry() {
                 })));
                 const targetFieldValue = targetKey ? formData[targetKey] : null;
 
-                let liveOfferText = offerTargetLabel ? `Applies to: ${offerTargetLabel}` : 'No target connected';
-                if (targetFieldValue && value) {
-                    const strVal = value.toString().trim();
-                    const amt = parseFloat(targetFieldValue.toString().replace(/[^0-9.-]+/g, ""));
-                    if (strVal.includes('%')) {
-                        const pct = parseFloat(strVal.replace('%', ''));
-                        if (!isNaN(pct) && !isNaN(amt)) {
-                            liveOfferText = `${offerTargetLabel} - ${pct}% : ${Number((amt - (amt * (pct / 100))).toFixed(2))}`;
-                        }
+                let offerData = { status: 'Active', percentage: '', mode: 'Percentage' };
+                try {
+                    if (value && typeof value === 'string' && value.startsWith('{')) {
+                        const parsed = JSON.parse(value);
+                        offerData = { ...offerData, ...parsed };
+                    } else if (value) {
+                        offerData.percentage = value;
+                        if (!value.toString().includes('%')) offerData.mode = 'Fixed';
+                    }
+                } catch(e) {}
+
+                const updateOffer = (updates) => {
+                    const newData = { ...offerData, ...updates };
+                    // Auto-append % if mode is Percentage and it's missing, or remove if mode is Fixed
+                    if (newData.mode === 'Percentage' && newData.percentage && !newData.percentage.toString().includes('%')) {
+                        newData.percentage = newData.percentage + '%';
+                    } else if (newData.mode === 'Fixed' && newData.percentage) {
+                        newData.percentage = newData.percentage.toString().replace('%', '');
+                    }
+                    setFormData(prev => ({ ...prev, [getFieldKey(heading.id, sub.id, field.id)]: JSON.stringify(newData) }));
+                };
+
+                const strVal = offerData.percentage || '';
+                const amt = targetFieldValue ? parseFloat(targetFieldValue.toString().replace(/[^0-9.-]+/g, "")) : 0;
+                let calcText = '';
+                if (!isNaN(amt) && strVal) {
+                    if (strVal.toString().includes('%')) {
+                        const pct = parseFloat(strVal.toString().replace('%', ''));
+                        if (!isNaN(pct)) calcText = `${Number((amt - (amt * (pct / 100))).toFixed(2))}`;
                     } else {
                         const flat = parseFloat(strVal);
-                        if (!isNaN(flat) && !isNaN(amt)) {
-                            liveOfferText = `Fixed Offer Price : ${flat}`;
-                        }
+                        if (!isNaN(flat)) calcText = `${Number((amt - flat).toFixed(2))}`;
                     }
                 }
 
                 return (
-                    <div className="data-entry-field-input-wrapper">
-                        <input
-                            {...inputProps}
-                            type="text"
-                            placeholder={offerTargetLabel ? `Offer amt or % for ${offerTargetLabel}...` : `Offer for ${field.label}...`}
-                        />
-                        <div style={{ fontSize: '11px', color: '#f59e0b', marginTop: '6px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                            {liveOfferText}
+                    <div className="data-entry-field-input-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '12px', padding: '16px', background: 'white', borderRadius: '16px', border: '1.5px solid var(--border)', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
+                        {/* Status Toggle */}
+                        <div style={{ display: 'flex', background: '#f1f5f9', padding: '4px', borderRadius: '10px', width: 'fit-content' }}>
+                            {['Active', 'Disabled'].map(s => (
+                                <button
+                                    key={s}
+                                    type="button"
+                                    onClick={() => updateOffer({ status: s })}
+                                    style={{
+                                        padding: '6px 16px',
+                                        borderRadius: '8px',
+                                        border: 'none',
+                                        fontSize: '12px',
+                                        fontWeight: '700',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s',
+                                        background: offerData.status === s ? 'white' : 'transparent',
+                                        color: offerData.status === s ? 'var(--primary)' : 'var(--text-secondary)',
+                                        boxShadow: offerData.status === s ? '0 2px 4px rgba(0,0,0,0.1)' : 'none'
+                                    }}
+                                >
+                                    {s}
+                                </button>
+                            ))}
                         </div>
+
+                        {offerData.status === 'Active' && (
+                            <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                {/* Mode Selector */}
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                    {[
+                                        { label: '% Percentage', value: 'Percentage' },
+                                        { label: 'Fixed Offer Price', value: 'Fixed' }
+                                    ].map(m => (
+                                        <button
+                                            key={m.value}
+                                            type="button"
+                                            onClick={() => updateOffer({ mode: m.value })}
+                                            style={{
+                                                flex: 1,
+                                                padding: '10px',
+                                                borderRadius: '10px',
+                                                border: '1.5px solid',
+                                                borderColor: offerData.mode === m.value ? 'var(--accent)' : 'var(--border)',
+                                                background: offerData.mode === m.value ? 'rgba(79, 70, 229, 0.05)' : 'white',
+                                                color: offerData.mode === m.value ? 'var(--accent)' : 'var(--text-secondary)',
+                                                fontSize: '12px',
+                                                fontWeight: '600',
+                                                cursor: 'pointer',
+                                                transition: 'all 0.2s'
+                                            }}
+                                        >
+                                            {m.label}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                                    <div style={{ flex: 1, position: 'relative' }}>
+                                        <input
+                                            className="data-entry-input"
+                                            style={{ width: '100%', paddingRight: offerData.mode === 'Percentage' ? '30px' : '12px' }}
+                                            value={strVal.toString().replace('%', '')}
+                                            onChange={(e) => updateOffer({ percentage: e.target.value })}
+                                            placeholder={offerData.mode === 'Percentage' ? "Enter %" : "Enter amount"}
+                                        />
+                                        {offerData.mode === 'Percentage' && (
+                                            <span style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', fontWeight: '700', opacity: 0.5 }}>%</span>
+                                        )}
+                                    </div>
+                                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '8px', background: 'var(--accent)', borderRadius: '12px', color: 'white' }}>
+                                        <div style={{ fontSize: '10px', textTransform: 'uppercase', opacity: 0.8, fontWeight: '700', letterSpacing: '0.5px' }}>Offer Price</div>
+                                        <div style={{ fontSize: '16px', fontWeight: '800' }}>{calcText || '—'}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {offerTargetLabel && (
+                            <div style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: '600', opacity: 0.7, borderTop: '1px solid var(--border)', paddingTop: '8px' }}>
+                                TARGET: {offerTargetLabel} ({targetFieldValue || '0'})
+                            </div>
+                        )}
                     </div>
                 );
             case 'Grid':

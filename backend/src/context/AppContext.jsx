@@ -539,11 +539,70 @@ export function AppProvider({ children }) {
     }
   };
 
+  const ensureOfferPage = () => {
+    if (!currentCompanyId) return;
+    const currentPages = pages[currentCompanyId] || [];
+    const existingIndex = currentPages.findIndex((p) => p.name.toLowerCase().trim() === 'offer');
+
+    if (existingIndex === -1) {
+      const newPage = {
+        id: Date.now() + 100,
+        name: 'Offer',
+        headings: [
+          {
+            id: Date.now() + 101,
+            title: 'Offer Configuration',
+            subHeadings: [
+              {
+                id: Date.now() + 102,
+                title: 'Apply Offers to Items',
+                fields: [
+                  { id: Date.now() + 103, label: 'Offer Title', valueType: 'Text', placeholder: 'e.g. Summer Sale', maxChars: 120 },
+                  { id: Date.now() + 104, label: 'Status', valueType: 'limit', placeholder: 'Active, Inactive' },
+                  { id: Date.now() + 105, label: 'Percentage', valueType: 'Text', placeholder: 'e.g. 10% or 50' },
+                  { id: Date.now() + 106, label: 'Base Price Field', valueType: 'Offer', offerTargetFieldId: null },
+                ],
+              },
+            ],
+          },
+        ],
+      };
+      setPages((prev) => ({
+        ...prev,
+        [currentCompanyId]: [...(prev[currentCompanyId] || []), newPage],
+      }));
+    }
+  };
+
+  const ensureLinkedOfferPage = (basePageId, basePageName) => {
+    if (!currentCompanyId) return;
+    const currentPages = pages[currentCompanyId] || [];
+    const linkedName = `${basePageName}-Offers`;
+    const existing = currentPages.find(p => p.name.toLowerCase() === linkedName.toLowerCase());
+
+    if (!existing) {
+      const newPage = {
+        id: Date.now() + Math.floor(Math.random() * 1000),
+        name: linkedName,
+        isLinkedOfferPage: true,
+        basePageId: basePageId,
+        headings: [], // Structurally empty as it pulls from basePage
+        offerTitleFieldId: null,
+        basePriceFieldId: null,
+      };
+      setPages((prev) => ({
+        ...prev,
+        [currentCompanyId]: [...(prev[currentCompanyId] || []), newPage],
+      }));
+    }
+  };
+
   // Call once on mount or when currentCompanyId changes
   useEffect(() => {
     ensureFormPage();
     ensureSeoPage();
     ensureMailerSettingsPage();
+    // ensureOfferPage();
   }, [currentCompanyId]);
 
   // ---- Saved Entries (shared across pages for linking) ----
@@ -827,6 +886,7 @@ export function AppProvider({ children }) {
         updatePageLink,
         deletePageLink,
         ensureFormPage,
+        ensureLinkedOfferPage,
         fieldMappings,
         addFieldMapping: (m) => setFieldMappings(prev => [...prev, { ...m, id: Date.now(), companyId: currentCompanyId }]),
         updateFieldMapping: (id, m) => setFieldMappings(prev => prev.map(item => item.id === id ? { ...item, ...m } : item)),

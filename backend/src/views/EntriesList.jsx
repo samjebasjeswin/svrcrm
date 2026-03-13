@@ -6,13 +6,19 @@ import { useApp } from '../context/AppContext';
 export default function EntriesList() {
     const { pageId } = useParams();
     const router = useRouter();
-    const { getPage, getPageEntries, currentCompanyId, deleteEntry, inquiries, deleteInquiry, updateInquiryStatus, companies, getInboundLinks, getLinkedEntryDisplayValue } = useApp();
+    const { getPage, getPageEntries, currentCompanyId, deleteEntry, inquiries, deleteInquiry, updateInquiryStatus, companies, getInboundLinks, getLinkedEntryDisplayValue, user, updatePage } = useApp();
     const [expandedInquiryId, setExpandedInquiryId] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [viewEntryData, setViewEntryData] = useState(null);
 
+    const [statusFilter, setStatusFilter] = useState('All');
+    const [showConfigModal, setShowConfigModal] = useState(false);
+    const [configField, setConfigField] = useState(null); // 'title' or 'price'
+
     const page = getPage(pageId);
-    const entries = getPageEntries(pageId);
+    const isLinkedOfferPage = page?.isLinkedOfferPage;
+    const entries = getPageEntries(isLinkedOfferPage ? page.basePageId : pageId);
+    const basePage = isLinkedOfferPage ? getPage(page.basePageId) : null;
 
     // Auto-redirect for single-entry pages
     const lowerName = page?.name?.toLowerCase()?.trim() || '';
@@ -43,14 +49,99 @@ export default function EntriesList() {
         return allFields;
     }, [page]);
 
-    // Use first field for table columns
-    const tableColumns = fields.slice(0, 1);
+    // Use first few fields for table columns
+    let tableColumns = [];
+    if (page?.name?.toLowerCase().trim() === 'offer' || isLinkedOfferPage) {
+        tableColumns = [
+            { id: 'offer_item', label: 'Offer Title', compositeKey: 'offer_item_key' },
+            { id: 'status', label: 'Status', compositeKey: 'status_key' },
+            { id: 'percentage', label: 'Percentage', compositeKey: 'percentage_key' },
+            { id: 'base_price', label: 'Base Price Field', compositeKey: 'base_price_key' },
+            { id: 'offer_price', label: 'Offer Price', compositeKey: 'offer_price_key' }
+        ];
+
+        // Map abstract columns to actual field keys
+        const targetFields = isLinkedOfferPage 
+            ? basePage?.headings?.flatMap(h => h.subHeadings?.flatMap(sh => sh.fields || [])) || []
+            : fields;
+
+        // For linked page, find where the Offer data is stored 
+        const offerField = targetFields.find(f => f.valueType === 'Offer');
+        
+        // Find Title field: configured first, then fallback
+        let titleField = page.offerTitleFieldId ? targetFields.find(f => f.id === Number(page.offerTitleFieldId)) : null;
+        if (!titleField) titleField = targetFields.find(f => f.label.toLowerCase() === 'name' || f.id === page.searchFieldId);
+        
+        // Find Price field: configured first, then fallback
+        let priceField = page.basePriceFieldId ? targetFields.find(f => f.id === Number(page.basePriceFieldId)) : null;
+        if (!priceField) priceField = targetFields.find(f => f.label.toLowerCase().includes('price') && f.valueType !== 'Offer');
+
+        if (isLinkedOfferPage && offerField) {
+            const getCompKey = (fld) => {
+                if (!fld) return null;
+                const h = basePage.headings.find(h => h.subHeadings.some(sh => sh.fields.some(f => f.id === fld.id)));
+                if (!h) return null;
+                const sh = h.subHeadings.find(sh => sh.fields.some(f => f.id === fld.id));
+                return `${h.id}_${sh.id}_${fld.id}`;
+            };
+
+            const offerKey = getCompKey(offerField);
+            tableColumns[0].compositeKey = offerKey;
+            tableColumns[1].compositeKey = offerKey;
+            tableColumns[2].compositeKey = offerKey;
+            tableColumns[4].compositeKey = offerKey; // Offer price calculation uses percentage from offerKey
+            
+            if (titleField) {
+                tableColumns[0].id = 'offer_item';
+                tableColumns[0].compositeKey = getCompKey(titleField);
+                tableColumns[0].titleFieldId = titleField.id;
+            }
+
+            if (priceField) {
+                tableColumns[3].compositeKey = getCompKey(priceField);
+                tableColumns[4].basePriceKey = tableColumns[3].compositeKey;
+            }
+        } else {
+            fields.forEach(f => {
+                if (f.label === 'Offer Title') tableColumns[0].compositeKey = f.compositeKey;
+                if (f.label === 'Status') tableColumns[1].compositeKey = f.compositeKey;
+                if (f.label === 'Percentage') tableColumns[2].compositeKey = f.compositeKey;
+                if (f.label === 'Base Price Field') tableColumns[3].compositeKey = f.compositeKey;
+            });
+        }
+    } else {
+        tableColumns = fields.filter(f => f.valueType !== 'Grid' && f.valueType !== 'Rich Editor' && f.valueType !== 'Image').slice(0, 5);
+    }
 
     const filteredEntries = useMemo(() => {
-        if (!searchQuery.trim()) return entries;
+        let results = entries;
+
+        // Apply Status Filter for Offer-type pages
+        if ((page?.name?.toLowerCase().trim() === 'offer' || isLinkedOfferPage) && statusFilter !== 'All') {
+            results = results.filter(entry => {
+                const offerField = isLinkedOfferPage 
+                    ? basePage?.headings?.flatMap(h => h.subHeadings?.flatMap(sh => sh.fields))?.find(f => f.valueType === 'Offer')
+                    : fields.find(f => f.label === 'Status'); // This is for the generic 'Offer' page
+
+                if (!offerField) return true;
+                const compositeKey = isLinkedOfferPage 
+                    ? `${basePage.headings.find(h => h.subHeadings.some(sh => sh.fields.some(f => f.id === offerField.id))).id}_${basePage.headings.flatMap(h => h.subHeadings).find(sh => sh.fields.some(f => f.id === offerField.id)).id}_${offerField.id}`
+                    : fields.find(f => f.label === 'Status')?.compositeKey;
+
+                const val = entry.data?.[compositeKey];
+                try {
+                    const parsed = typeof val === 'string' && val.startsWith('{') ? JSON.parse(val) : { status: val };
+                    return parsed.status === statusFilter;
+                } catch(e) {
+                    return val === statusFilter;
+                }
+            });
+        }
+
+        if (!searchQuery.trim()) return results;
 
         const query = searchQuery.toLowerCase().trim();
-        return entries.filter(entry => {
+        return results.filter(entry => {
             if (page?.searchEnabled && page?.searchFieldId) {
                 // Search in specific field
                 const fieldId = String(page.searchFieldId);
@@ -67,7 +158,7 @@ export default function EntriesList() {
                 return val.includes(query);
             });
         });
-    }, [entries, searchQuery, page?.searchFieldId, tableColumns, fields]);
+    }, [entries, searchQuery, page, fields, tableColumns, statusFilter, isLinkedOfferPage, basePage]);
 
     const currentCompany = companies.find(c => c.id === currentCompanyId);
 
@@ -118,14 +209,15 @@ export default function EntriesList() {
 
     const handleDelete = (entryId) => {
         if (confirm('Are you sure you want to delete this entry?')) {
-            deleteEntry(pageId, entryId);
+            const deleteFromId = isLinkedOfferPage ? (page.basePageId || pageId) : pageId;
+            deleteEntry(deleteFromId, entryId);
         }
     };
 
     return (
         <div className="dashboard-page animate-fade-in">
             {!isFormPage && (
-                <div className="dashboard-header">
+                <div className="dashboard-header" style={{ alignItems: 'flex-start' }}>
                     <div className="dashboard-title">
                         <button className="btn btn-ghost" onClick={() => router.push('/pages')} style={{ marginBottom: '10px', paddingLeft: 0 }}>
                             ← Back to Admin
@@ -133,12 +225,28 @@ export default function EntriesList() {
                         <h1>{(page?.name || 'Page')} Catalog</h1>
                         <p>Manage and browse your {(page?.name || '').toLowerCase()} entries</p>
                     </div>
-                    <button
-                        className="btn btn-primary"
-                        onClick={() => router.push(`/data-entry/${pageId}/new`)}
-                    >
-                        <span style={{ fontSize: '18px', marginRight: '8px' }}>+</span> Add New {page?.name || 'Entry'}
-                    </button>
+                    <div style={{ display: 'flex', gap: '12px' }}>
+                        {(page?.name?.toLowerCase().trim() === 'offer' || isLinkedOfferPage) && (
+                            <div className="filter-group">
+                                <select 
+                                    className="data-entry-input" 
+                                    style={{ height: '42px', minWidth: '150px' }}
+                                    value={statusFilter}
+                                    onChange={(e) => setStatusFilter(e.target.value)}
+                                >
+                                    <option value="All">All Statuses</option>
+                                    <option value="Active">Active Only</option>
+                                    <option value="Disabled">Disabled Only</option>
+                                </select>
+                            </div>
+                        )}
+                        <button
+                            className="btn btn-primary"
+                            onClick={() => router.push(`/data-entry/${isLinkedOfferPage ? page.basePageId : pageId}/new`)}
+                        >
+                            <span style={{ fontSize: '18px', marginRight: '8px' }}>+</span> Add New {page?.name || 'Entry'}
+                        </button>
+                    </div>
                 </div>
             )}
 
@@ -206,7 +314,19 @@ export default function EntriesList() {
                             <tr>
                                 <th style={{ width: '60px' }}>SL NO.</th>
                                 {tableColumns.map(col => (
-                                    <th key={col.id}>{col.label}</th>
+                                    <th key={col.id}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            {col.label.toUpperCase()}
+                                            {user?.role === 'System Admin' && isLinkedOfferPage && (col.id === 'offer_item' || col.id === 'base_price') && (
+                                                <button 
+                                                    onClick={() => { setConfigField(col.id === 'offer_item' ? 'title' : 'price'); setShowConfigModal(true); }}
+                                                    style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '11px', opacity: 0.6, padding: '2px' }}
+                                                >
+                                                    ✏️
+                                                </button>
+                                            )}
+                                        </div>
+                                    </th>
                                 ))}
                                 <th style={{ textAlign: 'right' }}>ACTIONS</th>
                             </tr>
@@ -215,10 +335,67 @@ export default function EntriesList() {
                             {filteredEntries.length > 0 ? filteredEntries.map((entry, idx) => (
                                 <tr key={entry.id || idx}>
                                     <td style={{ fontWeight: '600', color: 'var(--text-secondary)' }}>{idx + 1}</td>
-                                    {tableColumns.map(col => {
-                                        const val = entry.data ? entry.data[col.compositeKey] : null;
-                                        return <td key={col.id}>{val || '—'}</td>
-                                    })}
+                                    {(() => {
+                                        // For offer pages, we need to extract the offer data once per row
+                                        const isOfferPage = page?.name?.toLowerCase().trim() === 'offer' || isLinkedOfferPage;
+                                        let offerData = { title: '', status: '', percentage: '', mode: 'Percentage' };
+                                        
+                                        if (isOfferPage) {
+                                            const statusCol = tableColumns.find(c => c.id === 'status');
+                                            const offerRaw = statusCol ? entry.data[statusCol.compositeKey] : null;
+                                            try {
+                                                if (offerRaw && typeof offerRaw === 'string' && offerRaw.startsWith('{')) {
+                                                    offerData = { ...offerData, ...JSON.parse(offerRaw) };
+                                                } else if (offerRaw) {
+                                                    offerData.percentage = offerRaw;
+                                                }
+                                            } catch(e) {}
+                                        }
+
+                                        return tableColumns.map(col => {
+                                            let rawVal = entry.data ? entry.data[col.compositeKey] : null;
+                                            let val = rawVal;
+                                            
+                                            if (isOfferPage) {
+                                                if (col.id === 'offer_item') {
+                                                    // Explicitly use configured field if available, regardless of content (to show it's working)
+                                                    if (page.offerTitleFieldId) {
+                                                        const mappingKey = col.compositeKey;
+                                                        val = entry.data[mappingKey] || '— (Empty Field)';
+                                                    } else {
+                                                        val = offerData.title || (isLinkedOfferPage ? getLinkedEntryDisplayValue(page.basePageId, entry.id) : '—');
+                                                    }
+                                                }
+                                                if (col.id === 'status') val = offerData.status || 'Active';
+                                                if (col.id === 'percentage') val = offerData.percentage || '—';
+                                                if (col.id === 'base_price') val = rawVal || '—';
+                                                
+                                                if (col.id === 'offer_price') {
+                                                    const pctStr = offerData.percentage || '';
+                                                    const bpCol = tableColumns.find(c => c.id === 'base_price');
+                                                    const basePriceRaw = bpCol ? entry.data[bpCol.compositeKey] : null;
+                                                    const amt = basePriceRaw ? parseFloat(basePriceRaw.toString().replace(/[^0-9.-]+/g, "")) : 0;
+                                                    
+                                                    if (!isNaN(amt) && pctStr) {
+                                                        const pStr = pctStr.toString();
+                                                        if (pStr.includes('%')) {
+                                                            const pct = parseFloat(pStr.replace('%', ''));
+                                                            val = !isNaN(pct) ? (amt - (amt * (pct / 100))).toFixed(2) : '—';
+                                                        } else {
+                                                            const flat = parseFloat(pStr);
+                                                            val = !isNaN(flat) ? (amt - flat).toFixed(2) : '—';
+                                                        }
+                                                    } else {
+                                                        val = '—';
+                                                    }
+                                                }
+                                            } else if (col.valueType === 'Link') {
+                                                val = getLinkedEntryDisplayValue(col.linkedPageId, val) || val;
+                                            }
+
+                                            return <td key={col.id}>{val || '—'}</td>
+                                        });
+                                    })()}
                                     <td style={{ textAlign: 'right' }}>
                                         <div className="table-actions" style={{ justifyContent: 'flex-end' }}>
                                             <button
@@ -231,7 +408,7 @@ export default function EntriesList() {
                                             <button
                                                 className="action-icon-btn"
                                                 title="View Linked Items"
-                                                onClick={() => router.push(`/inbound-links/${pageId}/${entry.id}`)}
+                                                onClick={() => router.push(`/inbound-links/${isLinkedOfferPage ? page.basePageId : pageId}/${entry.id}`)}
                                                 style={{ position: 'relative' }}
                                             >
                                                 🔗
@@ -256,7 +433,7 @@ export default function EntriesList() {
                                             <button
                                                 className="action-icon-btn"
                                                 title="Edit"
-                                                onClick={() => router.push(`/data-entry/${pageId}/${entry.id}`)}
+                                                onClick={() => router.push(`/data-entry/${isLinkedOfferPage ? page.basePageId : pageId}/${entry.id}`)}
                                             >
                                                 ✏️
                                             </button>
@@ -424,7 +601,7 @@ export default function EntriesList() {
                     }} onClick={e => e.stopPropagation()}>
                         <div style={{ padding: '24px 32px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div>
-                                <h2 style={{ margin: 0, fontSize: '20px', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text-primary)' }}>{page?.name || 'Entry'} Details</h2>
+                                <h2 style={{ margin: 0, fontSize: '20px', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text-primary)' }}>{(isLinkedOfferPage ? basePage?.name : page?.name) || 'Entry'} Details</h2>
                             </div>
                             <button className="action-icon-btn" onClick={() => setViewEntryData(null)} style={{ fontSize: '20px' }}>✕</button>
                         </div>
@@ -439,11 +616,11 @@ export default function EntriesList() {
                                     <div style={{ color: 'var(--text-primary)', fontWeight: '700', fontSize: '14px' }}>#{viewEntryData.id}</div>
 
                                     <div style={{ color: 'var(--text-secondary)', fontWeight: '600', fontSize: '14px' }}>Name</div>
-                                    <div style={{ color: 'var(--accent)', fontWeight: '800', fontSize: '15px' }}>{getLinkedEntryDisplayValue(pageId, viewEntryData.id)}</div>
+                                    <div style={{ color: 'var(--accent)', fontWeight: '800', fontSize: '15px' }}>{getLinkedEntryDisplayValue(isLinkedOfferPage ? (page.basePageId || pageId) : pageId, viewEntryData.id)}</div>
                                 </div>
                             </div>
 
-                            {page?.headings?.map(heading => (
+                            {(isLinkedOfferPage ? basePage?.headings : page?.headings)?.map(heading => (
                                 <div key={heading.id} style={{ marginBottom: '32px' }}>
                                     <h4 style={{ fontSize: '11px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '16px', borderBottom: '1px solid #f1f5f9', paddingBottom: '8px' }}>
                                         {heading.title || 'Data Fields'}
@@ -529,9 +706,62 @@ export default function EntriesList() {
                         <div style={{ padding: '24px 32px', background: '#f8fafc', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
                             <button className="btn btn-ghost" onClick={() => setViewEntryData(null)}>Close</button>
                             <button className="btn btn-primary" onClick={() => {
-                                router.push(`/data-entry/${pageId}/${viewEntryData.id}`);
+                                router.push(`/data-entry/${isLinkedOfferPage ? (page.basePageId || pageId) : pageId}/${viewEntryData.id}`);
                                 setViewEntryData(null);
                             }}>Edit Entry</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {showConfigModal && (
+                <div className="modal-overlay" onClick={() => setShowConfigModal(false)}>
+                    <div className="modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                            <h2 style={{ margin: 0 }}>Configure {configField === 'title' ? 'Offer Title' : 'Base Price'}</h2>
+                            <button className="close-btn" onClick={() => setShowConfigModal(false)}>✕</button>
+                        </div>
+                        <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '20px' }}>
+                            Select the field from <b>{basePage?.name}</b> that contains the {configField === 'title' ? 'item name/title' : 'base price'}.
+                        </p>
+                        <div className="form-group">
+                            <label className="form-label">Available Fields</label>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '300px', overflowY: 'auto', padding: '4px' }}>
+                                {basePage?.headings?.flatMap(h => h.subHeadings?.flatMap(sh => sh.fields || [])).map(f => (
+                                    <button
+                                        key={f.id}
+                                        className="btn btn-ghost"
+                                        style={{ 
+                                            justifyContent: 'flex-start', 
+                                            textAlign: 'left',
+                                            padding: '12px',
+                                            border: (configField === 'title' ? page.offerTitleFieldId : page.basePriceFieldId) === f.id ? '1.5px solid var(--accent)' : '1px solid var(--border)',
+                                            background: (configField === 'title' ? page.offerTitleFieldId : page.basePriceFieldId) === f.id ? 'rgba(79, 70, 229, 0.05)' : 'white'
+                                        }}
+                                        onClick={() => {
+                                            const updates = configField === 'title' 
+                                                ? { offerTitleFieldId: f.id }
+                                                : { basePriceFieldId: f.id };
+                                            updatePage(pageId, { ...page, ...updates });
+                                            setShowConfigModal(false);
+                                        }}
+                                    >
+                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                            <span style={{ fontWeight: '600' }}>{f.label}</span>
+                                            <span style={{ fontSize: '11px', opacity: 0.6 }}>Type: {f.valueType}</span>
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="modal-actions" style={{ marginTop: '24px' }}>
+                            <button className="btn btn-outline" onClick={() => setShowConfigModal(false)}>Cancel</button>
+                            <button className="btn btn-primary" onClick={() => {
+                                const updates = configField === 'title' 
+                                    ? { offerTitleFieldId: null }
+                                    : { basePriceFieldId: null };
+                                updatePage(pageId, { ...page, ...updates });
+                                setShowConfigModal(false);
+                            }}>Reset to Default</button>
                         </div>
                     </div>
                 </div>
