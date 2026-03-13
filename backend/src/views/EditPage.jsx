@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useApp } from '../context/AppContext';
 import ImageUpload from '../components/ImageUpload';
 
-const VALUE_TYPES = ['Number', 'Text', 'Link', 'Rich Editor', '120 Char', '160 Char', 'Image', 'Grid', 'Slug', 'Permalink', 'limit'];
+const VALUE_TYPES = ['Number', 'Text', 'Link', 'Rich Editor', '120 Char', '160 Char', 'Image', 'Grid', 'Slug', 'Permalink', 'limit', 'Offer'];
 
 function FieldEditModal({ field, onSave, onClose, pages, currentPageId }) {
     const [label, setLabel] = useState(field?.label || '');
@@ -15,6 +15,7 @@ function FieldEditModal({ field, onSave, onClose, pages, currentPageId }) {
     const [linkedPageId, setLinkedPageId] = useState(field?.linkedPageId || '');
     const [slugSourceFieldId, setSlugSourceFieldId] = useState(field?.slugSourceFieldId || '');
     const [permalinkSourceFieldId, setPermalinkSourceFieldId] = useState(field?.permalinkSourceFieldId || '');
+    const [offerTargetFieldId, setOfferTargetFieldId] = useState(field?.offerTargetFieldId || '');
     const [infinity, setInfinity] = useState(field?.infinity || false);
     const [maxItems, setMaxItems] = useState(field?.maxItems || '');
     const [gridCols, setGridCols] = useState(field?.gridCols || [{ label: '', placeholder: '' }]);
@@ -32,8 +33,9 @@ function FieldEditModal({ field, onSave, onClose, pages, currentPageId }) {
             linkedPageId: valueType === 'Link' ? Number(linkedPageId) || null : null,
             slugSourceFieldId: valueType === 'Slug' ? slugSourceFieldId : null,
             permalinkSourceFieldId: valueType === 'Permalink' ? permalinkSourceFieldId : null,
-            infinity: (valueType !== 'Grid' && valueType !== 'Slug' && valueType !== 'Permalink') ? infinity : false,
-            maxItems: (valueType !== 'Grid' && valueType !== 'Slug' && valueType !== 'Permalink') ? Number(maxItems) || 0 : 0,
+            offerTargetFieldId: valueType === 'Offer' ? offerTargetFieldId : null,
+            infinity: (valueType !== 'Grid' && valueType !== 'Slug' && valueType !== 'Permalink' && valueType !== 'Offer') ? infinity : false,
+            maxItems: (valueType !== 'Grid' && valueType !== 'Slug' && valueType !== 'Permalink' && valueType !== 'Offer') ? Number(maxItems) || 0 : 0,
             gridCols: valueType === 'Grid' ? gridCols : null,
         });
     };
@@ -58,7 +60,7 @@ function FieldEditModal({ field, onSave, onClose, pages, currentPageId }) {
                     <label className="form-label">Value Type <span className="required">*</span></label>
                     <div className="pill-group">
                         {(() => {
-                            const textRelatedTypes = ['Text', 'Number', 'limit', 'Slug', 'Permalink'];
+                            const textRelatedTypes = ['Text', 'Number', 'limit', 'Slug', 'Permalink', 'Offer'];
                             const isTextRelated = textRelatedTypes.includes(valueType);
                             const otherTypes = ['Link', 'Rich Editor', 'Image', 'Grid'];
 
@@ -88,9 +90,9 @@ function FieldEditModal({ field, onSave, onClose, pages, currentPageId }) {
                         })()}
                     </div>
                     {/* Sub-options for Text Related Types in Modal */}
-                    {['Text', 'Number', 'limit', 'Slug', 'Permalink'].includes(valueType) && (
+                    {['Text', 'Number', 'limit', 'Slug', 'Permalink', 'Offer'].includes(valueType) && (
                         <div className="sub-pill-group" style={{ marginTop: '12px', display: 'flex', gap: '6px', padding: '6px', background: 'var(--bg)', borderRadius: 'var(--radius-sm)' }}>
-                            {['Text', 'Number', 'limit', 'Slug', 'Permalink'].map((subType) => (
+                            {['Text', 'Number', 'limit', 'Slug', 'Permalink', 'Offer'].map((subType) => (
                                 <button
                                     key={subType}
                                     type="button"
@@ -157,6 +159,25 @@ function FieldEditModal({ field, onSave, onClose, pages, currentPageId }) {
                         </select>
                     </div>
                 )}
+                {valueType === 'Offer' && (
+                    <div className="form-group">
+                        <label className="form-label">Connect to Field (Offer Target) <span className="required">*</span></label>
+                        <select
+                            className="form-input"
+                            value={offerTargetFieldId}
+                            onChange={(e) => setOfferTargetFieldId(e.target.value)}
+                        >
+                            <option value="">-- Select target field --</option>
+                            {pages.find(p => p.id === Number(currentPageId))?.headings?.flatMap(h =>
+                                h.subHeadings?.flatMap(sh =>
+                                    sh.fields?.filter(f => f.id !== field?.id && f.valueType !== 'Offer').map(f => (
+                                        <option key={f.id} value={f.id}>{f.label || `Field ${f.id}`}</option>
+                                    )) || []
+                                ) || []
+                            ) || []}
+                        </select>
+                    </div>
+                )}
                 {valueType !== 'Link' && (
                     <div className="form-group">
                         <label className="form-label">Character Limits</label>
@@ -172,7 +193,7 @@ function FieldEditModal({ field, onSave, onClose, pages, currentPageId }) {
                         </div>
                     </div>
                 )}
-                {(valueType !== 'Grid' && valueType !== 'Slug' && valueType !== 'Permalink') && (
+                {(valueType !== 'Grid' && valueType !== 'Slug' && valueType !== 'Permalink' && valueType !== 'Offer') && (
                     <div className="form-group">
                         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                             <label className="toggle" style={{ display: 'flex', alignItems: 'center', gap: 10, width: 'auto' }}>
@@ -435,6 +456,7 @@ export default function EditPage() {
             case 'Slug': return 'active-slug';
             case 'Permalink': return 'active-permalink';
             case 'limit': return 'active-limit';
+            case 'Offer': return 'active-offer';
             default: return 'active';
         }
     };
@@ -915,7 +937,7 @@ export default function EditPage() {
                                                                 <div className="pill-group-wrapper">
                                                                     <div className="pill-group">
                                                                         {(() => {
-                                                                            const textRelatedTypes = ['Text', 'Number', 'limit', 'Slug', 'Permalink'];
+                                                                            const textRelatedTypes = ['Text', 'Number', 'limit', 'Slug', 'Permalink', 'Offer'];
                                                                             const isTextRelated = textRelatedTypes.includes(field.valueType);
                                                                             const otherTypes = ['Link', 'Rich Editor', 'Image', 'Grid'];
 
@@ -954,9 +976,9 @@ export default function EditPage() {
                                                                         })()}
                                                                     </div>
 
-                                                                    {['Text', 'Number', 'limit', 'Slug', 'Permalink'].includes(field.valueType) && (
+                                                                    {['Text', 'Number', 'limit', 'Slug', 'Permalink', 'Offer'].includes(field.valueType) && (
                                                                         <div className="sub-pill-group" style={{ marginTop: '8px', display: 'flex', gap: '4px', padding: '4px', background: 'var(--bg)', borderRadius: 'var(--radius-sm)' }}>
-                                                                            {['Text', 'Number', 'limit', 'Slug', 'Permalink'].map((subType) => (
+                                                                            {['Text', 'Number', 'limit', 'Slug', 'Permalink', 'Offer'].map((subType) => (
                                                                                 <button
                                                                                     key={subType}
                                                                                     type="button"
@@ -1026,6 +1048,23 @@ export default function EditPage() {
                                                                                 }
                                                                             >
                                                                                 <option value="">Select source...</option>
+                                                                                {[...headings, ...staticSeoHeadings, ...dynamicSeoHeadings].flatMap(h => h.subHeadings?.flatMap(sh => sh.fields?.filter(f => f.id !== field.id).map(f => (
+                                                                                    <option key={f.id} value={f.id}>{f.label || `Field ${f.id}`}</option>
+                                                                                )) || []) || [])}
+                                                                            </select>
+                                                                        </div>
+                                                                    )}
+                                                                    {field.valueType === 'Offer' && (
+                                                                        <div className="link-page-selector" title="Offer Target">
+                                                                            <select
+                                                                                className="link-page-select"
+                                                                                style={{ borderColor: '#f59e0b', color: '#f59e0b' }}
+                                                                                value={field.offerTargetFieldId || ''}
+                                                                                onChange={(e) =>
+                                                                                    updateFieldInline(heading.id, sub.id, field.id, 'offerTargetFieldId', e.target.value, setter)
+                                                                                }
+                                                                            >
+                                                                                <option value="">Select target...</option>
                                                                                 {[...headings, ...staticSeoHeadings, ...dynamicSeoHeadings].flatMap(h => h.subHeadings?.flatMap(sh => sh.fields?.filter(f => f.id !== field.id).map(f => (
                                                                                     <option key={f.id} value={f.id}>{f.label || `Field ${f.id}`}</option>
                                                                                 )) || []) || [])}

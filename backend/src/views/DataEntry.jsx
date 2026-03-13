@@ -655,6 +655,51 @@ export default function DataEntry() {
                         </div>
                     </div>
                 );
+            case 'Offer':
+                const allAHeadingsOffer = [
+                    ...(page.headings || []),
+                    ...(page.staticSeoEnabled ? (page.staticSeoHeadings || []) : []),
+                    ...(page.dynamicSeoEnabled ? (page.dynamicSeoHeadings || []) : [])
+                ];
+                let targetKey = null;
+                let offerTargetLabel = '';
+                allAHeadingsOffer.forEach(h => h.subHeadings?.forEach(sh => sh.fields?.forEach(f => {
+                    if (String(f.id).trim() === String(field.offerTargetFieldId).trim()) {
+                        offerTargetLabel = f.label;
+                        targetKey = rowIdx !== null ? `${h.id}_${sh.id}_${f.id}_row${rowIdx}` : `${h.id}_${sh.id}_${f.id}`;
+                    }
+                })));
+                const targetFieldValue = targetKey ? formData[targetKey] : null;
+
+                let liveOfferText = offerTargetLabel ? `Applies to: ${offerTargetLabel}` : 'No target connected';
+                if (targetFieldValue && value) {
+                    const strVal = value.toString().trim();
+                    const amt = parseFloat(targetFieldValue.toString().replace(/[^0-9.-]+/g, ""));
+                    if (strVal.includes('%')) {
+                        const pct = parseFloat(strVal.replace('%', ''));
+                        if (!isNaN(pct) && !isNaN(amt)) {
+                            liveOfferText = `${offerTargetLabel} - ${pct}% : ${Number((amt - (amt * (pct / 100))).toFixed(2))}`;
+                        }
+                    } else {
+                        const flat = parseFloat(strVal);
+                        if (!isNaN(flat) && !isNaN(amt)) {
+                            liveOfferText = `Fixed Offer Price : ${flat}`;
+                        }
+                    }
+                }
+
+                return (
+                    <div className="data-entry-field-input-wrapper">
+                        <input
+                            {...inputProps}
+                            type="text"
+                            placeholder={offerTargetLabel ? `Offer amt or % for ${offerTargetLabel}...` : `Offer for ${field.label}...`}
+                        />
+                        <div style={{ fontSize: '11px', color: '#f59e0b', marginTop: '6px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                            {liveOfferText}
+                        </div>
+                    </div>
+                );
             case 'Grid':
                 return (
                     <div className="data-entry-grid-wrapper">

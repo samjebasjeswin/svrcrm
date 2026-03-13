@@ -479,6 +479,41 @@ export default function EntriesList() {
                                                                     <span style={{ color: 'var(--accent)', fontWeight: '700' }}>
                                                                         {getLinkedEntryDisplayValue(field.linkedPageId, val) || '—'}
                                                                     </span>
+                                                                ) : field.valueType === 'Offer' ? (
+                                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                                        <span style={{ fontWeight: '700' }}>{val || '—'}</span>
+                                                                        {field.offerTargetFieldId && val && (
+                                                                            <span style={{ fontSize: '12px', color: '#f59e0b', fontWeight: '700', padding: '2px 8px', background: 'rgba(245, 158, 11, 0.1)', borderRadius: '12px' }}>
+                                                                                {(() => {
+                                                                                    let targetVal = null;
+                                                                                    let targetLabel = '';
+                                                                                    page?.headings?.forEach(h => h.subHeadings?.forEach(sh => sh.fields?.forEach(f => {
+                                                                                        if (String(f.id) === String(field.offerTargetFieldId)) {
+                                                                                            targetVal = viewEntryData.data?.[`${h.id}_${sh.id}_${f.id}`];
+                                                                                            targetLabel = f.label || 'Target Field';
+                                                                                        }
+                                                                                    })));
+                                                                                    if (targetVal) {
+                                                                                        const strVal = val.toString().trim();
+                                                                                        if (strVal.includes('%')) {
+                                                                                            const pct = parseFloat(strVal.replace('%', ''));
+                                                                                            const amt = parseFloat(targetVal.toString().replace(/[^0-9.-]+/g,""));
+                                                                                            if (!isNaN(pct) && !isNaN(amt)) {
+                                                                                                return `${targetLabel} - ${pct}% : ${Number((amt - (amt * (pct / 100))).toFixed(2))}`;
+                                                                                            }
+                                                                                        } else {
+                                                                                            const flat = parseFloat(strVal);
+                                                                                            const amt = parseFloat(targetVal.toString().replace(/[^0-9.-]+/g,""));
+                                                                                            if (!isNaN(flat) && !isNaN(amt)) {
+                                                                                                return `Fixed Offer Price: ${flat}`;
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                    return val.toString().includes('%') ? 'Invalid Target Value' : `Fixed Offer Price: ${val}`;
+                                                                                })()}
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
                                                                 ) : (val || '—')}
                                                             </div>
                                                         </div>
